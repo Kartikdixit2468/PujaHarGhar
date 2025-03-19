@@ -22,6 +22,14 @@ DerivedData
 *.xcuserstate
 **/.xcode.env.local
 
+
+# Build & Generated Folders
+android/.gradle/
+android/app/build/
+ios/Pods/
+ios/build/
+ios/.DS_Store
+
 # Android/IntelliJ
 #
 build/
