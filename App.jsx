@@ -13,6 +13,7 @@ import {
   Pressable,
   Alert,
 } from 'react-native';
+import SignUp from './src/components/signUp';
 import React, {useState} from 'react';
 import {catData, data} from './data/data';
 import { styles } from './src/css/style';
@@ -277,4 +278,4 @@ const App = () => {
 };
 
 
-export default App;
+export default SignUp;
