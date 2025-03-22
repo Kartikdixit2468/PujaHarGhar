@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   },
   topbar_input:{
     minWidth:"55%",
-    maxWidth:"55%"
+    maxWidth:"55%",
   }
   ,
   safeareabar: {
@@ -294,19 +294,19 @@ export const styles = StyleSheet.create({
   container_cat: {
     flex: 1,
     position: 'absolute',
-    top: 350,
+    top: 300,
     left: 200,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#001F3F', // Dark Blue Background
+    // backgroundColor: '#001F3F', // Dark Blue Background
     borderRadius: 67,
     opacity: 0.7,
   },
   glassBox: {
-    width: 90,
-    height: 90,
+    width: "250%",
+    height: "250%",
     backgroundColor: 'rgba(0,0,0, 0.4)', // Light Transparent Blue
-    borderRadius: 67,
+    borderRadius: "50%",
     alignItems: 'center',
     justifyContent: 'center',
     // White Border for Glassy Effect

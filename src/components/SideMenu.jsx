@@ -13,10 +13,13 @@ import {
 
 
 import { styles } from '../css/style';
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+
+import { faArrowAltCircleUp, faArrowUp,faGreaterThan } from '@fortawesome/free-solid-svg-icons';
 
 
 
-const SideMenu = ({showMenu,setShowMenu}) => {
+const SideMenu = ({showMenu,setShowMenu,MobileWidth,MobileHeight}) => {
 
     return <View
         style={
@@ -69,25 +72,26 @@ const SideMenu = ({showMenu,setShowMenu}) => {
                 borderEndEndRadius: 50,
                 borderTopEndRadius: 50,
             }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Signup/Login</Text>
+            <Text style={{ fontSize: MobileWidth*0.048, fontWeight: 'bold' }}>Signup/Login</Text>
         </Pressable>
 
         <View>
             <TouchableOpacity style={{ ...styles.sideBarServices }}>
-                <Text style={{ fontSize: 22 }}>Services</Text>
-                <Text style={{ fontSize: 35, marginTop: 7 }}>^</Text>
+                <Text style={{ fontSize: MobileWidth*0.05 }}>Services</Text>
+                <FontAwesomeIcon icon={faGreaterThan} size={MobileWidth*0.06} color="black" style={{    transform: [{ rotate: '-90deg' }],}} />
+                
             </TouchableOpacity>
             <TouchableOpacity style={{ ...styles.sideBarServices }}>
-                <Text style={{ fontSize: 22 }}>Category</Text>
-                <Text style={{ fontSize: 35, marginTop: 7 }}>^</Text>
+                <Text style={{ fontSize: MobileWidth*0.05 }}>Category</Text>
+                <FontAwesomeIcon icon={faGreaterThan} size={MobileWidth*0.06} color="black" style={{    transform: [{ rotate: '-90deg' }],}} />
             </TouchableOpacity>{' '}
             <TouchableOpacity style={{ ...styles.sideBarServices }}>
-                <Text style={{ fontSize: 22 }}>Category</Text>
-                <Text style={{ fontSize: 35, marginTop: 7 }}>^</Text>
+                <Text style={{ fontSize: MobileWidth*0.05 }}>Category</Text>
+                <FontAwesomeIcon icon={faGreaterThan} size={MobileWidth*0.06} color="black" style={{    transform: [{ rotate: '-90deg' }],}} />
             </TouchableOpacity>{' '}
             <TouchableOpacity style={{ ...styles.sideBarServices }}>
-                <Text style={{ fontSize: 22 }}>Category</Text>
-                <Text style={{ fontSize: 35, marginTop: 7 }}>^</Text>
+                <Text style={{ fontSize: MobileWidth*0.05 }}>Category</Text>
+                <FontAwesomeIcon icon={faGreaterThan} size={MobileWidth*0.06} color="black" style={{    transform: [{ rotate: '-90deg' }],}} />
             </TouchableOpacity>
         </View>
     </View>

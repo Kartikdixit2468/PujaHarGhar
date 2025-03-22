@@ -37,7 +37,7 @@ const App = () => {
   // const [showMenu,setShowMenu]=useState(false);
   // const [showMenu,setShowMenu]== useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [isSearch, setSearch] = useState(true);
+  const [isSearch, setSearch] = useState(false);
   const [searchVal, setSearchVal] = useState("");
   const handleSearch = () => {
     if (isSearch) {
@@ -103,6 +103,7 @@ const App = () => {
           <>
             <TextInput
               value={searchVal}
+              placeholder='Search...'
               onChangeText={(searchVal) => { setSearchVal(searchVal) }}// ✅ Fixed
               style={[styles.topbar_input, styles.input,
               { padding: 0, paddingLeft: "2%" }
@@ -132,7 +133,7 @@ const App = () => {
 
       {showMenu
         && 
-        <SideMenu setShowMenu={setShowMenu} showMenu={showMenu}/>}
+        <SideMenu setShowMenu={setShowMenu} showMenu={showMenu} MobileWidth={width} MobileHeight={height}/>}
 
       {/* HOME SECTION  */}
       <View style={styles.home_section}>

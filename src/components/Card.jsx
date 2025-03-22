@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 // import {SafeAreaView} from 'react-native-safe-area-context';
 import { styles } from '../css/style'
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 function TrendingCard({data,CARD_WIDTH,CARD_HEIGHT}){
 return  <FlatList
@@ -33,7 +35,7 @@ return  <FlatList
               <View style={styles.bottomRow}>
                 <Text style={styles.title}>{item.title}</Text>
                 <TouchableOpacity style={styles.bookNowContainer}>
-                  <Text style={styles.bookNow}>Book Now →</Text>
+                  <Text style={[styles.bookNow,{fontSize:CARD_WIDTH*0.05}]}>Book Now →</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -69,7 +71,7 @@ function CategoryCard({ data, CARD_WIDTH, CARD_HEIGHT }) {
             </View>
             <View style={styles.container_cat}>
                 <View style={styles.glassBox}>
-                    <Text style={styles.text}>O</Text>
+<FontAwesomeIcon icon={faHeart} size={CARD_WIDTH*0.13} color={Math.random()>0.5?"white":"red"}/>
                 </View>
             </View>
         </Pressable>)} />
