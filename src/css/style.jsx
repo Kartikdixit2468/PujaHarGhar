@@ -6,6 +6,7 @@ const CARD_WIDTH = width * 0.7; // Adjust for two cards per screen
 const CARD_HEIGHT = 160;
 
 export const styles = StyleSheet.create({
+  
   container: {
     backgroundColor: '#fff7ea',
     padding: 0,
@@ -13,6 +14,11 @@ export const styles = StyleSheet.create({
   topbar_title: {
     color: 'white',
   },
+  topbar_input:{
+    minWidth:"55%",
+    maxWidth:"55%"
+  }
+  ,
   safeareabar: {
     top: 0,
     height: 25,
@@ -313,7 +319,7 @@ export const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%', // Reduced height to fit text
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   card_image: {
     height: CARD_HEIGHT * 0.7,
@@ -321,7 +327,7 @@ export const styles = StyleSheet.create({
   },
   bottomRow: {
     // flex: 3, // Takes available space
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     maxHeight: CARD_HEIGHT * 0.3,
@@ -367,7 +373,9 @@ export const styles = StyleSheet.create({
   bookNowContainer: {
     alignContent: 'center',
     justifyContent: 'center',
-    // padding: 6,
+    marginVertical:"auto",
+    paddingVertical: 2,
+    maxWidth:"40%",
     paddingHorizontal: 10,
     backgroundColor: '#ffbc00',
     borderRadius: 20,
@@ -378,11 +386,12 @@ export const styles = StyleSheet.create({
     // borderWidth: 2,
   },
   input: {
-    height: 50,
-    margin: 10,
+    height: "80%",
+    // margin: 10,
     padding: 15,
     backgroundColor: 'white',
     borderWidth: 0.5,
+    borderRightWidth:0,
     borderColor: 'grey',
     color: 'grey',
     borderRadius: 5,

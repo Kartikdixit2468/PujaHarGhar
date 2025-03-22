@@ -12,11 +12,17 @@ import {
   SafeAreaView,
   Pressable,
   Alert,
+  TextInput,
 } from 'react-native';
 import SignUp from './src/components/signUp';
-import React, {useState} from 'react';
-import {catData, data} from './data/data';
+import React, { useState } from 'react';
+import { catData, data } from './data/data';
 import { styles } from './src/css/style';
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { CategoryCard, TrendingCard } from './src/components/Card';
+import SideMenu from './src/components/SideMenu';
+
 // import { SafeAreaView } from 'react-native-safe-area-context';
 // import {BlurView} from '@react-native-community/blur';
 
@@ -31,8 +37,19 @@ const App = () => {
   // const [showMenu,setShowMenu]=useState(false);
   // const [showMenu,setShowMenu]== useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [isSearch, setSearch] = useState(true);
+  const [searchVal, setSearchVal] = useState("");
+  const handleSearch = () => {
+    if (isSearch) {
+      searchVal.length == 0 ? setSearch(false) : Alert.alert(`Making Searcing... for Key=${searchVal}`);
+    }
+    else {
+      setSearch(true)
+    }
+
+  }
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       {showMenu && (
         <View
           style={{
@@ -61,105 +78,61 @@ const App = () => {
           <View style={[styles.menu_ico_bar, styles.bar2]}></View>
           <View style={[styles.menu_ico_bar, styles.bar3]}></View>
         </Pressable>
-        <View style={styles.logo_container}>
-          <Image
-            style={styles.logo}
-            resizeMode="contain"
-            source={require('./src/assets/Logo.png')}
-          />
-        </View>
-        <View style={styles.flowerbar}>
-          <Image
-            style={styles.flowerbar_ico}
-            resizeMode="contain"
-            source={require('./src/assets/flower_bar.png')}
-          />
-        </View>
-        <View style={styles.search_ico}>
+
+        {/* If the Search is On then this will not render */}
+        {!isSearch &&
+          <>
+            <View style={styles.logo_container}>
+              <Image
+                style={styles.logo}
+                resizeMode="contain"
+                source={require('./src/assets/Logo.png')}
+              />
+            </View>
+            <View style={styles.flowerbar}>
+              <Image
+                style={styles.flowerbar_ico}
+                resizeMode="contain"
+                source={require('./src/assets/flower_bar.png')}
+              />
+            </View>
+          </>
+        }
+        {
+          isSearch &&
+          <>
+            <TextInput
+              value={searchVal}
+              onChangeText={(searchVal) => { setSearchVal(searchVal) }}// ✅ Fixed
+              style={[styles.topbar_input, styles.input,
+              { padding: 0, paddingLeft: "2%" }
+              ]}
+              returnKeyType="search"
+              onSubmitEditing={handleSearch}
+            />
+
+            <Pressable style={{ borderLeftWidth: 0, width: "10%", justifyContent: "center", height: "80%", color: "black", borderWidth: 1, backgroundColor: "white", borderColor: "#badada" }} onPress={() => { setSearchVal(""); setSearch(!isSearch) }}>
+
+              <FontAwesomeIcon icon={faXmark} size={30} color="red" />
+
+            </Pressable>
+          </>
+        }
+
+        <Pressable style={styles.search_ico} onPress={handleSearch} >
           <Image
             style={styles.search_ico_img}
             // resizeMode="contain"
             source={require('./src/assets/search.png')}
           />
-        </View>
+        </Pressable>
       </View>
 
       {/* SIde Bar SECTION  */}
 
-      <View
-        style={
-          showMenu
-            ? {...styles.sideBar, display: 'flex', flexDirection: 'column'}
-            : {display: 'none'}
-        }>
-        <View style={{...styles.header, borderColor: 'grey', minHeight: '8%'}}>
-          <Pressable
-            style={{...styles.menu_ico, marginTop: 6}}
-            onPress={() => {
-              setShowMenu(!showMenu);
-            }}>
-            <View style={[styles.menu_ico_bar, styles.bar11]}></View>
-            <View style={[styles.menu_ico_bar, styles.bar11]}></View>
-            <View style={[styles.menu_ico_bar, styles.bar11]}></View>
-          </Pressable>
-
-          <View style={styles.logo_container}>
-            <Image
-              style={styles.logo}
-              resizeMode="contain"
-              source={require('./src/assets/Logo.png')}
-            />
-          </View>
-
-          <View style={styles.search_ico}>
-            <Image
-              style={styles.search_ico_img}
-              // resizeMode="contain"
-              source={require('./src/assets/search.png')}
-            />
-          </View>
-        </View>
-        <Image
-          style={{
-            ...styles.heading_underline,
-            minWidth: '80%',
-            marginHorizontal: 'auto',
-          }}
-          source={require('./src/assets/underline.png')}
-        />
-
-        <Pressable
-          style={{
-            padding: 22,
-            marginLeft: -6,
-            marginTop: 15,
-            backgroundColor: '#ffbc00',
-            width: '60%',
-            borderEndEndRadius: 50,
-            borderTopEndRadius: 50,
-          }}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Signup/Login</Text>
-        </Pressable>
-
-        <View>
-          <TouchableOpacity style={{...styles.sideBarServices}}>
-            <Text style={{fontSize: 22}}>Services</Text>
-            <Text style={{fontSize: 35, marginTop: 7}}>^</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{...styles.sideBarServices}}>
-            <Text style={{fontSize: 22}}>Category</Text>
-            <Text style={{fontSize: 35, marginTop: 7}}>^</Text>
-          </TouchableOpacity>{' '}
-          <TouchableOpacity style={{...styles.sideBarServices}}>
-            <Text style={{fontSize: 22}}>Category</Text>
-            <Text style={{fontSize: 35, marginTop: 7}}>^</Text>
-          </TouchableOpacity>{' '}
-          <TouchableOpacity style={{...styles.sideBarServices}}>
-            <Text style={{fontSize: 22}}>Category</Text>
-            <Text style={{fontSize: 35, marginTop: 7}}>^</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      {showMenu
+        && 
+        <SideMenu setShowMenu={setShowMenu} showMenu={showMenu}/>}
 
       {/* HOME SECTION  */}
       <View style={styles.home_section}>
@@ -194,33 +167,7 @@ const App = () => {
           source={require('./src/assets/underline.png')}
         />
         {/* <FlatList style={styles.puja_slider}> */}
-        <FlatList
-          data={data}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.id}
-          pagingEnabled
-          snapToInterval={CARD_WIDTH + 20}
-          contentContainerStyle={styles.listContainer}
-          renderItem={({item}) => (
-            <View style={styles.card}>
-              <View style={styles.card_image}>
-                <Image
-                  source={require('./src/assets/1.png')}
-                  style={styles.image}
-                />
-                <Text style={styles.specialTag}>Holi Special 🎉</Text>
-                <View style={styles.overlay} />
-              </View>
-              <View style={styles.bottomRow}>
-                <Text style={styles.title}>{item.title}</Text>
-                <TouchableOpacity style={styles.bookNowContainer}>
-                  <Text style={styles.bookNow}>Book Now →</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-        />
+        <TrendingCard data={data} CARD_HEIGHT={CARD_HEIGHT} CARD_WIDTH={CARD_WIDTH} />
       </View>
 
       <View style={styles.section}>
@@ -231,7 +178,7 @@ const App = () => {
             source={require('./src/assets/swastik.png')}
           />
         </View>
-        <View style={{marginBottom: -90, marginLeft: 10}}>
+        <View style={{ marginBottom: -90, marginLeft: 10 }}>
           <Image
             style={styles.heading_underline}
             source={require('./src/assets/underline.png')}
@@ -239,43 +186,11 @@ const App = () => {
         </View>
       </View>
       {/* <FlatList style={styles.puja_slider}> */}
-      <FlatList
-        style={{marginHorizontal: 10}}
-        data={catData}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.id.toString()}
-        pagingEnabled
-        snapToInterval={CARD_WIDTH + 20}
-        contentContainerStyle={styles.categoryContainer}
-        renderItem={({item}) => (
-          <Pressable
-            style={{...styles.catCard}}
-            onPress={() => {
-              Alert.alert('Welcome to a dedicate page for ' + item.Name);
-            }}>
-            <View style={styles.catCard_image}>
-              <Image
-                source={require('./src/assets/images/imagesCategory/ShivjiPooja.jpg')}
-                style={styles.image}
-              />
-              {/* <Text style={styles.specialTag}>Holi Special 🎉</Text> */}
-              <View style={styles.overlay} />
-            </View>
-            <View style={styles.bottomRow}>
-              <Text style={styles.title}>{item.Name}</Text>
-            </View>
-            <View style={styles.container_cat}>
-              <View style={styles.glassBox}>
-                <Text style={styles.text}>O</Text>
-              </View>
-            </View>
-          </Pressable>
-        )}
-      />
+      <CategoryCard data={catData} CARD_WIDTH={CARD_WIDTH} CARD_HEIGHT={CARD_HEIGHT} />
     </ScrollView>
   );
 };
 
 
-export default SignUp;
+
+export default App;

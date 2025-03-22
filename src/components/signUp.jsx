@@ -126,6 +126,7 @@ const SignUp = () => {
 };
 
 const styles_signup = StyleSheet.create({
+ 
   container: {
     backgroundColor: '#fff7ea',
   },
