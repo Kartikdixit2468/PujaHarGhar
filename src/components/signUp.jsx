@@ -1,17 +1,22 @@
-import React from 'react';
+import {React, useState} from 'react';
 import {
+  SafeAreaView,
   Image,
   StyleSheet,
   View,
   Text,
   TextInput,
-  Button,
-  TouchableHighlight,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
-import {useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {signIn} from '../middlewares/googleSigninProvider';
 import {styles} from '../css/style';
+
+const handleSignin = () => {
+  const response = signIn();
+  onChangeEmail(response);
+  Alert.alert('Done: ', response);
+};
 
 const SignUp = () => {
   const [email, onChangeEmail] = useState('Enter your email');
@@ -95,7 +100,11 @@ const SignUp = () => {
         />
       </View>
 
-      <View style={[{margin: 5, padding: 30, alignItems: "center"}, styles.buttons]}>
+      <View
+        style={[
+          {margin: 5, padding: 30, alignItems: 'center'},
+          styles.buttons,
+        ]}>
         <TouchableOpacity
           //  onPress={}
           style={{
@@ -104,22 +113,28 @@ const SignUp = () => {
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: 30,
-            width: "100%",
+            width: '100%',
           }}>
           <Text style={styles_signup.buttonText}>Continue</Text>
         </TouchableOpacity>
-        <Text style={{margin: 10, fontFamily: "Fredoka-Bold", fontSize: 20}}>OR</Text>
+        <Text style={{margin: 10, fontFamily: 'Fredoka-Bold', fontSize: 20}}>
+          OR
+        </Text>
 
-        <View style={[styles_signup.signupAlternates, {width:"100%", justifyContent: "space-between"}]}>
+        <TouchableOpacity
+          onPress={handleSignin}
+          style={[
+            styles_signup.signupAlternates,
+            {width: '100%', justifyContent: 'space-between'},
+          ]}>
           <View>
             {/* Icon have to be added */}
             <Text style={styles_signup.signup_option}>Sign up with Google</Text>
           </View>
           <View>
-            {/* Icon have to be added */}
-            <Text style={styles_signup.signup_option}>Sign up with Google</Text>
+            <Text style={styles_signup.signup_option}>Sign up with Facebook</Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -164,14 +179,15 @@ const styles_signup = StyleSheet.create({
   signupAlternates: {
     padding: 10,
     flexDirection: 'row',
-    alignItems: "center",
-    justifyContent: "space-between",
-    // borderWidth: 2, 
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    // borderWidth: 2,
   },
   signup_option: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 15,
     fontSize: 12,
-  }
+    alignSelf: 'center',
+  },
 });
 export default SignUp;
