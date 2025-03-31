@@ -18,7 +18,7 @@ import { faArrowAltCircleUp, faArrowUp,faGreaterThan } from '@fortawesome/free-s
 
 
 
-const SideMenu = ({showMenu,setShowMenu,MobileWidth,MobileHeight}) => {
+const SideMenu = ({showMenu,setShowMenu,MobileWidth,MobileHeight, navigation}) => {
 
     return <View
         style={
@@ -70,7 +70,9 @@ const SideMenu = ({showMenu,setShowMenu,MobileWidth,MobileHeight}) => {
                 width: '60%',
                 borderEndEndRadius: 50,
                 borderTopEndRadius: 50,
-            }}>
+            }}
+            onPress={() => {navigation.navigate('SignUp')}}
+            >
             <Text style={{ fontSize: MobileWidth*0.048, fontWeight: 'bold' }}>Signup/Login</Text>
         </Pressable>
 

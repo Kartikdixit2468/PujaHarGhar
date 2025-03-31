@@ -1,81 +1,86 @@
 import React from 'react';
 import {
-    Image,
-    View,
-    Text, 
-    Pressable, 
-    Alert, 
-    FlatList,
-    TouchableOpacity
+  Image,
+  View,
+  Text,
+  Pressable,
+  Alert,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
 } from 'react-native';
-// import {SafeAreaView} from 'react-native-safe-area-context';
-import { styles } from '../css/style'
-// import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import {styles} from '../css/style';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
-function TrendingCard({data,CARD_WIDTH,CARD_HEIGHT}){
-return  <FlatList
-          data={data}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.id}
-          pagingEnabled
-          snapToInterval={CARD_WIDTH + 20}
-          contentContainerStyle={styles.listContainer}
-          renderItem={({item}) => (
-            <View style={styles.card}>
-              <View style={styles.card_image}>
-                <Image
-                  source={require('../assets/1.png')}
-                  style={styles.image}
-                />
-                <Text style={styles.specialTag}>Holi Special 🎉</Text>
-                <View style={styles.overlay} />
-              </View>
-              <View style={styles.bottomRow}>
-                <Text style={styles.title}>{item.title}</Text>
-                <TouchableOpacity style={styles.bookNowContainer}>
-                  <Text style={[styles.bookNow,{fontSize:CARD_WIDTH*0.05}]}>Book Now →</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-        />
-} 
+function TrendingCard({data}) {
+  const width = Dimensions.get('window').width;
+  // const height = Dimensions.get('window').height;
+  const CARD_WIDTH = width * 0.7; // Adjust for two cards per screen
+  // const CARD_HEIGHT = 160;
 
-function CategoryCard({ data, CARD_WIDTH, CARD_HEIGHT }) {
-    return <FlatList
-        style={{ marginHorizontal: 10 }}
-        data={data}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.id.toString()}
-        pagingEnabled
-        snapToInterval={CARD_WIDTH + 20}
-        contentContainerStyle={styles.categoryContainer}
-        renderItem={({ item }) => (<Pressable
-            style={{ ...styles.catCard }}
-            onPress={() => {
-                Alert.alert('Welcome to a dedicate page for ' + item.Name);
-            }}>
-            <View style={styles.catCard_image}>
-                <Image
-                    source={require('../assets/images/imagesCategory/ShivjiPooja.jpg')}
-                    style={styles.image}
-                />
-                {/* <Text style={styles.specialTag}>Holi Special 🎉</Text> */}
-                <View style={styles.overlay} />
-            </View>
-            <View style={styles.bottomRow}>
-                <Text style={styles.title}>{item.Name}</Text>
-            </View>
-            <View style={styles.container_cat}>
-                <View style={styles.glassBox}>
-<FontAwesomeIcon icon={faHeart} size={CARD_WIDTH*0.13} color={Math.random()>0.5?"white":"red"}/>
-                </View>
-            </View>
-        </Pressable>)} />
-
+  return (
+    <FlatList
+      data={data}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      keyExtractor={item => item.id}
+      pagingEnabled
+      snapToInterval={CARD_WIDTH + 20}
+      contentContainerStyle={styles.listContainer}
+      renderItem={({item}) => (
+        <View style={styles.card}>
+          <View style={styles.trending_card_image}>
+            <Image source={require('../assets/1.png')} style={styles.image} />
+            <Text style={styles.specialTag}>{item.specialTag}</Text>
+            <View style={styles.overlay} />
+          </View>
+          <View style={styles.bottomRow}>
+            <Text style={styles.title}>{item.title}</Text>
+            <TouchableOpacity style={styles.bookNowContainer}>
+              <Text style={[styles.bookNow, {fontSize: CARD_WIDTH * 0.05}]}>
+                Book Now →
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    />
+  );
 }
 
-export {TrendingCard,CategoryCard}
+function CategoryCard({data, CARD_WIDTH, CARD_HEIGHT}) {
+
+  return (
+    <FlatList
+      style={{marginHorizontal: 10}}
+      data={data}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      keyExtractor={item => item.id.toString()}
+      pagingEnabled
+      snapToInterval={CARD_WIDTH + 20}
+      contentContainerStyle={styles.categoryContainer}
+      renderItem={({item}) => (
+        <Pressable
+        style={{...styles.catCard}}
+        onPress={() => {
+          Alert.alert('Welcome to a dedicate page for ' + item.Name);
+        }}>
+          <View style={styles.category_card_image}>
+            <Image
+              source={require("../assets/images/imagesCategory/1.jpg")}
+              // source={require(item.Image_URL)} // ❌ Fetching image dynamically from data
+              style={styles.catCard_image}
+            />
+            {/* <View style={[styles.overlay]} /> */}
+          </View>
+          <View style={styles.bottomRowCategory}>
+            <Text style={styles.title}>{item.Name}</Text>
+          </View>
+        </Pressable>
+      )}
+    />
+  );
+}
+
+export {TrendingCard, CategoryCard};

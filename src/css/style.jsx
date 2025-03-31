@@ -171,9 +171,15 @@ export const styles = StyleSheet.create({
   },
   section: {
     margin: 10,
-    maxHeight: height * 0.35,
     // borderWidth: 2,
-    // borderColor: 'green',
+    borderColor: 'green',
+  },
+  trending_section: {
+    maxHeight: height * 0.3,
+  },
+  category_section: {
+    maxHeight: height*0.65,
+    justifyContent: "center",
   },
   section_heading: {
     flexDirection: 'row',
@@ -250,7 +256,9 @@ export const styles = StyleSheet.create({
   listContainer: {
     paddingHorizontal: 5,
   },
-  categoryContainer: {},
+  categoryContainer: {
+    // borderWidth: 2,
+  },
   card: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
@@ -266,51 +274,6 @@ export const styles = StyleSheet.create({
     position: 'relative',
     paddingBottom: 0,
   },
-  catCard: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT * 3,
-    marginHorizontal: 10,
-    paddingBottom: 0,
-    position: 'relative',
-    borderColor: 'black',
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-
-    // iOS Shadow
-    shadowColor: 'blue',
-    shadowOffset: {width: 0, height: 10},
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 10,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  catCard_image: {
-    // width:'100%',
-    height: '90%',
-    backgroundColor: '#ffffff',
-  },
-  container_cat: {
-    flex: 1,
-    position: 'absolute',
-    top: 300,
-    left: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
-    // backgroundColor: '#001F3F', // Dark Blue Background
-    borderRadius: 67,
-    opacity: 0.7,
-  },
-  glassBox: {
-    width: "250%",
-    height: "250%",
-    backgroundColor: 'rgba(0,0,0, 0.4)', // Light Transparent Blue
-    borderRadius: "50%",
-    alignItems: 'center',
-    justifyContent: 'center',
-    // White Border for Glassy Effect
-  },
   text: {
     color: 'white',
     fontSize: 30,
@@ -321,12 +284,31 @@ export const styles = StyleSheet.create({
     height: '100%', // Reduced height to fit text
     resizeMode: 'cover',
   },
-  card_image: {
+  catCard: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT * 3,
+    marginHorizontal: 12,
+    position: 'relative',
+    borderColor: 'black',
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+
+
+    // iOS Shadow
+    shadowColor: 'blue',
+    shadowOffset: {width: 0, height: 10},
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  trending_card_image: {
     height: CARD_HEIGHT * 0.7,
     // borderWidth: 3,
   },
   bottomRow: {
-    // flex: 3, // Takes available space
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
@@ -334,14 +316,30 @@ export const styles = StyleSheet.create({
     marginBottom: 0,
     // borderWidth: 3,
   },
+  catCard_image: {
+    height: "100%",
+    width: "100%",
+    resizeMode: 'cover',
+    // borderWidth: 5,
+  },
+  category_card_image: {
+    height: "90%",
+    // borderWidth: 2
+  },
+  bottomRowCategory: {
+    maxHeight: "10%",
+    alignItems: "center",
+    justifyContent: "center",
+    fontFamily: 'Fredoka-SemiBold',
+  },  
   overlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     width: '100%',
-    height: '55%',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    zIndex: -1,
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.18)',
+    zIndex: 99,
   },
   specialTag: {
     position: 'absolute',
@@ -355,14 +353,14 @@ export const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderBottomRightRadius: 20,
   },
-  // title: {
-  //   fontSize: 15,
-  //   fontWeight: 'bold',
-  //   color: '#555555',
-  //   fontFamily: 'Fredoka-SemiBold',
-  //   marginVertical: 1,
-  //   paddingVertical: 10,
-  // },
+  title: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#555555',
+    fontFamily: 'Fredoka-SemiBold',
+    marginVertical: 1,
+    paddingVertical: 10,
+  },
   bookNow: {
     fontSize: 15,
     fontWeight: 'bold',
@@ -386,19 +384,17 @@ export const styles = StyleSheet.create({
     // borderWidth: 2,
   },
   input: {
-    height: "80%",
-    // margin: 10,
+    height: 50,
+    margin: 10,
     padding: 15,
     backgroundColor: 'white',
     borderWidth: 0.5,
-    borderRightWidth:0,
     borderColor: 'grey',
     color: 'grey',
     borderRadius: 5,
     fontFamily: 'Fredoka-Regular',
     fontSize: 19,
   },
-
   signupForm: {
     // borderWidth: 2,
     padding: '5%',
