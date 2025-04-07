@@ -108,7 +108,7 @@ const SideMenu = ({
           />
           <Pressable 
           onPress={()=> {navigation.navigate('Bookings')}}
-          >
+          > 
             <Text style={{ fontSize: MobileWidth * 0.05 }}>My Bookings</Text>
           </Pressable>
         </TouchableOpacity>{' '}
@@ -116,7 +116,7 @@ const SideMenu = ({
           <FontAwesomeIcon
             icon={faGreaterThan}
             size={MobileWidth * 0.06}
-            color="black"
+            color="black" 
             style={{ transform: [{ rotate: '-90deg' }] }}
           />
           <Pressable 

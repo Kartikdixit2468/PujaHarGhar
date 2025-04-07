@@ -2,8 +2,8 @@ import {StyleSheet, Dimensions} from 'react-native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
-const CARD_WIDTH = width * 0.7; // Adjust for two cards per screen
-const CARD_HEIGHT = 160;
+// const CARD_WIDTH = width * 0.7; // Adjust for two cards per screen
+// const CARD_HEIGHT = 160;
 
 export const styles = StyleSheet.create({
   
@@ -175,7 +175,7 @@ export const styles = StyleSheet.create({
     borderColor: 'green',
   },
   trending_section: {
-    maxHeight: height * 0.3,
+    maxHeight: height * 0.33,
   },
   category_section: {
     maxHeight: height*0.65,
@@ -256,12 +256,9 @@ export const styles = StyleSheet.create({
   listContainer: {
     paddingHorizontal: 5,
   },
-  categoryContainer: {
-    // borderWidth: 2,
-  },
   card: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
+    // width: CARD_WIDTH,
+    // height: CARD_HEIGHT,
     backgroundColor: '#fff',
     borderRadius: 15,
     overflow: 'hidden',
@@ -285,8 +282,8 @@ export const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   catCard: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT * 3,
+    // width: CARD_WIDTH,
+    // height: CARD_HEIGHT * 3,
     marginHorizontal: 12,
     position: 'relative',
     borderColor: 'black',
@@ -305,14 +302,14 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   trending_card_image: {
-    height: CARD_HEIGHT * 0.7,
+    // height: CARD_HEIGHT * 0.7,
     // borderWidth: 3,
   },
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    maxHeight: CARD_HEIGHT * 0.3,
+    // maxHeight: CARD_HEIGHT * 0.3,
     marginBottom: 0,
     // borderWidth: 3,
   },
@@ -327,7 +324,7 @@ export const styles = StyleSheet.create({
     // borderWidth: 2
   },
   bottomRowCategory: {
-    maxHeight: "10%",
+    maxHeight: "12%",
     alignItems: "center",
     justifyContent: "center",
     fontFamily: 'Fredoka-SemiBold',
@@ -354,12 +351,12 @@ export const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
   },
   title: {
-    fontSize: 15,
+    fontSize: 12.5,
     fontWeight: 'bold',
     color: '#555555',
     fontFamily: 'Fredoka-SemiBold',
     marginVertical: 1,
-    paddingVertical: 10,
+    paddingVertical: 2,
   },
   bookNow: {
     fontSize: 15,

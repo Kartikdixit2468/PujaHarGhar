@@ -15,7 +15,8 @@ function MenuNavigation() {
 
   return (
     <Stack.Navigator
-      initialRouteName="Home"
+      // initialRouteName="Home"
+      initialRouteName="Profile"
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
