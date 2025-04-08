@@ -58,7 +58,11 @@ function MenuNavigation() {
         component={Profile}
         options={{
           title: 'Profile',
-          headerStyle: { backgroundColor: '#fff7ea' },
+          headerStyle: { backgroundColor: '#f9f7f9' },
+          headerTitleStyle: {
+            fontFamily: 'Fredoka-SemiBold',
+            fontSize: 40,
+          },
         }}
       /> 
 

@@ -1,4 +1,5 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+import Profile from '../pages/Profile';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -6,7 +7,6 @@ const height = Dimensions.get('window').height;
 // const CARD_HEIGHT = 160;
 
 export const styles = StyleSheet.create({
-  
   container: {
     backgroundColor: '#fff7ea',
     padding: 0,
@@ -14,11 +14,10 @@ export const styles = StyleSheet.create({
   topbar_title: {
     color: 'white',
   },
-  topbar_input:{
-    minWidth:"55%",
-    maxWidth:"55%",
-  }
-  ,
+  topbar_input: {
+    minWidth: '55%',
+    maxWidth: '55%',
+  },
   safeareabar: {
     top: 0,
     height: 25,
@@ -156,7 +155,7 @@ export const styles = StyleSheet.create({
     fontFamily: 'Fredoka-Bold',
     fontWeight: 500,
     textShadowColor: 'rgba(255, 255, 255, 0.8)', // Glow effect
-    textShadowOffset: {width: 0, height: 0},
+    textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 30, // Adjust for a stronger glow
     // borderWidth: 4,
     // borderColor: "purple",
@@ -178,8 +177,8 @@ export const styles = StyleSheet.create({
     maxHeight: height * 0.33,
   },
   category_section: {
-    maxHeight: height*0.65,
-    justifyContent: "center",
+    maxHeight: height * 0.65,
+    justifyContent: 'center',
   },
   section_heading: {
     flexDirection: 'row',
@@ -265,7 +264,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: 10,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 3},
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     position: 'relative',
@@ -291,10 +290,9 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
 
-
     // iOS Shadow
     shadowColor: 'blue',
-    shadowOffset: {width: 0, height: 10},
+    shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.8,
     shadowRadius: 10,
     elevation: 10,
@@ -314,21 +312,21 @@ export const styles = StyleSheet.create({
     // borderWidth: 3,
   },
   catCard_image: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
     resizeMode: 'cover',
     // borderWidth: 5,
   },
   category_card_image: {
-    height: "90%",
+    height: '90%',
     // borderWidth: 2
   },
   bottomRowCategory: {
-    maxHeight: "12%",
-    alignItems: "center",
-    justifyContent: "center",
+    maxHeight: '12%',
+    alignItems: 'center',
+    justifyContent: 'center',
     fontFamily: 'Fredoka-SemiBold',
-  },  
+  },
   overlay: {
     position: 'absolute',
     top: 0,
@@ -368,9 +366,9 @@ export const styles = StyleSheet.create({
   bookNowContainer: {
     alignContent: 'center',
     justifyContent: 'center',
-    marginVertical:"auto",
+    marginVertical: 'auto',
     paddingVertical: 2,
-    maxWidth:"40%",
+    maxWidth: '40%',
     paddingHorizontal: 10,
     backgroundColor: '#ffbc00',
     borderRadius: 20,
@@ -410,290 +408,147 @@ export const styles = StyleSheet.create({
   phoneNum: {
     // width: '70%',
     marginHorizontal: 5,
-    flex: 1
+    flex: 1,
   },
   signup_title: {
     fontSize: 30,
     fontFamily: 'Fredoka-Regular',
     padding: 5,
   },
-});
 
-// export const styles = StyleSheet.create({
-//   container: {
-//     backgroundColor: '#fff7ea',
-//     padding: 0,
-//   },
-//   topbar_title: {
-//     color: 'white',
-//   },
-//   safeareabar: {
-//     top: 0,
-//     height: 25,
-//     width: '100%',
-//     backgroundColor: 'grey',
-//   },
-//   topbar: {
-//     backgroundColor: '#ffbc00',
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     padding: 5,
-//   },
-//   header: {
-//     // flex: 1,
-//     flexDirection: 'row',
-//     backgroundColor: '#f9f7f9',
-//     paddingHorizontal: 5,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     maxHeight: 60,
-//     height: '100%',
-//   },
-//   menu_ico: {
-//     flex: 2,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     padding: 3,
-//     width: '50%',
-//     maxHeight: 120,
-//   },
-//   menu_ico_bar: {
-//     maxWidth: 45,
-//     backgroundColor: '#f08c1f',
-//     maxHeight: 8,
-//     height: '10%',
-//     width: '90%',
-//     margin: 2,
-//     borderRadius: 20,
-//     alignSelf: 'flex-start',
-//   },
-//   bar1: {
-//     width: '90%',
-//   },
-//   bar2: {
-//     width: '75%',
-//   },
-//   bar3: {
-//     width: '50%',
-//   },
-//   logo_container: {
-//     height: '100%',
-//     flex: 7,
-//     paddingHorizontal: 5,
-//   },
-//   logo: {
-//     width: '100%',
-//     height: '100%',
-//   },
-//   flowerbar: {
-//     flex: 7,
-//     overflow: 'hidden',
-//     height: '90%',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     paddingHorizontal: 2,
-//   },
-//   flowerbar_ico: {
-//     resizeMode: 'contain',
-//     height: 100,
-//     width: '100%',
-//   },
-//   search_ico: {
-//     flex: 2,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   search_ico_img: {
-//     resizeMode: 'contain',
-//     height: '80%',
-//     width: '70%',
-//     zIndex: 99,
-//     // borderWidth: 2,
-//     // borderColor: "black",
-//   },
-//   title: {
-//     color: 'white',
-//     fontWeight: 400,
-//   },
-//   background: {
-//     resizeMode: 'contain', // or 'contain', 'stretch'
-//     height: '100%',
-//     paddingHorizontal: 10,
-//   },
-//   home_section: {
-//     maxWidth: '100%',
-//     maxHeight: '45%',
-//     overflow: 'hidden',
-//     // borderWidth: 6,
-//     // borderColor: "green",
-//   },
-//   top_heading: {
-//     marginTop: 20,
-//     marginVertical: 10,
-//     color: 'white',
-//     fontSize: 25,
-//     maxWidth: '70%',
-//     fontFamily: 'Fredoka-SemiBold',
-//     // borderWidth: 4,
-//     // borderColor: "green",
-//   },
-//   verified_img: {
-//     // position: "absolute",
-//     // resizeMode: 'stretch', // or 'contain', 'stretch'
-//     marginTop: -15,
-//     left: -6,
-//     maxWidth: '75%',
-//     maxHeight: 80,
-//     // borderWidth: 2,
-//     // borderColor: "red",
-//   },
-//   glow_heading: {
-//     marginTop: -30,
-//     marginHorizontal: 10,
-//     color: 'white',
-//     fontSize: 40,
-//     fontFamily: 'Fredoka-Bold',
-//     fontWeight: 500,
-//     textShadowColor: 'rgba(255, 255, 255, 0.8)', // Glow effect
-//     textShadowOffset: {width: 0, height: 0},
-//     textShadowRadius: 30, // Adjust for a stronger glow
-//     // borderWidth: 4,
-//     // borderColor: "purple",
-//   },
-//   vrindavan_img: {
-//     resizeMode: 'contain',
-//     marginVertical: 5,
-//     maxHeight: 100,
-//     maxWidth: '90%',
-//     // borderWidth: 4,
-//     // borderColor: "green",
-//   },
-//   section: {
-//     margin: 10,
-//     maxHeight: height*0.35,
-//     // borderWidth: 2,
-//     // borderColor: 'green',
-//   },
-//   section_heading: {
-//     flexDirection: 'row',
-//     justifyContent: 'flex-start',
-//     // borderWidth: 4,
-//     // borderColor: 'green',
-//   },
-//   heading_text: {
-//     margin: 4,
-//     color: '#ffbc00',
-//     fontSize: 30,
-//     fontFamily: 'bernoru-blackultraexpanded',
-//     fontWeight: 'bold',
-//   },
-//   swastik: {
-//     marginTop: 5,
-//     resizeMode: 'contain',
-//     marginHorizontal: 5,
-//     height: 40,
-//     width: 40,
-//     // borderWidth: 4,
-//     // borderColor: 'green',
-//   },
-//   heading_underline: {
-//     marginBottom: 10,
-//     resizeMode: 'cover',
-//     maxWidth: '60%',
-//     maxHeight: 10,
-//     // borderWidth: 4,
-//     // borderColor: "yellow",
-//   },
-//   puja_slider: {
-//     borderWidth: 4,
-//     borderColor: 'red',
-//   },
-//   listContainer: {
-//     paddingHorizontal: 5,
-//   },
-//   card: {
-//     width: CARD_WIDTH,
-//     height: CARD_HEIGHT,
-//     backgroundColor: '#fff',
-//     borderRadius: 15,
-//     overflow: 'hidden',
-//     marginHorizontal: 10,
-//     elevation: 5,
-//     shadowColor: '#000',
-//     shadowOffset: {width: 0, height: 3},
-//     shadowOpacity: 0.2,
-//     shadowRadius: 4,
-//     position: 'relative',
-//     overflow: 'hidden',
-//     paddingBottom: 0,
-//   },
-//   image: {
-//     width: '100%',
-//     height: '100%', // Reduced height to fit text
-//     resizeMode: 'cover',
-//   },
-//   card_image: {
-//     height: CARD_HEIGHT * 0.7,
-//     // borderWidth: 3,
-//   },
-//   bottomRow: {
-//     // flex: 3, // Takes available space
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     paddingHorizontal: 10,
-//     maxHeight: CARD_HEIGHT * 0.3,
-//     paddingHorizontal: 10,
-//     marginBottom: 0,
-//     // borderWidth: 3,
-//   },
-//   overlay: {
-//     position: 'absolute',
-//     top: 0,
-//     left: 0,
-//     width: '100%',
-//     height: '55%',
-//     backgroundColor: 'rgba(0, 0, 0, 0.3)',
-//     zIndex: -1,
-//   },
-//   specialTag: {
-//     position: 'absolute',
-//     marginTop: 15,
-//     fontSize: 12,
-//     fontWeight: 'bold',
-//     color: 'white',
-//     backgroundColor: '#aa53d1',
-//     padding: 5,
-//     paddingLeft: 20,
-//     borderTopRightRadius: 20,
-//     borderBottomRightRadius: 20,
-//   },
-//   title: {
-//     fontSize: 15,
-//     fontWeight: 'bold',
-//     color: '#555555',
-//     fontFamily: 'Fredoka-SemiBold',
-//     marginVertical: 1,
-//     paddingVertical: 10,
-//   },
-//   bookNow: {
-//     fontSize: 15,
-//     fontWeight: 'bold',
-//     color: 'white',
-//     // fontFamily: 'Fredoka_Condensed-Bold',
-//     fontFamily: 'Fredoka-SemiBold',
-//   },
-//   bookNowContainer: {
-//     alignContent: 'center',
-//     justifyContent: 'center',
-//     // padding: 6,
-//     paddingHorizontal: 10,
-//     backgroundColor: '#ffbc00',
-//     borderRadius: 20,
-//     height: '80%',
-//     marginLeft: 10,
-//     marginRight: 0,
-//     flex: 1,
-//     // borderWidth: 2,
-//   },
-// });
+  IconBar: {
+    padding: 5,
+    maxHeight: height*0.25,
+    width: '100%',
+    // borderWidth: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  IconContainer: {
+    backgroundColor: '#fbc400',
+    borderRadius: '50%',
+    padding: 10,
+  },
+
+  ProfileIcon: {
+    height: 25,
+    width: 25,
+  },
+  
+  ProfileMainSection: {
+    minHeight: height*0.32,
+    alignItems: "center",
+    paddingVertical: 10,
+    paddingTop: 20,
+  },
+  ProfileImg: {
+    height: 130,
+    width: 130,
+  },
+  ProfileNameContainer: {
+    marginLeft: "12%",
+    marginTop: "5%",
+    alignItems: "center",
+    // borderWidth: 4,
+    // borderColor: "red",
+    flexDirection: "row",
+    width: "90%"
+  },
+  ProfileHeading: {
+    // borderWidth: 2,
+    alignItems: "center",
+    flex: 1,
+
+  },
+  NameEditBtnContainer: {
+    // borderWidth: 2,
+    // borderColor: "green",
+    width: "15%",
+    alignItems: "flex-start",
+  },
+  NameEditBtn: {
+    height: 35,
+    width: 35,
+  },
+  ProfileName: {
+    fontSize: 30,
+    fontFamily: "Fredoka_Condensed-Bold"
+  },
+  NameUderline: {
+    height: 5,
+    width: '100%',
+    backgroundColor: "#ff8731",
+    borderRadius: "20",
+  },
+  ProfileEmail: {
+    fontSize: 14,
+    fontFamily: "Fredoka-Regular",
+  },
+  ProfileEditButton: {
+    margin: 5,
+    backgroundColor: "#000000", 
+    padding: 10,
+    borderRadius: 15,
+    // borderWidth: 4,
+    // borderColor: "green",
+  },
+  ProfileEditButtonText: {
+    color: "#ffff",
+    fontFamily: "Fredoka-SemiBold",
+    fontSize: 18,
+    // borderWidth: 2,
+    // borderColor: "white",
+    letterSpacing: 1.1,
+  },
+  DetailsSection: {
+    maxHeight: height*0.30,
+    // padding: 5,
+  },
+  DetailsSectionHeading: {
+    marginLeft: 12,
+    fontSize: 16,
+    color: "#00000",
+    fontWeight: 350,
+    opacity: 0.8,
+  },
+  DetailsContainer: {
+    backgroundColor: "rgba(255, 247, 234, 0.24)",
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "rgba(0, 0, 0, 0.24)",
+    marginVertical: 5,
+    borderRadius: 20,
+    gap: 10,
+    marginBottom: 20,
+    // opacity: 0.1,
+    },
+  DetailsTextContainer: {
+    padding: 5,
+    flexDirection: "row",
+    // borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 40,
+  },
+  DetailsHeadingText: {
+    fontSize: 16,
+    color: "#626262",
+    opacity: 0.74,
+  },
+  DetailsSubText: {
+    // left: "12%",
+    padding: 4,
+    // borderWidth: 2,
+    fontSize: 14,
+    color: "#aaaaaa",
+    flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: "#aaaaaa",
+  }
+
+
+
+
+});
