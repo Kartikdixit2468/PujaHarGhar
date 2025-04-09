@@ -9,6 +9,7 @@ import Categories from './src/pages/Categories';
 import Profile from './src/pages/Profile';
 import Bookings from './src/pages/bookings';
 import Support from './src/pages/support';
+import PujaPage from './src/pages/PujaPage';
 
 function MenuNavigation() {
   const Stack = createNativeStackNavigator();
@@ -16,7 +17,7 @@ function MenuNavigation() {
   return (
     <Stack.Navigator
       // initialRouteName="Home"
-      initialRouteName="Profile"
+      initialRouteName="PujaPage"
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
@@ -72,6 +73,16 @@ function MenuNavigation() {
         options={{
           title: 'Bookings',
           headerStyle: { backgroundColor: '#fff7ea' },
+        }}
+      />
+
+      <Stack.Screen
+        name="PujaPage"
+        component={PujaPage}
+        options={{
+          title: 'Puja Details',
+          headerStyle: { backgroundColor: '#f3f3f3' },
+          // headerShown: false 
         }}
       />
 
