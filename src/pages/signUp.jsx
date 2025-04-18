@@ -1,4 +1,4 @@
-import {React, useState} from 'react';
+import {React, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   Image,
@@ -9,16 +9,41 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {signIn} from '../middlewares/googleSigninProvider';
+// import {signIn} from '../middlewares/googleSigninProvider';
 import {styles} from '../css/style';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
-const handleSignin = () => {
-  const response = signIn();
-  onChangeEmail(response);
-  Alert.alert('Done: ', response);
-};
 
 const SignUp = () => {
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      ClientId:
+        "842164284838-nuqnp2moeos51tki7r5l8ee3tnvn3inc.apps.googleusercontent.com",// Get this from the JSON file
+      // offlineAccess: true,
+    });
+  }, []);
+  
+  const handleSignin = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log('User Info:', userInfo.data.user);
+
+      
+      // Alert.alert('Login Success', JSON.stringify(userInfo));
+      // return JSON.stringify(userInfo);
+
+      // Backend code here '
+    } catch (error) {
+      console.error('Google Sign-In Error:', error);
+      Alert.alert('Login Failed', error.message);
+      return error.message;
+    }
+  };
+  
+
+
   const [email, onChangeEmail] = useState('Enter your email');
   const [number, onChangeNumber] = useState('9876543210');
   const [countryCode, onChangeCountryCode] = useState('+91');
@@ -26,8 +51,8 @@ const SignUp = () => {
   return (
     <SafeAreaView style={styles_signup.container}>
       <View style={styles_signup.progressBar}>
-        <View style={styles_signup.bar}></View>
         <View style={[styles_signup.bar, {backgroundColor: 'white'}]}></View>
+        <View style={styles_signup.bar}></View>
       </View>
       <View
         style={{
@@ -131,9 +156,9 @@ const SignUp = () => {
             {/* Icon have to be added */}
             <Text style={styles_signup.signup_option}>Sign up with Google</Text>
           </View>
-          <View>
+          {/* <View>
             <Text style={styles_signup.signup_option}>Sign up with Facebook</Text>
-          </View>
+          </View> */}
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -151,7 +176,7 @@ const styles_signup = StyleSheet.create({
     alignItems: 'space-between',
     justifyContent: 'space-between',
     // borderWidth: 2,
-    maxWidth: '50%',
+    maxWidth: '60%',
     padding: 10,
     paddingVertical: 20,
   },

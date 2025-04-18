@@ -10,6 +10,7 @@ import Profile from './src/pages/Profile';
 import Bookings from './src/pages/Bookings';
 import Support from './src/pages/support';
 import PujaPage from './src/pages/PujaPage';
+import WelcomScreen from './src/pages/WelcomScreen';
 
 function MenuNavigation() {
   const Stack = createNativeStackNavigator();
@@ -17,7 +18,7 @@ function MenuNavigation() {
   return (
     <Stack.Navigator
       // initialRouteName="Home"
-      initialRouteName="PujaPage"
+      initialRouteName="WelcomScreen"
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
@@ -31,7 +32,13 @@ function MenuNavigation() {
       }}
     >
       <Stack.Screen
-        name="Home"
+        name="WelcomScreen"
+        component={WelcomScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="WelcomeScreen"
         component={HomeScreen}
         options={{ headerShown: false }}
       />
@@ -39,10 +46,12 @@ function MenuNavigation() {
       <Stack.Screen
         name="SignUp"
         component={SignUp}
-        options={{
-          title: 'Sign Up',
-          headerStyle: { backgroundColor: '#fff7ea' },
-        }}
+        // options={{
+        //   title: 'Sign Up',
+        //   headerStyle: { backgroundColor: '#fff7ea' },
+        // }}
+        options={{ headerShown: false }}
+
       />
 
       <Stack.Screen

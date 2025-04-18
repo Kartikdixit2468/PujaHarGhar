@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Local
 .DS_Store
 *.local
@@ -12,7 +11,7 @@ dist/
 .vscode/*
 !.vscode/extensions.json
 .idea
-=======
+
 # OSX
 #
 .DS_Store
@@ -99,4 +98,5 @@ yarn-error.log
 
 # backup file 
 backup_temp.jsx
->>>>>>> master
+
+# custom files
