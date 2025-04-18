@@ -7,7 +7,7 @@ import SignUp from './src/pages/signUp';
 import Search from './src/components/Search';
 import Categories from './src/pages/Categories';
 import Profile from './src/pages/Profile';
-import Bookings from './src/pages/bookings';
+import Bookings from './src/pages/Bookings';
 import Support from './src/pages/support';
 import PujaPage from './src/pages/PujaPage';
 
@@ -81,7 +81,7 @@ function MenuNavigation() {
         component={PujaPage}
         options={{
           title: 'Puja Details',
-          headerStyle: { backgroundColor: '#f3f3f3' },
+          headerStyle: { backgroundColor: '#f7f7f7' },
           // headerShown: false 
         }}
       />
