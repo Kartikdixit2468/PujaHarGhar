@@ -38,7 +38,7 @@ function MenuNavigation() {
       />
 
       <Stack.Screen
-        name="WelcomeScreen"
+        name="HomeScreen"
         component={HomeScreen}
         options={{ headerShown: false }}
       />

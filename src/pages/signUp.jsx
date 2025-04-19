@@ -1,4 +1,5 @@
-import {React, useState, useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { React, useState, useEffect } from 'react';
 import {
   SafeAreaView,
   Image,
@@ -10,27 +11,100 @@ import {
   Alert,
 } from 'react-native';
 // import {signIn} from '../middlewares/googleSigninProvider';
-import {styles} from '../css/style';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import { styles } from '../css/style';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import data from '../../data/data';
 
 
-const SignUp = () => {
+const saveToken = async (token) => {
+  try {
+    console.log("token=",token)
+    await AsyncStorage.setItem('authToken', token);
+  } catch (error) {
+    console.error("Error saving token", error);
+  }
+};
 
+const SignUp = ({ navigation }) => {
   useEffect(() => {
     GoogleSignin.configure({
+      scopes: [
+        'https://www.googleapis.com/auth/user.phonenumbers.read',
+        'https://www.googleapis.com/auth/user.gender.read',
+        'https://www.googleapis.com/auth/user.addresses.read',
+        'https://www.googleapis.com/auth/user.birthday.read',
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email',
+      ],
       ClientId:
-        "842164284838-nuqnp2moeos51tki7r5l8ee3tnvn3inc.apps.googleusercontent.com",// Get this from the JSON file
+        '842164284838-nuqnp2moeos51tki7r5l8ee3tnvn3inc.apps.googleusercontent.com', // Get this from the JSON file
+        // '858127099824-ubpru6f4glhq1u0s7fifuknlj79icjm0.apps.googleusercontent.com'
       // offlineAccess: true,
     });
   }, []);
-  
+
   const handleSignin = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log('User Info:', userInfo.data.user);
+      const user_data = userInfo.data.user;
+      // // From Here
+      // const tokens = await GoogleSignin.getTokens(); // gets accessToken
+      // const accessToken = tokens.accessToken;
 
-      
+      // // Fetch extra user details from People API
+      // const peopleResponse = await fetch(
+      //   'https://people.googleapis.com/v1/people/me?personFields=genders,birthdays,addresses,phoneNumbers',
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   }
+      // );
+
+      // const extraDetails = await peopleResponse.json();
+      // console.log('Extra Details:', extraDetails);
+
+      // Combine both
+      // const completeUserData = {
+      //   ...user_data, // from GoogleSignin.signIn()
+      //   ...extraDetails, // from People API
+      // };
+
+      try {
+        const response = await fetch(
+          'http://192.168.31.118:3000/api/client/register/user',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            // body: JSON.stringify(completeUserData),
+            body: JSON.stringify(user_data),
+          }
+        );
+
+        const data = await response.json();
+
+        // Setting Up session token and storing in AsyncStorage
+        if (data.success){
+          await saveToken(data.token)
+          navigation.navigate("HomeScreen")
+        }
+        else{
+          Alert.alert(
+            'Login Failed Server refused the sign in request!',
+            error.message
+          );
+        }
+
+      } catch (error) {
+        Alert.alert(
+          'Login Failed Server refused the sign in request!',
+          error.message
+        );
+        console.error(error);
+      }
       // Alert.alert('Login Success', JSON.stringify(userInfo));
       // return JSON.stringify(userInfo);
 
@@ -41,8 +115,6 @@ const SignUp = () => {
       return error.message;
     }
   };
-  
-
 
   const [email, onChangeEmail] = useState('Enter your email');
   const [number, onChangeNumber] = useState('9876543210');
@@ -51,7 +123,7 @@ const SignUp = () => {
   return (
     <SafeAreaView style={styles_signup.container}>
       <View style={styles_signup.progressBar}>
-        <View style={[styles_signup.bar, {backgroundColor: 'white'}]}></View>
+        <View style={[styles_signup.bar, { backgroundColor: 'white' }]}></View>
         <View style={styles_signup.bar}></View>
       </View>
       <View
@@ -59,7 +131,8 @@ const SignUp = () => {
           flexDirection: 'row',
           alignItems: 'center',
           // borderWidth: 2,
-        }}>
+        }}
+      >
         <Text
           style={[
             {
@@ -72,7 +145,8 @@ const SignUp = () => {
               color: 'white',
             },
             styles.signup_title,
-          ]}>
+          ]}
+        >
           {' '}
           Join Us{' '}
         </Text>
@@ -83,7 +157,8 @@ const SignUp = () => {
               color: '#ffcf00',
             },
             styles.signup_title,
-          ]}>
+          ]}
+        >
           for Divine Positivity{' '}
         </Text>
       </View>
@@ -94,11 +169,13 @@ const SignUp = () => {
             flexDirection: 'row',
             justifyContent: 'flex-start',
             paddingHorizontal: 10,
-          }}>
+          }}
+        >
           <TextInput
             style={[styles.emailInput, styles.input]}
             value={email}
-            onChangeEmail={onChangeEmail}></TextInput>
+            onChangeEmail={onChangeEmail}
+          ></TextInput>
         </View>
         <View
           style={{
@@ -106,30 +183,34 @@ const SignUp = () => {
             // borderWidth: 2,
             width: '100%',
             paddingHorizontal: 10,
-          }}>
+          }}
+        >
           <TextInput
             value={countryCode}
             onChangeCountryCode={onChangeCountryCode}
-            style={[styles.countryCode, styles.input]}></TextInput>
+            style={[styles.countryCode, styles.input]}
+          ></TextInput>
           <TextInput
             value={number}
             onChangeNumber={onChangeNumber}
-            style={[styles.phoneNum, styles.input]}></TextInput>
+            style={[styles.phoneNum, styles.input]}
+          ></TextInput>
         </View>
       </View>
 
       <View style={styles_signup.priestImg}>
         <Image
-          style={{resizeMode: 'contain', width: '80%'}}
+          style={{ resizeMode: 'contain', width: '80%' }}
           source={require('../assets/images/pandit-img.png')}
         />
       </View>
 
       <View
         style={[
-          {margin: 5, padding: 30, alignItems: 'center'},
+          { margin: 5, padding: 30, alignItems: 'center' },
           styles.buttons,
-        ]}>
+        ]}
+      >
         <TouchableOpacity
           //  onPress={}
           style={{
@@ -139,10 +220,11 @@ const SignUp = () => {
             justifyContent: 'center',
             borderRadius: 30,
             width: '100%',
-          }}>
+          }}
+        >
           <Text style={styles_signup.buttonText}>Continue</Text>
         </TouchableOpacity>
-        <Text style={{margin: 10, fontFamily: 'Fredoka-Bold', fontSize: 20}}>
+        <Text style={{ margin: 10, fontFamily: 'Fredoka-Bold', fontSize: 20 }}>
           OR
         </Text>
 
@@ -150,8 +232,9 @@ const SignUp = () => {
           onPress={handleSignin}
           style={[
             styles_signup.signupAlternates,
-            {width: '100%', justifyContent: 'space-between'},
-          ]}>
+            { width: '100%', justifyContent: 'space-between' },
+          ]}
+        >
           <View>
             {/* Icon have to be added */}
             <Text style={styles_signup.signup_option}>Sign up with Google</Text>
@@ -166,7 +249,6 @@ const SignUp = () => {
 };
 
 const styles_signup = StyleSheet.create({
- 
   container: {
     backgroundColor: '#fff7ea',
   },
@@ -216,4 +298,5 @@ const styles_signup = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
 export default SignUp;
