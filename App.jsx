@@ -7,8 +7,10 @@ import SignUp from './src/pages/signUp';
 import Search from './src/components/Search';
 import Categories from './src/pages/Categories';
 import Profile from './src/pages/Profile';
-import Bookings from './src/pages/bookings';
+import Bookings from './src/pages/Bookings';
 import Support from './src/pages/support';
+import PujaPage from './src/pages/PujaPage';
+import WelcomScreen from './src/pages/WelcomScreen';
 
 function MenuNavigation() {
   const Stack = createNativeStackNavigator();
@@ -16,7 +18,7 @@ function MenuNavigation() {
   return (
     <Stack.Navigator
       // initialRouteName="Home"
-      initialRouteName="Profile"
+      initialRouteName="WelcomScreen"
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
@@ -30,7 +32,13 @@ function MenuNavigation() {
       }}
     >
       <Stack.Screen
-        name="Home"
+        name="WelcomScreen"
+        component={WelcomScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="HomeScreen"
         component={HomeScreen}
         options={{ headerShown: false }}
       />
@@ -38,10 +46,12 @@ function MenuNavigation() {
       <Stack.Screen
         name="SignUp"
         component={SignUp}
-        options={{
-          title: 'Sign Up',
-          headerStyle: { backgroundColor: '#fff7ea' },
-        }}
+        // options={{
+        //   title: 'Sign Up',
+        //   headerStyle: { backgroundColor: '#fff7ea' },
+        // }}
+        options={{ headerShown: false }}
+
       />
 
       <Stack.Screen
@@ -72,6 +82,16 @@ function MenuNavigation() {
         options={{
           title: 'Bookings',
           headerStyle: { backgroundColor: '#fff7ea' },
+        }}
+      />
+
+      <Stack.Screen
+        name="PujaPage"
+        component={PujaPage}
+        options={{
+          title: 'Puja Details',
+          headerStyle: { backgroundColor: '#f7f7f7' },
+          // headerShown: false 
         }}
       />
 

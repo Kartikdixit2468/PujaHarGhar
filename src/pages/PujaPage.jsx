@@ -1,10 +1,459 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Pressable,
+  Alert,
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Swiper from 'react-native-swiper';
 
-export default function PujaPage() {
+import { styles as styleImported } from '../css/profile_styles';
+// import { styles } from '';
+import { Dimensions } from 'react-native';
+
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
+export default function PujaDetails() {
   return (
-    <View>
-      <Text>pujaCard</Text>
-    </View>
-  )
+    <ScrollView style={styles.container}>
+      {/* Header */}
+
+
+      {/* Image Carousel */}
+      <View style={styles.pujaDetailsContainer}>
+        <Text style={styles.sideTitle}>Puja Details</Text>
+        <View style={styles.swiperContainer}>
+          <Swiper
+            style={styles.swiper}
+            height={250}
+            showsButtons={true}
+            dotColor="white"
+            activeDotColor="#f7b731"
+            showsPagination={true}
+            dot={<View style={styles.dot} />}
+            activeDot={<View style={[styles.dot, styles.activeDot]} />}
+            nextButton={<Text style={styles.arrowButtons}>›</Text>}
+            prevButton={<Text style={styles.arrowButtons}>‹</Text>}
+            autoplay
+          >
+            {[1, 2, 3, 4].map((item, index) => (
+              <View
+                key={index}
+                style={{
+                  width: 0.6 * width,
+                  borderRadius: 40,
+                  marginHorizontal: 'auto',
+                  height: 0.55 * width,
+                  position: 'absolute',
+                  top: 0,
+                  left: 0.2 * width,
+                  overflow: 'hidden',
+                }}
+              >
+                <Image
+                  source={require('../assets/1.png')} // Replace with your image
+                  style={{ ...styles.image }}
+                  resizeMode="cover"
+                />
+              </View>
+            ))}
+          </Swiper>
+
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            {[1, 2, 3, 4].map((item, index) => (
+              <Image
+                key={index}
+                source={require('../assets/1.png')} // Replace with your image
+                style={{
+                  ...styles.image,
+                  width: 0.12 * width,
+                  height: 0.12 * width,
+                  margin: 5,
+                }}
+                resizeMode="contain"
+              />
+            ))}
+          </View>
+        </View>
+
+        {/* Title */}
+        <Text style={styles.title}>Ganesh Utsav Puja Booking</Text>
+        <Text style={styles.titleAfter} />
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            marginTop: 10,
+            marginLeft: 15,
+          }}
+        >
+          {[100, 100, 100, 7].map((item, index) =>
+            item == 100 ? (
+              <Ionicons name="star" key={index} size={20} color={'yellow'} />
+            ) : (
+              <Ionicons
+                name="star-half"
+                key={index}
+                size={20}
+                color={'yellow'}
+              />
+            )
+          )}
+        </View>
+        {/* Description */}
+        <Text style={styles.description}>
+          Ganesh Utsav Puja is a revered pujan festival dedicated to Lord
+          Ganesha Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
+          aliquam at.
+        </Text>
+
+        {/* Book Now Button */}
+        <TouchableOpacity style={styles.bookNow}>
+          <Text style={styles.bookNowText}>Book Now</Text>
+        </TouchableOpacity>
+
+        {/* Benefits */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Benefits of the Pooja</Text>
+          <Text style={styles.bullet}>
+            • Mata Gauri kirpa se married women sada suhagan rahe
+          </Text>
+          <Text style={styles.bullet}>
+            • Vastu dosh hata ke sukh samruddhi aye
+          </Text>
+          <Text style={styles.bullet}>
+            • Sakat chauth ki pooja se santaan sukh mile
+          </Text>
+        </View>
+
+        {/* How the pooja will be performed */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>
+            How the Pooja will be performed?
+          </Text>
+          <Text style={styles.bullet}>• Pooja will be held live</Text>
+          <Text style={styles.bullet}>
+            • Videos will be shared in WhatsApp/Telegram
+          </Text>
+          <Text style={styles.bullet}>
+            • Pandit will perform your name gotra sankalp
+          </Text>
+        </View>
+      </View>
+
+      {/* Promises */}
+      <View style={styles.promisesContainer}>
+        <Text style={styles.title}> Our Promises</Text>
+        <Text style={{ ...styles.titleAfter, width: 0.4 * width }} />
+
+        <View style={styles.promises}>
+          {[
+            { promise: 'Experienced Pandits', image: 'color-filter' },
+            { promise: 'Vedic Standards and Procedures', image: 'library' },
+            { promise: '100% Puja Benifits', image: 'ribbon' },
+            { promise: 'High Quality Samagri', image: 'logo-electron' },
+            {
+              promise: 'Professional Guidance and Support',
+              image: 'person-sharp',
+            },
+            { promise: 'Guranteed Puntuality', image: 'star' },
+          ].map((item, index) => (
+            <View
+              key={index}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '17.4%',
+              }}
+            >
+              <Ionicons name={item.image} size={20} color="brown" />
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: 'grey',
+                  fontSize: 0.018 * width,
+                  textAlign: 'center',
+                }}
+              >
+                {item.promise}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* Customer Reviews */}
+      <View style={styles.customerReviewsContainer}>
+        <Text style={styles.title}>Customers Reviews</Text>
+        <Text style={{ ...styles.titleAfter, width: '55%' }} />
+
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 10 }}
+          style={styles.customerReviews}
+        >
+          {[
+            {
+              name: 'Vrinda',
+              review:
+                'My Experience with Puja Har Ghar was amazing. I booked Ganesh Utsav Puja and the pandit was very knowledgeable and performed the rituals with utmost devotion. Highly recommend!',
+              image: '../../assets/images/vrindiiiiiii.jpeg',
+              rating: 4.5,
+            },
+            {
+              name: 'Palak',
+              review:
+                'My Experience with Puja Har Ghar was amazing. I booked Ganesh Utsav Puja and the pandit was very knowledgeable and performed the rituals with utmost devotion. Highly recommend!',
+              image: '../../assets/images/vrindiiiiiii.jpeg',
+              rating: 4.5,
+            },
+            {
+              name: 'Vrinda',
+              review:
+                'My Experience with Puja Har Ghar was amazing. I booked Ganesh Utsav Puja and the pandit was very knowledgeable and performed the rituals with utmost devotion. Highly recommend!',
+              image: '../../assets/images/vrindiiiiiii.jpeg',
+              rating: 4.5,
+            },
+            {
+              name: 'Vrinda',
+              review:
+                'My Experience with Puja Har Ghar was amazing. I booked Ganesh Utsav Puja and the pandit was very knowledgeable and performed the rituals with utmost devotion. Highly recommend!',
+              image: '../../assets/images/vrindiiiiiii.jpeg',
+              rating: 4.5,
+            },
+            {
+              name: 'Shreya',
+              review:
+                'My Experience with Puja Har Ghar was amazing. I booked Ganesh Utsav Puja and the pandit was very knowledgeable and performed the rituals with utmost devotion. Highly recommend!',
+              image: '../../assets/images/vrindiiiiiii.jpeg',
+              rating: 3.5,
+            },
+          ].map((item, index) => (
+            <View key={index} style={styles.reviewCard}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 10,
+                }}
+              >
+                <Image
+                  source={require('../assets/1.png')}
+                  style={{
+                    width: 0.1 * width,
+                    height: 0.1 * width,
+                    borderRadius: 50,
+                  }}
+                  resizeMode="contain"
+                />
+                <Text
+                  style={{
+                    fontSize: 0.04 * width,
+                    fontWeight: 'bold',
+                    marginLeft: 10,
+                  }}
+                >
+                  {item.name}
+                </Text>
+                <View style={{ display: 'flex', flexDirection: 'row' }}>
+                  {[...Array(5).keys()].map((num, index) =>
+                    num < item.rating - 1 ? (
+                      <Ionicons
+                        name="star"
+                        key={index}
+                        size={11}
+                        color={'yellow'}
+                      />
+                    ) : num - item.rating == 0.5 ? (
+                      <Ionicons
+                        name="star-outline"
+                        key={index}
+                        size={11}
+                        color={'yellow'}
+                      />
+                    ) : (
+                      <Ionicons
+                        name="star-half"
+                        key={index}
+                        size={11}
+                        color={'yellow'}
+                      />
+                    )
+                  )}
+                </View>
+              </View>
+              <Text
+                style={{
+                  fontSize: 0.02 * width,
+                  color: '#555',
+                  textAlign: 'justify',
+                  paddingHorizontal: 16,
+                }}
+              >
+                {item.review}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
+
+        <Text
+          style={{
+            width: 0.2 * width,
+            margin: 'auto',
+            marginBottom: 50,
+            height: 5,
+            backgroundColor: '#FFEA00',
+          }}
+        />
+      </View>
+    </ScrollView>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#fff' },
+  pujaDetailsContainer: {
+    marginTop: 5,
+  },
+  swiperContainer: {
+    marginTop: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#222' },
+  swiper: {
+    marginBottom: 16,
+
+    color: 'yellow',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  title: {
+    fontSize: 0.055 * width,
+    fontWeight: '900',
+    paddingHorizontal: 16,
+    marginTop: 10,
+  },
+
+  description: {
+    fontSize: 14,
+    paddingHorizontal: 16,
+    marginTop: 8,
+    color: '#555',
+  },
+  bookNow: {
+    backgroundColor: '#FFcf00',
+    margin: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  bookNowText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 0.045 * width,
+  },
+  section: { paddingHorizontal: 16, marginTop: 20 },
+  sectionTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 8 },
+  bullet: { fontSize: 14, marginBottom: 4, color: '#444' },
+  sideTitle: {
+    padding: 14,
+    paddingStart: 50,
+    marginLeft: -24,
+    marginTop: 15,
+    backgroundColor: '#ffcf00',
+    maxWidth: width*0.45,
+    fontSize: 0.045 * width,
+    borderRadius: 50,
+    fontWeight: 900,
+    borderStartStartRadius: 50,
+    borderTopEndRadius: 50,
+  },
+  arrowButtons: {
+    color: '#f7b731',
+    fontSize: 0.18 * width,
+  },
+  titleAfter: {
+    width: 0.7 * width,
+    marginLeft: 15,
+    height: height * 0.003,
+
+    backgroundColor: '#f7b731',
+  },
+  dot: {
+    backgroundColor: '#ccc', // Inactive dot color
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    margin: 4,
+    marginTop: 20,
+  },
+  activeDot: {
+    backgroundColor: '#FFD700', // Active dot color (yellow/gold)
+    borderRadius: 5,
+  },
+  promisesContainer: {
+    paddingVertical: 8,
+  },
+  promises: {
+    width: 0.9 * width,
+    height: 0.1 * height,
+    backgroundColor: '#ffcf00',
+    borderRadius: 20,
+    margin: 'auto',
+    marginTop: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    paddingHorizontal: 5,
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
+  reviewCard: {
+    display: 'flex',
+    marginRight: 5,
+    width: 0.29 * width,
+    height: 0.2 * height,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#f7b731',
+    margin: 'auto',
+    marginTop: 10,
+    alignContent: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    paddingHorizontal: 5,
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
+  customerReviewsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  customerReviews: {
+    paddingVertical: 8,
+    marginTop: 10,
+
+    borderRadius: 20,
+    margin: 'auto',
+    display: 'flex',
+    flexDirection: 'row',
+    paddingHorizontal: 5,
+    // overflow:'hidden',
+  },
+});

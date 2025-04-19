@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-const Support = () => {
+const Bookings = () => {
     return (
         <View>
             
@@ -11,4 +11,4 @@ const Support = () => {
 
 const styles = StyleSheet.create({})
 
-export default Support;
+export default Bookings;
