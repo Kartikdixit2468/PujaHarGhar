@@ -11,6 +11,7 @@ import {
 
 import { styles } from '../css/style';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   faArrowAltCircleUp,
@@ -77,28 +78,16 @@ const SideMenu = ({
           borderTopEndRadius: 50,
         }}
         onPress={() => {
-          navigation.navigate('SignUp');
+          navigation.navigate('Profile');
         }}
       >
         <Text style={{ fontSize: MobileWidth * 0.048, fontWeight: 'bold' }}>
-          Signup/Login
+          Profile
         </Text>
       </Pressable>
 
       <View>
-        <TouchableOpacity style={{ ...styles.sideBarServices }}>
-          <FontAwesomeIcon
-            icon={faGreaterThan}
-            size={MobileWidth * 0.06}
-            color="black"
-            style={{ transform: [{ rotate: '-90deg' }] }}
-          />
-          <Pressable
-            onPress={()=> {navigation.navigate('Profile')}}
-            >
-            <Text style={{ fontSize: MobileWidth * 0.05 }}>Profile</Text>
-          </Pressable>
-        </TouchableOpacity>
+
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
           <FontAwesomeIcon
             icon={faGreaterThan}
@@ -136,6 +125,23 @@ const SideMenu = ({
           onPress={()=> {navigation.navigate('Support')}}
           >
             <Text style={{ fontSize: MobileWidth * 0.05 }}>Support</Text>
+          </Pressable>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ ...styles.sideBarServices }}>
+        <FontAwesomeIcon
+            icon={faGreaterThan}
+            size={MobileWidth * 0.06}
+            color="black" 
+            style={{ transform: [{ rotate: '-90deg' }] }}
+          />
+        <Pressable
+            onPress={async ()=> {
+              // Add a popup for confirmation  then this
+              await AsyncStorage.removeItem('authToken')
+              navigation.navigate('SignUp')
+            }}
+            >
+            <Text style={{ fontSize: MobileWidth * 0.05 }}>Logout</Text>
           </Pressable>
         </TouchableOpacity>
       </View>

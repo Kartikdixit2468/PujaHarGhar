@@ -1,6 +1,7 @@
 import React from 'react';
 import HomeScreen from './src/pages/Home';
-// import { createStaticNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignUp from './src/pages/signUp';
@@ -10,30 +11,69 @@ import Profile from './src/pages/Profile';
 import Bookings from './src/pages/Bookings';
 import Support from './src/pages/support';
 import PujaPage from './src/pages/PujaPage';
-import WelcomScreen from './src/pages/WelcomScreen';
+import WelcomeScreen from './src/pages/WelcomScreen';
+import { Text, View } from 'react-native';
 
 function MenuNavigation() {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  useEffect(()=>{
+    const checkLogIn =async () => {
+      const token = await AsyncStorage.getItem('authToken')
+      if (token){
+        const verifyToken = await fetch('http://192.168.31.118:3000/api/client/user/verify/securitytoken',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            // body: JSON.stringify(completeUserData),
+            body: JSON.stringify({token: token}),
+          }
+        );
+
+        const isTokenValid = await verifyToken.json()
+
+        if (isTokenValid){       
+          setIsLoggedIn(true)
+        }
+        else{
+          setIsLoggedIn(false)
+        }
+      }
+      else{
+        setIsLoggedIn(false)
+      }
+    };
+    checkLogIn()
+  }, [])
+
   const Stack = createNativeStackNavigator();
 
+  console.log(isLoggedIn)
+
+  if (isLoggedIn === null) {
+    return ( // or a splash/loading spinner
+        // <Text>Loading</Text>
+        <View/>
+    )
+  }
+  
   return (
     <Stack.Navigator
       // initialRouteName="Home"
-      initialRouteName="WelcomScreen"
+      initialRouteName={isLoggedIn ? "HomeScreen" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
-          // fontWeight: 'bold',
           fontFamily: 'Fredoka-SemiBold',
           fontSize: 25,
         },
-        // headerStyle: {
-        //   height: 200
-        // },
       }}
     >
       <Stack.Screen
-        name="WelcomScreen"
-        component={WelcomScreen}
+        name="WelcomeScreen"
+        component={WelcomeScreen}
         options={{ headerShown: false }}
       />
 
@@ -46,12 +86,7 @@ function MenuNavigation() {
       <Stack.Screen
         name="SignUp"
         component={SignUp}
-        // options={{
-        //   title: 'Sign Up',
-        //   headerStyle: { backgroundColor: '#fff7ea' },
-        // }}
         options={{ headerShown: false }}
-
       />
 
       <Stack.Screen
@@ -74,7 +109,7 @@ function MenuNavigation() {
             fontSize: 40,
           },
         }}
-      /> 
+      />
 
       <Stack.Screen
         name="Bookings"
@@ -91,7 +126,7 @@ function MenuNavigation() {
         options={{
           title: 'Puja Details',
           headerStyle: { backgroundColor: '#f7f7f7' },
-          // headerShown: false 
+          // headerShown: false
         }}
       />
 

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
-export default function WelcomScreen({ navigation }) {
+export default function WelcomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       {/* Double Lines bar */}
