@@ -13,12 +13,11 @@ import {
 // import {signIn} from '../middlewares/googleSigninProvider';
 import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import data from '../../data/data';
+// import data from '../../data/data';
 
 
 const saveToken = async (token) => {
   try {
-    console.log("token=",token)
     await AsyncStorage.setItem('authToken', token);
   } catch (error) {
     console.error("Error saving token", error);
@@ -89,6 +88,7 @@ const SignUp = ({ navigation }) => {
         // Setting Up session token and storing in AsyncStorage
         if (data.success){
           await saveToken(data.token)
+          console.log(data.token)
           navigation.navigate("HomeScreen")
         }
         else{
