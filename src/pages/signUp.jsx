@@ -15,12 +15,11 @@ import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import data from '../../data/data';
 
-
 const saveToken = async (token) => {
   try {
     await AsyncStorage.setItem('authToken', token);
   } catch (error) {
-    console.error("Error saving token", error);
+    console.error('Error saving token', error);
   }
 };
 
@@ -37,8 +36,6 @@ const SignUp = ({ navigation }) => {
       ],
       ClientId:
         '842164284838-nuqnp2moeos51tki7r5l8ee3tnvn3inc.apps.googleusercontent.com', // Get this from the JSON file
-        // '858127099824-ubpru6f4glhq1u0s7fifuknlj79icjm0.apps.googleusercontent.com'
-      // offlineAccess: true,
     });
   }, []);
 
@@ -86,18 +83,16 @@ const SignUp = ({ navigation }) => {
         const data = await response.json();
 
         // Setting Up session token and storing in AsyncStorage
-        if (data.success){
-          await saveToken(data.token)
-          console.log(data.token)
-          navigation.navigate("HomeScreen")
-        }
-        else{
+        if (data.success) {
+          await saveToken(data.token);
+          console.log(data.token);
+          navigation.navigate('HomeScreen');
+        } else {
           Alert.alert(
             'Login Failed Server refused the sign in request!',
             error.message
           );
         }
-
       } catch (error) {
         Alert.alert(
           'Login Failed Server refused the sign in request!',
@@ -116,135 +111,286 @@ const SignUp = ({ navigation }) => {
     }
   };
 
-  const [email, onChangeEmail] = useState('Enter your email');
-  const [number, onChangeNumber] = useState('9876543210');
-  const [countryCode, onChangeCountryCode] = useState('+91');
+  // For SignUp Stage 1
+  // const [email, setEmail] = useState('Enter your email');
+  // const [number, setNumber] = useState('9876543210');
+  const [email, setEmail] = useState('');
+  const [number, setNumber] = useState('');
+  const countryCode = '+91';
+
+  // For SignUp Stage 2
+  const [signUpstage, setSignUpStage] = useState(0);
+
+  const [EmailOTP, setEmailOTP] = useState(null);
+  const [PhoneOTP, setPhoneOTP] = useState(null);
+
+  const onChangeEmailOTP = () => {
+    //
+  };
+
+  const onChangePhoneOTP = () => {
+    //
+  };
+
+  const onChangeEmail = (value) => {
+    setEmail(value);
+    console.log('Email updated:', value); // or add validation logic here
+  };
+
+  const onChangeNumber = (value) => {
+    setNumber(value);
+    console.log('Number updated:', value); // or add validation logic here
+  };
 
   return (
-    <SafeAreaView style={styles_signup.container}>
-      <View style={styles_signup.progressBar}>
-        <View style={[styles_signup.bar, { backgroundColor: 'white' }]}></View>
-        <View style={styles_signup.bar}></View>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          // borderWidth: 2,
-        }}
+    <>
+      <SafeAreaView
+        style={
+          signUpstage != 0
+            ? [styles_signup.container, styles_signup.fade_screen]
+            : styles_signup.container
+        }
       >
-        <Text
+        <View style={styles_signup.progressBar}>
+          <View
+            style={[styles_signup.bar, { backgroundColor: 'white' }]}
+          ></View>
+          <View style={styles_signup.bar}></View>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            // borderWidth: 2,
+          }}
+        >
+          <Text
+            style={[
+              {
+                alignItems: 'center',
+                borderRadius: 2,
+                padding: 8,
+                backgroundColor: '#ffcf00',
+                borderBottomRightRadius: 30,
+                borderTopRightRadius: 30,
+                color: 'white',
+              },
+              styles.signup_title,
+            ]}
+          >
+            {' '}
+            Join Us{' '}
+          </Text>
+          <Text
+            style={[
+              {
+                margin: 2,
+                color: '#ffcf00',
+              },
+              styles.signup_title,
+            ]}
+          >
+            for Divine Positivity{' '}
+          </Text>
+        </View>
+
+        <View style={styles.signupForm}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              paddingHorizontal: 10,
+            }}
+          >
+            <TextInput
+              style={[styles.emailInput, styles.input]}
+              value={email}
+              placeholder="Enter your Email"
+              onChangeText={(value) => {
+                setEmail(value);
+              }}
+            ></TextInput>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              // borderWidth: 2,
+              width: '100%',
+              paddingHorizontal: 10,
+            }}
+          >
+            <TextInput
+              value={countryCode}
+              style={[styles.countryCode, styles.input]}
+            ></TextInput>
+            <TextInput
+              value={number}
+              placeholder="Phone Number"
+              onChangeText={(value) => {
+                setNumber(value);
+              }}
+              keyboardType="number-pad"
+              maxLength={10} // optional, limit digits
+              style={[styles.phoneNum, styles.input]}
+            ></TextInput>
+          </View>
+        </View>
+
+        <View style={[styles_signup.priestImg]}>
+          <Image
+            style={{ resizeMode: 'contain', width: '80%' }}
+            source={require('../assets/images/pandit-img.png')}
+          />
+        </View>
+
+        <View
           style={[
-            {
+            { margin: 5, padding: 30, alignItems: 'center' },
+            styles.buttons,
+          ]}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              if (email && number) {
+                setSignUpStage(1);
+              } else {
+                Alert.alert(
+                  'Invalid Content',
+                  'Please fill all details & Try Again!'
+                );
+              }
+            }}
+            style={{
+              padding: 10,
+              backgroundColor: '#ffcf00',
               alignItems: 'center',
-              borderRadius: 2,
+              justifyContent: 'center',
+              borderRadius: 30,
+              width: '100%',
+            }}
+          >
+            <Text style={styles_signup.buttonText}>Continue</Text>
+          </TouchableOpacity>
+          <Text
+            style={{ margin: 10, fontFamily: 'Fredoka-Bold', fontSize: 20 }}
+          >
+            OR
+          </Text>
+
+          <View style={{ flexDirection: 'row', maxWidth: '100%' }}>
+            <TouchableOpacity
+              onPress={handleSignin}
+              style={[styles_signup.signupAlternates]}
+            >
+              <View>
+                {/* Icon have to be added */}
+                <Text style={styles_signup.signup_option}>
+                  Sign up with Google
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleSignin}
+              style={[
+                styles_signup.signupAlternates,
+                { width: '100%', justifyContent: 'space-between' },
+              ]}
+            >
+              <View>
+                <Text style={styles_signup.signup_option}>
+                  Sign up with Facebook
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
+
+      <SafeAreaView
+        style={
+          signUpstage == 1 ? styles_signup.otpPopUpScreen : styles_signup.hide
+        }
+      >
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', padding: 2 }}
+        >
+          <TouchableOpacity 
+          onPress={()=>{
+            setSignUpStage(0)
+          }}
+          style={{ height: 40, width: '11%' }}
+          >
+            <Image
+              source={require('../assets/images/back_btn.png')}
+              style={{ height: '100%', width: '100%' }}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text
+              style={{
+                color: '#ffbc00',
+                fontFamily: 'Fredoka-SemiBold',
+                fontSize: 28,
+                letterSpacing: 2,
+              }}
+            >
+              {' '}
+              Enter 4 digit code{' '}
+            </Text>
+          </View>
+        </View>
+        <View style={styles_signup.stage2Form}>
+          <View style={{ width: '90%', left: 20 }}>
+            <Text style={{ color: '#aaaaaa' }}>Sent on email*</Text>
+            <TextInput
+              value={EmailOTP}
+              onChangeNumber={onChangeEmailOTP}
+              keyboardType="number-pad"
+              maxLength={4} // optional, limit digits
+              placeholder="----"
+              style={[
+                styles.input,
+                { borderRadius: 25, margin: 0, marginTop: 5, height: 60,  fontSize: 28, letterSpacing: 5, paddingHorizontal: "10%"},
+              ]}
+            ></TextInput>
+          </View>
+
+          <View style={{ width: '90%', left: 20 }}>
+            <Text style={{ color: '#aaaaaa' }}>Sent on phone*</Text>
+            <TextInput
+              value={PhoneOTP}
+              onChangeNumber={onChangePhoneOTP}
+              keyboardType="number-pad"
+              maxLength={4} // optional, limit digits
+              placeholder="----"
+              style={[
+                styles.input,
+                { borderRadius: 25, margin: 0, marginTop: 5, height: 60,  fontSize: 28, letterSpacing: 5, paddingHorizontal: "10%"},
+              ]}
+            ></TextInput>
+          </View>
+
+          <TouchableOpacity
+            // onPress={}
+            style={{
+              marginTop: 30,
               padding: 8,
               backgroundColor: '#ffcf00',
-              borderBottomRightRadius: 30,
-              borderTopRightRadius: 30,
-              color: 'white',
-            },
-            styles.signup_title,
-          ]}
-        >
-          {' '}
-          Join Us{' '}
-        </Text>
-        <Text
-          style={[
-            {
-              margin: 2,
-              color: '#ffcf00',
-            },
-            styles.signup_title,
-          ]}
-        >
-          for Divine Positivity{' '}
-        </Text>
-      </View>
-
-      <View style={styles.signupForm}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-            paddingHorizontal: 10,
-          }}
-        >
-          <TextInput
-            style={[styles.emailInput, styles.input]}
-            value={email}
-            onChangeEmail={onChangeEmail}
-          ></TextInput>
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 20,
+              width: '95%',
+              alignSelf: "center",
+              height: 60
+            }}
+          >
+            <Text style={styles_signup.buttonText}>Verify</Text>
+          </TouchableOpacity>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            // borderWidth: 2,
-            width: '100%',
-            paddingHorizontal: 10,
-          }}
-        >
-          <TextInput
-            value={countryCode}
-            onChangeCountryCode={onChangeCountryCode}
-            style={[styles.countryCode, styles.input]}
-          ></TextInput>
-          <TextInput
-            value={number}
-            onChangeNumber={onChangeNumber}
-            style={[styles.phoneNum, styles.input]}
-          ></TextInput>
-        </View>
-      </View>
-
-      <View style={styles_signup.priestImg}>
-        <Image
-          style={{ resizeMode: 'contain', width: '80%' }}
-          source={require('../assets/images/pandit-img.png')}
-        />
-      </View>
-
-      <View
-        style={[
-          { margin: 5, padding: 30, alignItems: 'center' },
-          styles.buttons,
-        ]}
-      >
-        <TouchableOpacity
-          //  onPress={}
-          style={{
-            padding: 10,
-            backgroundColor: '#ffcf00',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 30,
-            width: '100%',
-          }}
-        >
-          <Text style={styles_signup.buttonText}>Continue</Text>
-        </TouchableOpacity>
-        <Text style={{ margin: 10, fontFamily: 'Fredoka-Bold', fontSize: 20 }}>
-          OR
-        </Text>
-
-        <TouchableOpacity
-          onPress={handleSignin}
-          style={[
-            styles_signup.signupAlternates,
-            { width: '100%', justifyContent: 'space-between' },
-          ]}
-        >
-          <View>
-            {/* Icon have to be added */}
-            <Text style={styles_signup.signup_option}>Sign up with Google</Text>
-          </View>
-          {/* <View>
-            <Text style={styles_signup.signup_option}>Sign up with Facebook</Text>
-          </View> */}
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 };
 
@@ -289,6 +435,7 @@ const styles_signup = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    maxWidth: '55%',
     // borderWidth: 2,
   },
   signup_option: {
@@ -296,6 +443,32 @@ const styles_signup = StyleSheet.create({
     padding: 15,
     fontSize: 12,
     alignSelf: 'center',
+  },
+  fade_screen: {
+    position: 'absolute',
+    backgroundColor: 'grey',
+    opacity: 0.3,
+    zIndex: -99,
+  },
+  otpPopUpScreen: {
+    top: '10%',
+    position: 'relative',
+    height: '90%',
+    width: '99%',
+    alignSelf: 'center',
+    backgroundColor: '#fff7ea',
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    padding: 20,
+  },
+  stage2Form: {
+    marginTop: 20,
+    width: '100%',
+    height: "50%",
+    gap: 15
+  },
+  hide: {
+    display: 'none',
   },
 });
 
