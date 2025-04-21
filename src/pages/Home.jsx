@@ -194,7 +194,7 @@ const Home = ({ navigation }) => {
 
       <View style={[styles.section, styles.category_section]}>
         <View style={styles.section_heading}>
-          <Text style={styles.heading_text}>By Category</Text>
+          <Text style={styles.heading_text}>Puja Category</Text>
           <Image
             style={styles.swastik}
             source={require('../assets/swastik.png')}

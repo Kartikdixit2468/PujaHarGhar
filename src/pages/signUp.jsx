@@ -15,12 +15,11 @@ import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import data from '../../data/data';
 
-
 const saveToken = async (token) => {
   try {
     await AsyncStorage.setItem('authToken', token);
   } catch (error) {
-    console.error("Error saving token", error);
+    console.error('Error saving token', error);
   }
 };
 
@@ -37,7 +36,7 @@ const SignUp = ({ navigation }) => {
       ],
       ClientId:
         '842164284838-nuqnp2moeos51tki7r5l8ee3tnvn3inc.apps.googleusercontent.com', // Get this from the JSON file
-        // '858127099824-ubpru6f4glhq1u0s7fifuknlj79icjm0.apps.googleusercontent.com'
+      // '858127099824-ubpru6f4glhq1u0s7fifuknlj79icjm0.apps.googleusercontent.com'
       // offlineAccess: true,
     });
   }, []);
@@ -86,18 +85,16 @@ const SignUp = ({ navigation }) => {
         const data = await response.json();
 
         // Setting Up session token and storing in AsyncStorage
-        if (data.success){
-          await saveToken(data.token)
-          console.log(data.token)
-          navigation.navigate("HomeScreen")
-        }
-        else{
+        if (data.success) {
+          await saveToken(data.token);
+          console.log(data.token);
+          navigation.navigate('HomeScreen');
+        } else {
           Alert.alert(
             'Login Failed Server refused the sign in request!',
             error.message
           );
         }
-
       } catch (error) {
         Alert.alert(
           'Login Failed Server refused the sign in request!',
@@ -228,21 +225,35 @@ const SignUp = ({ navigation }) => {
           OR
         </Text>
 
-        <TouchableOpacity
-          onPress={handleSignin}
-          style={[
-            styles_signup.signupAlternates,
-            { width: '100%', justifyContent: 'space-between' },
-          ]}
-        >
-          <View>
-            {/* Icon have to be added */}
-            <Text style={styles_signup.signup_option}>Sign up with Google</Text>
-          </View>
-          {/* <View>
-            <Text style={styles_signup.signup_option}>Sign up with Facebook</Text>
-          </View> */}
-        </TouchableOpacity>
+        <View style={{flexDirection: "row", maxWidth:"100%"}}>
+          <TouchableOpacity
+            onPress={handleSignin}
+            style={[
+              styles_signup.signupAlternates,
+            ]}
+          >
+            <View>
+              {/* Icon have to be added */}
+              <Text style={styles_signup.signup_option}>
+                Sign up with Google
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleSignin}
+            style={[
+              styles_signup.signupAlternates,
+              { width: '100%', justifyContent: 'space-between' },
+            ]}
+          >
+            <View>
+              <Text style={styles_signup.signup_option}>
+                Sign up with Facebook
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -289,6 +300,7 @@ const styles_signup = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    maxWidth: "55%",
     // borderWidth: 2,
   },
   signup_option: {
