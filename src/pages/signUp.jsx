@@ -69,7 +69,7 @@ const SignUp = ({ navigation }) => {
 
       try {
         const response = await fetch(
-          'http://192.168.31.166:3000/api/client/register/user',
+          'http://192.168.31.118:3000/api/client/register/user',
           {
             method: 'POST',
             headers: {
@@ -112,8 +112,10 @@ const SignUp = ({ navigation }) => {
   };
 
   // For SignUp Stage 1
-  const [email, setEmail] = useState('Enter your email');
-  const [number, setNumber] = useState('9876543210');
+  // const [email, setEmail] = useState('Enter your email');
+  // const [number, setNumber] = useState('9876543210');
+  const [email, setEmail] = useState('');
+  const [number, setNumber] = useState('');
   const countryCode = '+91';
 
   // For SignUp Stage 2
@@ -138,7 +140,6 @@ const SignUp = ({ navigation }) => {
   const onChangeNumber = (value) => {
     setNumber(value);
     console.log('Number updated:', value); // or add validation logic here
-
   };
 
   return (
@@ -204,6 +205,7 @@ const SignUp = ({ navigation }) => {
             <TextInput
               style={[styles.emailInput, styles.input]}
               value={email}
+              placeholder="Enter your Email"
               onChangeText={(value) => {
                 setEmail(value);
               }}
@@ -223,15 +225,18 @@ const SignUp = ({ navigation }) => {
             ></TextInput>
             <TextInput
               value={number}
+              placeholder="Phone Number"
               onChangeText={(value) => {
                 setNumber(value);
               }}
+              keyboardType="number-pad"
+              maxLength={10} // optional, limit digits
               style={[styles.phoneNum, styles.input]}
             ></TextInput>
           </View>
         </View>
 
-        <View style={styles_signup.priestImg}>
+        <View style={[styles_signup.priestImg]}>
           <Image
             style={{ resizeMode: 'contain', width: '80%' }}
             source={require('../assets/images/pandit-img.png')}
@@ -245,7 +250,16 @@ const SignUp = ({ navigation }) => {
           ]}
         >
           <TouchableOpacity
-            //  onPress={}
+            onPress={() => {
+              if (email && number) {
+                setSignUpStage(1);
+              } else {
+                Alert.alert(
+                  'Invalid Content',
+                  'Please fill all details & Try Again!'
+                );
+              }
+            }}
             style={{
               padding: 10,
               backgroundColor: '#ffcf00',
@@ -301,7 +315,12 @@ const SignUp = ({ navigation }) => {
         <View
           style={{ flexDirection: 'row', alignItems: 'center', padding: 2 }}
         >
-          <TouchableOpacity style={{ height: 40, width: '11%' }}>
+          <TouchableOpacity 
+          onPress={()=>{
+            setSignUpStage(0)
+          }}
+          style={{ height: 40, width: '11%' }}
+          >
             <Image
               source={require('../assets/images/back_btn.png')}
               style={{ height: '100%', width: '100%' }}
@@ -323,14 +342,52 @@ const SignUp = ({ navigation }) => {
           </View>
         </View>
         <View style={styles_signup.stage2Form}>
-          <View>
-            <Text>Sent on email*</Text>
+          <View style={{ width: '90%', left: 20 }}>
+            <Text style={{ color: '#aaaaaa' }}>Sent on email*</Text>
             <TextInput
               value={EmailOTP}
               onChangeNumber={onChangeEmailOTP}
-              style={[styles.phoneNum, styles.input]}
+              keyboardType="number-pad"
+              maxLength={4} // optional, limit digits
+              placeholder="----"
+              style={[
+                styles.input,
+                { borderRadius: 25, margin: 0, marginTop: 5, height: 60,  fontSize: 28, letterSpacing: 5, paddingHorizontal: "10%"},
+              ]}
             ></TextInput>
           </View>
+
+          <View style={{ width: '90%', left: 20 }}>
+            <Text style={{ color: '#aaaaaa' }}>Sent on phone*</Text>
+            <TextInput
+              value={PhoneOTP}
+              onChangeNumber={onChangePhoneOTP}
+              keyboardType="number-pad"
+              maxLength={4} // optional, limit digits
+              placeholder="----"
+              style={[
+                styles.input,
+                { borderRadius: 25, margin: 0, marginTop: 5, height: 60,  fontSize: 28, letterSpacing: 5, paddingHorizontal: "10%"},
+              ]}
+            ></TextInput>
+          </View>
+
+          <TouchableOpacity
+            // onPress={}
+            style={{
+              marginTop: 30,
+              padding: 8,
+              backgroundColor: '#ffcf00',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 20,
+              width: '95%',
+              alignSelf: "center",
+              height: 60
+            }}
+          >
+            <Text style={styles_signup.buttonText}>Verify</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </>
@@ -403,6 +460,12 @@ const styles_signup = StyleSheet.create({
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     padding: 20,
+  },
+  stage2Form: {
+    marginTop: 20,
+    width: '100%',
+    height: "50%",
+    gap: 15
   },
   hide: {
     display: 'none',

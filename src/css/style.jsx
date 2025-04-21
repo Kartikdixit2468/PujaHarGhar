@@ -394,6 +394,7 @@ export const styles = StyleSheet.create({
     // borderWidth: 2,
     padding: '5%',
     justifyContent: 'center',
+    zIndex: 99
   },
   emailInput: {
     // borderWidth: 5,
