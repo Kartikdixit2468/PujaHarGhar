@@ -24,6 +24,7 @@ const saveToken = async (token) => {
 };
 
 const SignUp = ({ navigation }) => {
+  
   useEffect(() => {
     GoogleSignin.configure({
       scopes: [
@@ -36,8 +37,6 @@ const SignUp = ({ navigation }) => {
       ],
       ClientId:
         '842164284838-nuqnp2moeos51tki7r5l8ee3tnvn3inc.apps.googleusercontent.com', // Get this from the JSON file
-      // '858127099824-ubpru6f4glhq1u0s7fifuknlj79icjm0.apps.googleusercontent.com'
-      // offlineAccess: true,
     });
   }, []);
 
@@ -113,12 +112,40 @@ const SignUp = ({ navigation }) => {
     }
   };
 
-  const [email, onChangeEmail] = useState('Enter your email');
-  const [number, onChangeNumber] = useState('9876543210');
-  const [countryCode, onChangeCountryCode] = useState('+91');
+  // For SignUp Stage 1
+  const [email, setEmail] = useState('Enter your email');
+  const [number, setNumber] = useState('9876543210');
+  const countryCode = '+91';
+
+  
+  // For SignUp Stage 2
+  const [signUpstage, setSignUpStage] = useState(0);
+  const [EmailOTP, setEmailOTP] = useState(null);
+  const [PhoneOTP, setPhoneOTP] = useState(null);
+
+
+  const onChangeEmailOTP = () => {
+    //
+  }
+
+  const onChangePhoneOTP = () => {
+    //
+  }
+
+  const onChangeEmail = (value) => {
+    setEmail(value);
+    console.log('Email updated:', value); // or add validation logic here
+  }
+
+  const onChangeNumber = (value) => {
+    setNumber(value);
+  }
+
+
 
   return (
-    <SafeAreaView style={styles_signup.container}>
+    <>
+    <SafeAreaView style={signUpstage != 0 ? [styles_signup.container, styles_signup.fade_screen]: styles_signup.container}>
       <View style={styles_signup.progressBar}>
         <View style={[styles_signup.bar, { backgroundColor: 'white' }]}></View>
         <View style={styles_signup.bar}></View>
@@ -171,8 +198,8 @@ const SignUp = ({ navigation }) => {
           <TextInput
             style={[styles.emailInput, styles.input]}
             value={email}
-            onChangeEmail={onChangeEmail}
-          ></TextInput>
+            onChangeText={setEmail}
+            ></TextInput>
         </View>
         <View
           style={{
@@ -184,12 +211,12 @@ const SignUp = ({ navigation }) => {
         >
           <TextInput
             value={countryCode}
-            onChangeCountryCode={onChangeCountryCode}
+            // onChangeText={onChangeCountryCode}
             style={[styles.countryCode, styles.input]}
           ></TextInput>
           <TextInput
             value={number}
-            onChangeNumber={onChangeNumber}
+            onChangeText={(value) => {    setEmail(value)            }}
             style={[styles.phoneNum, styles.input]}
           ></TextInput>
         </View>
@@ -256,6 +283,35 @@ const SignUp = ({ navigation }) => {
         </View>
       </View>
     </SafeAreaView>
+
+
+    <SafeAreaView style={signUpstage == 1 ? styles_signup.otpPopUpScreen: styles_signup.hide}>
+
+      <View style={{flexDirection:'row' ,alignItems:"center", padding:2}}>
+
+       <TouchableOpacity style={{height: 40, width:"11%"}}>
+        <Image source={require('../assets/images/back_btn.png')} style={{height: "100%", width:"100%",}} resizeMode='contain'/>
+        </TouchableOpacity>
+        <View style={{flex:1, alignItems: "center"}}>
+        <Text style={{color: "#ffbc00" , fontFamily: 'Fredoka-SemiBold', fontSize:28, letterSpacing: 2}}> Enter 4 digit code </Text>
+        </View>
+
+      </View>
+      <View style={styles_signup.stage2Form}>
+
+        <View>
+          <Text></Text>
+          <TextInput
+            value={EmailOTP}
+            onChangeNumber={onChangeEmailOTP}
+            style={[styles.phoneNum, styles.input]}
+          ></TextInput>
+        </View>
+
+      </View>
+    </SafeAreaView>
+
+    </>
   );
 };
 
@@ -309,6 +365,26 @@ const styles_signup = StyleSheet.create({
     fontSize: 12,
     alignSelf: 'center',
   },
+  fade_screen: {
+    position: 'absolute',
+    backgroundColor: "grey",
+    opacity: 0.3,
+    zIndex: -99,
+  },
+  otpPopUpScreen: {
+    top: "10%",
+    position: 'relative',
+    height: "90%",
+    width: "99%",
+    alignSelf: "center",
+    backgroundColor: "#fff7ea",
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    padding: 20,
+  },
+  hide: {
+    display: 'none',
+  }
 });
 
 export default SignUp;
