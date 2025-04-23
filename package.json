@@ -10,14 +10,16 @@
     "test": "jest"
   },
   "dependencies": {
-    "@ant-design/icons-react-native": "^2.3.2",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@fortawesome/react-native-fontawesome": "^0.3.2",
+    "@msg91comm/sendotp-react-native": "^2.0.1",
     "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-community/checkbox": "^0.5.17",
+    "@react-native-community/datetimepicker": "^8.3.0",
     "@react-native-google-signin/google-signin": "^13.2.0",
     "@react-navigation/elements": "^2.3.1",
     "@react-navigation/native": "^7.0.19",

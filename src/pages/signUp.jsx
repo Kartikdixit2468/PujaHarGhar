@@ -1,5 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CheckBox from '@react-native-community/checkbox';
+import { OTPWidget } from '@msg91comm/sendotp-react-native';
 import { React, useState, useEffect } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   SafeAreaView,
   Image,
@@ -10,10 +13,18 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-// import {signIn} from '../middlewares/googleSigninProvider';
 import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-// import data from '../../data/data';
+
+const tokenAuth = '447695T9MQQ9m86807c6ffP1';
+
+const saveValue = async (key, value) => {
+  try {
+    await AsyncStorage.setItem(key, value);
+  } catch (error) {
+    console.error('Error saving value', error);
+  }
+};
 
 const saveToken = async (token) => {
   try {
@@ -21,6 +32,35 @@ const saveToken = async (token) => {
   } catch (error) {
     console.error('Error saving token', error);
   }
+};
+
+const sendOTPPhone = async (number) => {
+  console.log('entered function');
+  const PhoneWidgetId = '356476684d37333431323031';
+  OTPWidget.initializeWidget(PhoneWidgetId, tokenAuth); //Widget initialization
+
+  const data = {
+    identifier: `91${number}`,
+  };
+  console.log('here');
+
+  console.log('sending otp');
+  const otp_response = await OTPWidget.sendOTP(data);
+  return otp_response;
+};
+
+const sendOTPEmail = async (email) => {
+  console.log('entered function');
+  const PhoneWidgetId = '356476764375383138393037';
+  OTPWidget.initializeWidget(PhoneWidgetId, tokenAuth); //Widget initialization
+
+  const data = {
+    identifier: email,
+  };
+
+  console.log('sending otp');
+  const otp_response = await OTPWidget.sendOTP(data);
+  return otp_response;
 };
 
 const SignUp = ({ navigation }) => {
@@ -44,38 +84,16 @@ const SignUp = ({ navigation }) => {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       const user_data = userInfo.data.user;
-      // // From Here
-      // const tokens = await GoogleSignin.getTokens(); // gets accessToken
-      // const accessToken = tokens.accessToken;
-
-      // // Fetch extra user details from People API
-      // const peopleResponse = await fetch(
-      //   'https://people.googleapis.com/v1/people/me?personFields=genders,birthdays,addresses,phoneNumbers',
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
-
-      // const extraDetails = await peopleResponse.json();
-      // console.log('Extra Details:', extraDetails);
-
-      // Combine both
-      // const completeUserData = {
-      //   ...user_data, // from GoogleSignin.signIn()
-      //   ...extraDetails, // from People API
-      // };
 
       try {
         const response = await fetch(
-          'http://192.168.31.118:3000/api/client/register/user',
+          'http://192.168.31.166:3000/api/client/register/user',
+          // 'http://192.168.31.118:3000/api/client/register/user',
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            // body: JSON.stringify(completeUserData),
             body: JSON.stringify(user_data),
           }
         );
@@ -100,10 +118,6 @@ const SignUp = ({ navigation }) => {
         );
         console.error(error);
       }
-      // Alert.alert('Login Success', JSON.stringify(userInfo));
-      // return JSON.stringify(userInfo);
-
-      // Backend code here '
     } catch (error) {
       console.error('Google Sign-In Error:', error);
       Alert.alert('Login Failed', error.message);
@@ -111,40 +125,99 @@ const SignUp = ({ navigation }) => {
     }
   };
 
-  // For SignUp Stage 1
-  // const [email, setEmail] = useState('Enter your email');
-  // const [number, setNumber] = useState('9876543210');
+  const handleManualSignin = async () => {
+    if (email && number) {
+      const otp_phone_response = await sendOTPPhone(number);
+      const otp_email_response = await sendOTPEmail(email);
+
+      if (
+        otp_phone_response.type == 'success' &&
+        otp_email_response.type == 'success'
+      ) {
+        const messageIDPhone = otp_phone_response.message;
+        const messageIDEmail = otp_email_response.message;
+        await saveValue('phoneOTPMessageID', messageIDPhone);
+        await saveValue('emailOTPMessageID', messageIDEmail);
+        console.log('starting verification screen');
+        setSignUpStage(1);
+      } else {
+        Alert.alert('Error', 'Server Unable to send OTP, Try Again later!');
+      }
+    } else {
+      Alert.alert('Invalid Content', 'Please fill all details & Try Again!');
+    }
+  };
+
+  const handleOTPVerification = async () => {
+    console.log('Entered Verification');
+    const messageIDPhone = await AsyncStorage.getItem('phoneOTPMessageID');
+    const messageIDEmail = await AsyncStorage.getItem('emailOTPMessageID');
+    console.log(messageIDPhone);
+    // console.log(messageIDEmail)
+    const body_phone = {
+      reqId: messageIDPhone,
+      otp: PhoneOTP,
+    };
+    const body_email = {
+      reqId: messageIDEmail,
+      otp: EmailOTP,
+    };
+    const responsePhoneOTP = await OTPWidget.verifyOTP(body_phone);
+    const responseEmailOTP = await OTPWidget.verifyOTP(body_email);
+
+    if (
+      responsePhoneOTP.type == 'success' &&
+      responseEmailOTP.type == 'success'
+    ) {
+      setSignUpStage(2);
+    }
+  };
+
+  // Sign stage changer + tracker, Initial signUP stage : 0
+  const [signUpstage, setSignUpStage] = useState(2);
+
+  // For SignUp Stage 0
   const [email, setEmail] = useState('');
   const [number, setNumber] = useState('');
   const countryCode = '+91';
 
-  // For SignUp Stage 2
-  const [signUpstage, setSignUpStage] = useState(0);
-
+  // For SignUp Stage 1
   const [EmailOTP, setEmailOTP] = useState(null);
   const [PhoneOTP, setPhoneOTP] = useState(null);
 
-  const onChangeEmailOTP = () => {
-    //
+  // For SignUp Stage 2
+  const [isChecked, setIsChecked] = useState(false);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [birth, setBirth] = useState(new Date());
+  const [pass, setPass] = useState(null);
+  const [confirmPass, setConfirmPass] = useState(null);
+  const [date, setDate] = useState(new Date());
+
+  const [showPicker, setShowPicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleDateChange = (event, selectedDate) => {
+    setShowPicker(false);
+    if (selectedDate) {
+      const formatted = selectedDate.toLocaleDateString(); // Format it your way
+      setBirth(formatted);
+    }
   };
 
-  const onChangePhoneOTP = () => {
-    //
-  };
-
-  const onChangeEmail = (value) => {
-    setEmail(value);
-    console.log('Email updated:', value); // or add validation logic here
-  };
-
-  const onChangeNumber = (value) => {
-    setNumber(value);
-    console.log('Number updated:', value); // or add validation logic here
-  };
+  // const handleBirth = (event, selectedDate) => {
+  //   // const onChangeDate = (event, selectedDate) => {
+  //   setShowPicker(false);
+  //   if (selectedDate) {
+  //     setDate(selectedDate);
+  //     setSelectedDate(selectedDate.toLocaleDateString()); // You can format as needed
+  //   }
+  // };
 
   return (
-    <>
-      <SafeAreaView
+    <SafeAreaView>
+      {/* Sign Up section Part 0 starts from here */}
+      <View
         style={
           signUpstage != 0
             ? [styles_signup.container, styles_signup.fade_screen]
@@ -178,8 +251,7 @@ const SignUp = ({ navigation }) => {
               styles.signup_title,
             ]}
           >
-            {' '}
-            Join Us{' '}
+            Join Us
           </Text>
           <Text
             style={[
@@ -190,7 +262,7 @@ const SignUp = ({ navigation }) => {
               styles.signup_title,
             ]}
           >
-            for Divine Positivity{' '}
+            for Divine Positivity
           </Text>
         </View>
 
@@ -250,16 +322,7 @@ const SignUp = ({ navigation }) => {
           ]}
         >
           <TouchableOpacity
-            onPress={() => {
-              if (email && number) {
-                setSignUpStage(1);
-              } else {
-                Alert.alert(
-                  'Invalid Content',
-                  'Please fill all details & Try Again!'
-                );
-              }
-            }}
+            onPress={handleManualSignin}
             style={{
               padding: 10,
               backgroundColor: '#ffcf00',
@@ -305,21 +368,22 @@ const SignUp = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
 
-      <SafeAreaView
+      {/* Sign Up section Part 1 starts from here */}
+      <View
         style={
-          signUpstage == 1 ? styles_signup.otpPopUpScreen : styles_signup.hide
+          signUpstage == 1 ? styles_signup.PopUpScreen : styles_signup.hide
         }
       >
         <View
           style={{ flexDirection: 'row', alignItems: 'center', padding: 2 }}
         >
-          <TouchableOpacity 
-          onPress={()=>{
-            setSignUpStage(0)
-          }}
-          style={{ height: 40, width: '11%' }}
+          <TouchableOpacity
+            onPress={() => {
+              setSignUpStage(0);
+            }}
+            style={{ height: 40, width: '11%' }}
           >
             <Image
               source={require('../assets/images/back_btn.png')}
@@ -336,8 +400,7 @@ const SignUp = ({ navigation }) => {
                 letterSpacing: 2,
               }}
             >
-              {' '}
-              Enter 4 digit code{' '}
+              Enter 4 digit code
             </Text>
           </View>
         </View>
@@ -346,13 +409,23 @@ const SignUp = ({ navigation }) => {
             <Text style={{ color: '#aaaaaa' }}>Sent on email*</Text>
             <TextInput
               value={EmailOTP}
-              onChangeNumber={onChangeEmailOTP}
+              onChangeText={(value) => {
+                setEmailOTP(value);
+              }}
               keyboardType="number-pad"
               maxLength={4} // optional, limit digits
               placeholder="----"
               style={[
                 styles.input,
-                { borderRadius: 25, margin: 0, marginTop: 5, height: 60,  fontSize: 28, letterSpacing: 5, paddingHorizontal: "10%"},
+                {
+                  borderRadius: 25,
+                  margin: 0,
+                  marginTop: 5,
+                  height: 60,
+                  fontSize: 28,
+                  letterSpacing: 5,
+                  paddingHorizontal: '10%',
+                },
               ]}
             ></TextInput>
           </View>
@@ -361,15 +434,167 @@ const SignUp = ({ navigation }) => {
             <Text style={{ color: '#aaaaaa' }}>Sent on phone*</Text>
             <TextInput
               value={PhoneOTP}
-              onChangeNumber={onChangePhoneOTP}
+              onChangeText={(value) => {
+                setPhoneOTP(value);
+              }}
               keyboardType="number-pad"
               maxLength={4} // optional, limit digits
               placeholder="----"
               style={[
                 styles.input,
-                { borderRadius: 25, margin: 0, marginTop: 5, height: 60,  fontSize: 28, letterSpacing: 5, paddingHorizontal: "10%"},
+                {
+                  borderRadius: 25,
+                  margin: 0,
+                  marginTop: 5,
+                  height: 60,
+                  fontSize: 28,
+                  letterSpacing: 5,
+                  paddingHorizontal: '10%',
+                },
               ]}
             ></TextInput>
+          </View>
+
+          <TouchableOpacity
+            onPress={handleOTPVerification}
+            style={{
+              marginTop: 30,
+              padding: 8,
+              backgroundColor: '#ffcf00',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 20,
+              width: '95%',
+              alignSelf: 'center',
+              height: 60,
+            }}
+          >
+            <Text style={styles_signup.buttonText}>Verify</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Sign Up section Part 2 starts from here */}
+
+      <View
+        style={
+          signUpstage == 2 ? styles_signup.PopUpScreen : styles_signup.hide
+        }
+      >
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', padding: 2 }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              setSignUpStage(0);
+            }}
+            style={{ height: 40, width: '11%' }}
+          >
+            <Image
+              source={require('../assets/images/back_btn.png')}
+              style={{ height: '100%', width: '100%' }}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text
+              style={{
+                color: '#ffbc00',
+                fontFamily: 'Fredoka-SemiBold',
+                fontSize: 28,
+                letterSpacing: 2,
+              }}
+            >
+              Finishing signing up
+            </Text>
+          </View>
+        </View>
+        <View style={styles_signup.stage2Form}>
+          <View style={{ width: '90%', left: 20 }}>
+            <TextInput
+              value={firstName}
+              onChangeNumber={(value) => {
+                setFirstName(value);
+              }}
+              keyboardType="default"
+              placeholder="Fisrt Name*"
+              style={[styles.input, styles_signup.finalFormInput]}
+            ></TextInput>
+          </View>
+
+          <View style={{ width: '90%', left: 20 }}>
+            <TextInput
+              value={lastName}
+              onChangeNumber={(value) => {
+                setLastName(value);
+              }}
+              // keyboardType="number-pad"
+              placeholder="Last Name*"
+              style={[styles.input, styles_signup.finalFormInput]}
+            ></TextInput>
+          </View>
+
+          <View style={{ width: '90%', left: 20 }}>
+            <TouchableOpacity
+              onPress={() => setShowPicker(true)}
+              // onPress={handleBirth}
+              // keyboardType="number-pad"
+              placeholder="Birthday"
+              style={[styles.input, styles_signup.finalFormInput, ""]}
+            >
+              <Text style={{ color: birth ? '#000' : '#999' }}>
+                Birthday
+              </Text>
+            </TouchableOpacity>
+            {showPicker && (
+              <DateTimePicker
+                value={birth ? new Date(birth) : new Date(2000, 0, 1)}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                maximumDate={new Date()}
+                onChange={handleDateChange}
+              />
+            )}
+          </View>
+
+          <View style={{ width: '90%', left: 20 }}>
+            <TextInput
+              value={pass}
+              onChangeNumber={(value) => {
+                setPass(value);
+              }}
+              // keyboardType="number-pad"
+              placeholder="Password*"
+              style={[styles.input, styles_signup.finalFormInput]}
+            ></TextInput>
+          </View>
+
+          <View style={{ width: '90%', left: 20 }}>
+            <TextInput
+              value={confirmPass}
+              onChangeNumber={(value) => {
+                setConfirmPass(value);
+              }}
+              // keyboardType="number-pad"
+              placeholder="Confirm Password*"
+              style={[styles.input, styles_signup.finalFormInput]}
+            ></TextInput>
+          </View>
+
+          <View style={sty}>
+            <CheckBox
+              // value={isChecked}[[]]
+              onValueChange={setIsChecked}
+              tintColors={{ true: '#007aff', false: '#aaa' }}
+            />
+
+            <Text style={{ color: '#aaaaaa' }}>
+              By Selecting Agree & Continue, I agree with{' '}
+              <Text style={{ color: '#38b6ff' }}>
+                Terms and Conditions, Payment Terms of Service and Privacy
+                Policies.
+              </Text>
+            </Text>
           </View>
 
           <TouchableOpacity
@@ -382,15 +607,15 @@ const SignUp = ({ navigation }) => {
               justifyContent: 'center',
               borderRadius: 20,
               width: '95%',
-              alignSelf: "center",
-              height: 60
+              alignSelf: 'center',
+              height: 60,
             }}
           >
             <Text style={styles_signup.buttonText}>Verify</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    </>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -450,7 +675,7 @@ const styles_signup = StyleSheet.create({
     opacity: 0.3,
     zIndex: -99,
   },
-  otpPopUpScreen: {
+  PopUpScreen: {
     top: '10%',
     position: 'relative',
     height: '90%',
@@ -464,11 +689,22 @@ const styles_signup = StyleSheet.create({
   stage2Form: {
     marginTop: 20,
     width: '100%',
-    height: "50%",
-    gap: 15
+    height: '50%',
+    gap: 15,
   },
   hide: {
     display: 'none',
+  },
+  finalFormInput: {
+    borderRadius: 25,
+    fontFamily: 'Fredoka-Medium',
+    margin: 0,
+    marginTop: 5,
+    height: 60,
+    fontSize: 18,
+    letterSpacing: 2,
+    paddingHorizontal: '10%',
+    color: '#aaaaaa',
   },
 });
 

@@ -10,7 +10,9 @@ import {
 } from 'react-native';
 
 import { styles } from '../css/style';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+// import { FontAwesome5 } from '@fortawesome/react-native-fontawesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
@@ -89,7 +91,7 @@ const SideMenu = ({
       <View>
 
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
-          <FontAwesomeIcon
+          <FontAwesome5
             icon={faGreaterThan}
             size={MobileWidth * 0.06}
             color="black"
@@ -102,7 +104,7 @@ const SideMenu = ({
           </Pressable>
         </TouchableOpacity>{' '}
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
-          <FontAwesomeIcon
+          <FontAwesome5
             icon={faGreaterThan}
             size={MobileWidth * 0.06}
             color="black" 
@@ -115,7 +117,7 @@ const SideMenu = ({
           </Pressable>
         </TouchableOpacity>{' '}
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
-          <FontAwesomeIcon
+          <FontAwesome5
             icon={faGreaterThan}
             size={MobileWidth * 0.06}
             color="black"
@@ -128,7 +130,7 @@ const SideMenu = ({
           </Pressable>
         </TouchableOpacity>
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
-        <FontAwesomeIcon
+        <FontAwesome5
             icon={faGreaterThan}
             size={MobileWidth * 0.06}
             color="black" 
