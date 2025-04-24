@@ -15,8 +15,13 @@ import {
 } from 'react-native';
 import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { faSlash } from '@fortawesome/free-solid-svg-icons';
 
 const tokenAuth = '447695T9MQQ9m86807c6ffP1';
+const PhoneWidgetId = '356476684d37333431323031';
+const EmailWidgetId = '356476764375383138393037';
+
+
 
 const saveValue = async (key, value) => {
   try {
@@ -36,7 +41,6 @@ const saveToken = async (token) => {
 
 const sendOTPPhone = async (number) => {
   console.log('entered function');
-  const PhoneWidgetId = '356476684d37333431323031';
   OTPWidget.initializeWidget(PhoneWidgetId, tokenAuth); //Widget initialization
 
   const data = {
@@ -51,8 +55,7 @@ const sendOTPPhone = async (number) => {
 
 const sendOTPEmail = async (email) => {
   console.log('entered function');
-  const PhoneWidgetId = '356476764375383138393037';
-  OTPWidget.initializeWidget(PhoneWidgetId, tokenAuth); //Widget initialization
+  OTPWidget.initializeWidget(EmailWidgetId, tokenAuth); //Widget initialization
 
   const data = {
     identifier: email,
@@ -148,33 +151,71 @@ const SignUp = ({ navigation }) => {
     }
   };
 
-  const handleOTPVerification = async () => {
-    console.log('Entered Verification');
-    const messageIDPhone = await AsyncStorage.getItem('phoneOTPMessageID');
+  
+
+  const EmailOTPVerification = async () => {
+    OTPWidget.initializeWidget(EmailWidgetId, tokenAuth); //Widget initialization
     const messageIDEmail = await AsyncStorage.getItem('emailOTPMessageID');
-    console.log(messageIDPhone);
-    // console.log(messageIDEmail)
-    const body_phone = {
-      reqId: messageIDPhone,
-      otp: PhoneOTP,
-    };
+    console.log(messageIDEmail)
+
     const body_email = {
       reqId: messageIDEmail,
       otp: EmailOTP,
     };
-    const responsePhoneOTP = await OTPWidget.verifyOTP(body_phone);
     const responseEmailOTP = await OTPWidget.verifyOTP(body_email);
+    console.log(responseEmailOTP)
 
+    if (responseEmailOTP.type == 'success'){
+      return true
+    }
+    else{
+      return false
+    }
+
+
+  }
+  const PhoneOTPVerification = async () => {
+    OTPWidget.initializeWidget(PhoneWidgetId, tokenAuth); //Widget initialization
+
+    const messageIDPhone = await AsyncStorage.getItem('phoneOTPMessageID');
+    console.log(messageIDPhone);
+    const body_phone = {
+      reqId: messageIDPhone,
+      otp: PhoneOTP,
+    };
+    const responsePhoneOTP = await OTPWidget.verifyOTP(body_phone);
+    console.log(responsePhoneOTP)
+
+    if (responsePhoneOTP.type == 'success'){
+      return true
+    }
+    else{
+      return false
+    }
+  }
+  const handleOTPVerification = async () => {
+    console.log('Entered Verification');
+    const responsePhoneOTP = await PhoneOTPVerification()
+    const responseEmailOTP = await EmailOTPVerification()
+    
+    
     if (
-      responsePhoneOTP.type == 'success' &&
-      responseEmailOTP.type == 'success'
+      responsePhoneOTP &&
+      responseEmailOTP
     ) {
       setSignUpStage(2);
     }
+    else{
+      Alert.alert("Invalid OTP!")
+    }
   };
 
+  const finishSignUp = () => {
+    Alert.alert("Sign Up Completed!")
+  }
+
   // Sign stage changer + tracker, Initial signUP stage : 0
-  const [signUpstage, setSignUpStage] = useState(2);
+  const [signUpstage, setSignUpStage] = useState(0);
 
   // For SignUp Stage 0
   const [email, setEmail] = useState('');
@@ -189,7 +230,7 @@ const SignUp = ({ navigation }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
-  const [birth, setBirth] = useState(new Date());
+  const [birth, setBirth] = useState(null);
   const [pass, setPass] = useState(null);
   const [confirmPass, setConfirmPass] = useState(null);
   const [date, setDate] = useState(new Date());
@@ -200,7 +241,7 @@ const SignUp = ({ navigation }) => {
   const handleDateChange = (event, selectedDate) => {
     setShowPicker(false);
     if (selectedDate) {
-      const formatted = selectedDate.toLocaleDateString(); // Format it your way
+      const formatted = selectedDate.toLocaleDateString(); // turns Date into string
       setBirth(formatted);
     }
   };
@@ -535,15 +576,15 @@ const SignUp = ({ navigation }) => {
           </View>
 
           <View style={{ width: '90%', left: 20 }}>
-            <TouchableOpacity
-              onPress={() => setShowPicker(true)}
-              // onPress={handleBirth}
-              // keyboardType="number-pad"
-              placeholder="Birthday"
-              style={[styles.input, styles_signup.finalFormInput, ""]}
-            >
-              <Text style={{ color: birth ? '#000' : '#999' }}>
-                Birthday
+            <TouchableOpacity onPress={() => setShowPicker(true)}>
+              <Text
+                style={[
+                  styles.input,
+                  styles_signup.finalFormInput,
+                  {color:'#626262'}
+                ]}
+              >
+                {birth || 'Birthday*'}
               </Text>
             </TouchableOpacity>
             {showPicker && (
@@ -581,7 +622,13 @@ const SignUp = ({ navigation }) => {
             ></TextInput>
           </View>
 
-          <View style={sty}>
+          <View
+            style={{
+              flexDirection: 'row',
+              maxWidth: '80%',
+              alignSelf: 'center',
+            }}
+          >
             <CheckBox
               // value={isChecked}[[]]
               onValueChange={setIsChecked}
@@ -598,7 +645,7 @@ const SignUp = ({ navigation }) => {
           </View>
 
           <TouchableOpacity
-            // onPress={}
+            onPress={finishSignUp}
             style={{
               marginTop: 30,
               padding: 8,
@@ -611,7 +658,7 @@ const SignUp = ({ navigation }) => {
               height: 60,
             }}
           >
-            <Text style={styles_signup.buttonText}>Verify</Text>
+            <Text style={[styles_signup.buttonText, {fontSize: 20}]}>Complete Sign Up</Text>
           </TouchableOpacity>
         </View>
       </View>
