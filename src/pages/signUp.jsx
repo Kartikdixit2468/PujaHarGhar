@@ -2,7 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 import { OTPWidget } from '@msg91comm/sendotp-react-native';
 import { React, useState, useEffect } from 'react';
+import { Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+
 import {
   SafeAreaView,
   Image,
@@ -22,7 +24,8 @@ const PhoneWidgetId = '356476684d37333431323031';
 const EmailWidgetId = '356476764375383138393037';
 
 const saveValue = async (key, value) => {
-  try {1234
+  try {
+    1234;
     await AsyncStorage.setItem(key, value);
   } catch (error) {
     console.error('Error saving value', error);
@@ -47,7 +50,7 @@ const sendOTPPhone = async (number) => {
   console.log('here');
   console.log('sending otp Phone');
   const otp_response = await OTPWidget.sendOTP(data);
-  console.log(otp_response)
+  console.log(otp_response);
   return otp_response;
 };
 
@@ -61,12 +64,11 @@ const sendOTPEmail = async (email) => {
   console.log('here');
   console.log('sending otp email');
   const otp_response = await OTPWidget.sendOTP(data);
-  console.log(otp_response)
+  console.log(otp_response);
   return otp_response;
 };
 
 const SignUp = ({ navigation }) => {
-
   useEffect(() => {
     GoogleSignin.configure({
       scopes: [
@@ -81,7 +83,6 @@ const SignUp = ({ navigation }) => {
         '842164284838-nuqnp2moeos51tki7r5l8ee3tnvn3inc.apps.googleusercontent.com', // Get this from the JSON file
     });
   }, []);
-
 
   // Sign stage changer + tracker, Initial signUP stage : 0
   const [signUpstage, setSignUpStage] = useState(2);
@@ -104,10 +105,11 @@ const SignUp = ({ navigation }) => {
   const [birth, setBirth] = useState(null);
   // const [pass, setPass] = useState(null);
   // const [confirmPass, setConfirmPass] = useState(null);
-  const [gender, setGender] = useState(null);
+
+  const [showGenderPicker, setShowGenderPicker] = useState(false);
+  const [gender, setGender] = useState('');
 
   const [showPicker, setShowPicker] = useState(false);
-
 
   const handleSignin = async () => {
     try {
@@ -161,8 +163,7 @@ const SignUp = ({ navigation }) => {
       const otp_email_response = await sendOTPEmail(email);
 
       if (
-        otp_phone_response.type == 'success'
-        &&
+        otp_phone_response.type == 'success' &&
         otp_email_response.type == 'success'
       ) {
         const messageIDPhone = otp_phone_response.message;
@@ -228,72 +229,70 @@ const SignUp = ({ navigation }) => {
   };
 
   const finishSignUp = async () => {
-
-    console.log("inside this")
+    console.log('inside this');
     // if ((firstName && lastName && pass && birth)) {
-      // Alert.alert("Sign Up Completed!")
+    // Alert.alert("Sign Up Completed!")
 
-      // if (pass) {
-        console.log("inside this")
-        const user_data = {
-          email: email,
-          name: `${firstName} ${lastName}`,
-          photo: 'none',
-          phone: number,
-          dob: birth,
-          gender: gender,
-        };
-        console.log(user_data)
-        // const user_data = {
-        //   "email": "abc@gmail.com",
-        //   "name": "John Doe",
-        //   "photo": "1234",
-        //   "phone": "9876543210",await
-        //   "birth": "2024-04-25"
-        // }
-        try {
-          console.log("sending req")
-          const response = await fetch(
-            'http://192.168.31.166:3000/api/client/register/user/mannual',
-            // 'http://192.168.31.118:3000/api/client/register/user/mannual',
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(user_data),
-              // body: user_data,
-            }
-          );
-
-          const data = await response.json();
-          console.log(data)
-
-          // Setting Up session token and storing in AsyncStorage
-          if (data.success) {
-            await saveToken(data.token);
-            console.log(data.token);
-            navigation.navigate('HomeScreen');
-          } else {
-            Alert.alert(
-              'Login Failed Server refused the sign in request!',
-              error.message
-            );
-          }
-        } catch (error) {
-          Alert.alert(
-            'Login Failed Server refused the sign in request!',
-            error.message
-          );
-          console.error(error);
+    // if (pass) {
+    console.log('inside this');
+    const user_data = {
+      email: email,
+      name: `${firstName} ${lastName}`,
+      photo: 'none',
+      phone: number,
+      dob: birth,
+      gender: gender,
+    };
+    console.log(user_data);
+    // const user_data = {
+    //   "email": "abc@gmail.com",
+    //   "name": "John Doe",
+    //   "photo": "1234",
+    //   "phone": "9876543210",await
+    //   "birth": "2024-04-25"
+    // }
+    try {
+      console.log('sending req');
+      const response = await fetch(
+        'http://192.168.31.166:3000/api/client/register/user/mannual',
+        // 'http://192.168.31.118:3000/api/client/register/user/mannual',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(user_data),
+          // body: user_data,
         }
-      // }
-  //   } 
-  //   else {
-  //     Alert.alert('Error!', 'Please Fill Out the Every field of Form.');
-  //   }
-  };
+      );
 
+      const data = await response.json();
+      console.log(data);
+
+      // Setting Up session token and storing in AsyncStorage
+      if (data.success) {
+        await saveToken(data.token);
+        console.log(data.token);
+        navigation.navigate('HomeScreen');
+      } else {
+        Alert.alert(
+          'Login Failed Server refused the sign in request!',
+          error.message
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        'Login Failed Server refused the sign in request!',
+        error.message
+      );
+      console.error(error);
+    }
+    // }
+    //   }
+    //   else {
+    //     Alert.alert('Error!', 'Please Fill Out the Every field of Form.');
+    //   }
+  };
 
   const handleDateChange = (event, selectedDate) => {
     setShowPicker(false);
@@ -614,7 +613,7 @@ const SignUp = ({ navigation }) => {
           <View style={{ width: '90%', left: 20 }}>
             <TextInput
               value={lastName}
-              onChangeText ={(value) => {
+              onChangeText={(value) => {
                 setLastName(value);
               }}
               // keyboardType="number-pad"
@@ -646,7 +645,7 @@ const SignUp = ({ navigation }) => {
             )}
           </View>
 
-          <View style={{ width: '90%', left: 20 }}>
+          {/* <View style={{ width: '90%', left: 20 }}>
             <TextInput
               value={gender}
               onChangeText={(value) => {
@@ -656,7 +655,86 @@ const SignUp = ({ navigation }) => {
               placeholder="Gender*"
               style={[styles.input, styles_signup.finalFormInput]}
             ></TextInput>
+          </View> */}
+
+          <View style={{ width: '90%', left: 20 }}>
+            <TouchableOpacity
+              onPress={() => setShowGenderPicker(true)}
+              style={[
+                styles.input,
+                styles_signup.finalFormInput,
+                { justifyContent: 'center' },
+              ]}
+            >
+              <Text style={{ color: gender ? '#000' : '#626262' }}>
+                {gender || 'Gender*'}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Modal for Gender selection */}
+            <Modal visible={showGenderPicker} transparent animationType="slide">
+              <View
+                style={[{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                }, styles.input, styles_signup.finalFormInput]}
+
+              >
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    padding: 20,
+                    borderRadius: 10,
+                    width: '80%',
+                  }}
+                >
+                  <Text style={{ fontSize: 18, marginBottom: 10 }}>
+                    Select Gender
+                  </Text>
+
+                  {['Male', 'Female', 'Other'].map((item) => (
+                    <TouchableOpacity
+                      key={item}
+                      onPress={() => {
+                        setGender(item);
+                        setShowGenderPicker(false);
+                      }}
+                      style={{ paddingVertical: 10 }}
+                    >
+                      <Text style={{ fontSize: 16 }}>{item}</Text>
+                    </TouchableOpacity>
+                  ))}
+
+                  <TouchableOpacity
+                    onPress={() => setShowGenderPicker(false)}
+                    style={{ marginTop: 20, alignItems: 'center' }}
+                  >
+                    <Text style={{ color: 'red' }}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
           </View>
+
+          {/* <View style={{ width: '90%', left: 20 }}>
+            <RNPickerSelect
+              onValueChange={(value) => setGender(value)}
+              placeholder={{
+                label: 'Gender*',
+                value: null,
+                // color: '#626262', // placeholder color
+              }}
+              items={[
+                { label: 'Male', value: 'Male' },
+                { label: 'Female', value: 'Female' },
+                { label: 'Other', value: 'Other' },
+              ]}
+              style={[styles.input, styles_signup.finalFormInput]}
+              value={gender}
+            />
+          </View> */}
 
           <View
             style={{
