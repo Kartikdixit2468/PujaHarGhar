@@ -1,5 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CheckBox from '@react-native-community/checkbox';
+import { OTPWidget } from '@msg91comm/sendotp-react-native';
 import { React, useState, useEffect } from 'react';
+import { Modal } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import {
   SafeAreaView,
   Image,
@@ -10,10 +15,22 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-// import {signIn} from '../middlewares/googleSigninProvider';
 import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-// import data from '../../data/data';
+import { faSlash } from '@fortawesome/free-solid-svg-icons';
+
+const tokenAuth = '447695T9MQQ9m86807c6ffP1';
+const PhoneWidgetId = '356476684d37333431323031';
+const EmailWidgetId = '356476764375383138393037';
+
+const saveValue = async (key, value) => {
+  try {
+    1234;
+    await AsyncStorage.setItem(key, value);
+  } catch (error) {
+    console.error('Error saving value', error);
+  }
+};
 
 const saveToken = async (token) => {
   try {
@@ -21,6 +38,34 @@ const saveToken = async (token) => {
   } catch (error) {
     console.error('Error saving token', error);
   }
+};
+
+const sendOTPPhone = async (number) => {
+  console.log('entered function');
+  OTPWidget.initializeWidget(PhoneWidgetId, tokenAuth); //Widget initialization
+
+  const data = {
+    identifier: `91${number}`,
+  };
+  console.log('here');
+  console.log('sending otp Phone');
+  const otp_response = await OTPWidget.sendOTP(data);
+  console.log(otp_response);
+  return otp_response;
+};
+
+const sendOTPEmail = async (email) => {
+  console.log('entered function');
+  OTPWidget.initializeWidget(EmailWidgetId, tokenAuth); //Widget initialization
+
+  const data = {
+    identifier: email,
+  };
+  console.log('here');
+  console.log('sending otp email');
+  const otp_response = await OTPWidget.sendOTP(data);
+  console.log(otp_response);
+  return otp_response;
 };
 
 const SignUp = ({ navigation }) => {
@@ -39,43 +84,48 @@ const SignUp = ({ navigation }) => {
     });
   }, []);
 
+  // Sign stage changer + tracker, Initial signUP stage : 0
+  const [signUpstage, setSignUpStage] = useState(2);
+
+  // For SignUp Stage 0
+  // const [email, setEmail] = useState('yoyo@gmail.com');
+  // const [number, setNumber] = useState('9897445643');
+  const [email, setEmail] = useState(null);
+  const [number, setNumber] = useState(null);
+  const countryCode = '+91';
+
+  // For SignUp Stage 1
+  const [EmailOTP, setEmailOTP] = useState(null);
+  const [PhoneOTP, setPhoneOTP] = useState(null);
+
+  // For SignUp Stage 2
+  const [isChecked, setIsChecked] = useState(false);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [birth, setBirth] = useState(null);
+  // const [pass, setPass] = useState(null);
+  // const [confirmPass, setConfirmPass] = useState(null);
+
+  const [showGenderPicker, setShowGenderPicker] = useState(false);
+  const [gender, setGender] = useState('');
+
+  const [showPicker, setShowPicker] = useState(false);
+
   const handleSignin = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       const user_data = userInfo.data.user;
-      // // From Here
-      // const tokens = await GoogleSignin.getTokens(); // gets accessToken
-      // const accessToken = tokens.accessToken;
-
-      // // Fetch extra user details from People API
-      // const peopleResponse = await fetch(
-      //   'https://people.googleapis.com/v1/people/me?personFields=genders,birthdays,addresses,phoneNumbers',
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   }
-      // );
-
-      // const extraDetails = await peopleResponse.json();
-      // console.log('Extra Details:', extraDetails);
-
-      // Combine both
-      // const completeUserData = {
-      //   ...user_data, // from GoogleSignin.signIn()
-      //   ...extraDetails, // from People API
-      // };
 
       try {
         const response = await fetch(
-          'http://192.168.31.118:3000/api/client/register/user',
+          'http://192.168.31.166:3000/api/client/register/user',
+          // 'http://192.168.31.118:3000/api/client/register/user',
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            // body: JSON.stringify(completeUserData),
             body: JSON.stringify(user_data),
           }
         );
@@ -100,10 +150,6 @@ const SignUp = ({ navigation }) => {
         );
         console.error(error);
       }
-      // Alert.alert('Login Success', JSON.stringify(userInfo));
-      // return JSON.stringify(userInfo);
-
-      // Backend code here '
     } catch (error) {
       console.error('Google Sign-In Error:', error);
       Alert.alert('Login Failed', error.message);
@@ -111,40 +157,155 @@ const SignUp = ({ navigation }) => {
     }
   };
 
-  // For SignUp Stage 1
-  // const [email, setEmail] = useState('Enter your email');
-  // const [number, setNumber] = useState('9876543210');
-  const [email, setEmail] = useState('');
-  const [number, setNumber] = useState('');
-  const countryCode = '+91';
+  const handleManualSignin = async () => {
+    if (email && number) {
+      const otp_phone_response = await sendOTPPhone(number);
+      const otp_email_response = await sendOTPEmail(email);
 
-  // For SignUp Stage 2
-  const [signUpstage, setSignUpStage] = useState(0);
-
-  const [EmailOTP, setEmailOTP] = useState(null);
-  const [PhoneOTP, setPhoneOTP] = useState(null);
-
-  const onChangeEmailOTP = () => {
-    //
+      if (
+        otp_phone_response.type == 'success' &&
+        otp_email_response.type == 'success'
+      ) {
+        const messageIDPhone = otp_phone_response.message;
+        const messageIDEmail = otp_email_response.message;
+        await saveValue('phoneOTPMessageID', messageIDPhone);
+        await saveValue('emailOTPMessageID', messageIDEmail);
+        console.log('starting verification screen');
+        setSignUpStage(1);
+      } else {
+        Alert.alert('Error', 'Server Unable to send OTP, Try Again later!');
+      }
+    } else {
+      Alert.alert('Invalid Content', 'Please fill all details & Try Again!');
+    }
   };
 
-  const onChangePhoneOTP = () => {
-    //
+  const EmailOTPVerification = async () => {
+    OTPWidget.initializeWidget(EmailWidgetId, tokenAuth); //Widget initialization
+    const messageIDEmail = await AsyncStorage.getItem('emailOTPMessageID');
+    console.log(messageIDEmail);
+
+    const body_email = {
+      reqId: messageIDEmail,
+      otp: EmailOTP,
+    };
+    const responseEmailOTP = await OTPWidget.verifyOTP(body_email);
+    console.log(responseEmailOTP);
+
+    if (responseEmailOTP.type == 'success') {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const PhoneOTPVerification = async () => {
+    OTPWidget.initializeWidget(PhoneWidgetId, tokenAuth); //Widget initialization
+
+    const messageIDPhone = await AsyncStorage.getItem('phoneOTPMessageID');
+    console.log(messageIDPhone);
+    const body_phone = {
+      reqId: messageIDPhone,
+      otp: PhoneOTP,
+    };
+    const responsePhoneOTP = await OTPWidget.verifyOTP(body_phone);
+    console.log(responsePhoneOTP);
+
+    if (responsePhoneOTP.type == 'success') {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const handleOTPVerification = async () => {
+    console.log('Entered Verification');
+    const responsePhoneOTP = await PhoneOTPVerification();
+    const responseEmailOTP = await EmailOTPVerification();
+
+    if (responsePhoneOTP && responseEmailOTP) {
+      setSignUpStage(2);
+    } else {
+      Alert.alert('Invalid OTP!');
+    }
   };
 
-  const onChangeEmail = (value) => {
-    setEmail(value);
-    console.log('Email updated:', value); // or add validation logic here
+  const finishSignUp = async () => {
+    console.log('inside this');
+    // if ((firstName && lastName && pass && birth)) {
+    // Alert.alert("Sign Up Completed!")
+
+    // if (pass) {
+    console.log('inside this');
+    const user_data = {
+      email: email,
+      name: `${firstName} ${lastName}`,
+      photo: 'none',
+      phone: number,
+      dob: birth,
+      gender: gender,
+    };
+    console.log(user_data);
+    // const user_data = {
+    //   "email": "abc@gmail.com",
+    //   "name": "John Doe",
+    //   "photo": "1234",
+    //   "phone": "9876543210",await
+    //   "birth": "2024-04-25"
+    // }
+    try {
+      console.log('sending req');
+      const response = await fetch(
+        'http://192.168.31.166:3000/api/client/register/user/mannual',
+        // 'http://192.168.31.118:3000/api/client/register/user/mannual',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(user_data),
+          // body: user_data,
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+
+      // Setting Up session token and storing in AsyncStorage
+      if (data.success) {
+        await saveToken(data.token);
+        console.log(data.token);
+        navigation.navigate('HomeScreen');
+      } else {
+        Alert.alert(
+          'Login Failed Server refused the sign in request!',
+          error.message
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        'Login Failed Server refused the sign in request!',
+        error.message
+      );
+      console.error(error);
+    }
+    // }
+    //   }
+    //   else {
+    //     Alert.alert('Error!', 'Please Fill Out the Every field of Form.');
+    //   }
   };
 
-  const onChangeNumber = (value) => {
-    setNumber(value);
-    console.log('Number updated:', value); // or add validation logic here
+  const handleDateChange = (event, selectedDate) => {
+    setShowPicker(false);
+    if (selectedDate) {
+      const formatted = selectedDate.toLocaleDateString(); // turns Date into string
+      setBirth(formatted);
+    }
   };
 
   return (
-    <>
-      <SafeAreaView
+    <SafeAreaView>
+      {/* Sign Up section Part 0 starts from here */}
+      <View
         style={
           signUpstage != 0
             ? [styles_signup.container, styles_signup.fade_screen]
@@ -178,8 +339,7 @@ const SignUp = ({ navigation }) => {
               styles.signup_title,
             ]}
           >
-            {' '}
-            Join Us{' '}
+            Join Us
           </Text>
           <Text
             style={[
@@ -190,7 +350,7 @@ const SignUp = ({ navigation }) => {
               styles.signup_title,
             ]}
           >
-            for Divine Positivity{' '}
+            for Divine Positivity
           </Text>
         </View>
 
@@ -250,16 +410,7 @@ const SignUp = ({ navigation }) => {
           ]}
         >
           <TouchableOpacity
-            onPress={() => {
-              if (email && number) {
-                setSignUpStage(1);
-              } else {
-                Alert.alert(
-                  'Invalid Content',
-                  'Please fill all details & Try Again!'
-                );
-              }
-            }}
+            onPress={handleManualSignin}
             style={{
               padding: 10,
               backgroundColor: '#ffcf00',
@@ -305,21 +456,22 @@ const SignUp = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
 
-      <SafeAreaView
+      {/* Sign Up section Part 1 starts from here */}
+      <View
         style={
-          signUpstage == 1 ? styles_signup.otpPopUpScreen : styles_signup.hide
+          signUpstage == 1 ? styles_signup.PopUpScreen : styles_signup.hide
         }
       >
         <View
           style={{ flexDirection: 'row', alignItems: 'center', padding: 2 }}
         >
-          <TouchableOpacity 
-          onPress={()=>{
-            setSignUpStage(0)
-          }}
-          style={{ height: 40, width: '11%' }}
+          <TouchableOpacity
+            onPress={() => {
+              setSignUpStage(0);
+            }}
+            style={{ height: 40, width: '11%' }}
           >
             <Image
               source={require('../assets/images/back_btn.png')}
@@ -336,8 +488,7 @@ const SignUp = ({ navigation }) => {
                 letterSpacing: 2,
               }}
             >
-              {' '}
-              Enter 4 digit code{' '}
+              Enter 4 digit code
             </Text>
           </View>
         </View>
@@ -346,13 +497,23 @@ const SignUp = ({ navigation }) => {
             <Text style={{ color: '#aaaaaa' }}>Sent on email*</Text>
             <TextInput
               value={EmailOTP}
-              onChangeNumber={onChangeEmailOTP}
+              onChangeText={(value) => {
+                setEmailOTP(value);
+              }}
               keyboardType="number-pad"
               maxLength={4} // optional, limit digits
               placeholder="----"
               style={[
                 styles.input,
-                { borderRadius: 25, margin: 0, marginTop: 5, height: 60,  fontSize: 28, letterSpacing: 5, paddingHorizontal: "10%"},
+                {
+                  borderRadius: 25,
+                  margin: 0,
+                  marginTop: 5,
+                  height: 60,
+                  fontSize: 28,
+                  letterSpacing: 5,
+                  paddingHorizontal: '10%',
+                },
               ]}
             ></TextInput>
           </View>
@@ -361,19 +522,29 @@ const SignUp = ({ navigation }) => {
             <Text style={{ color: '#aaaaaa' }}>Sent on phone*</Text>
             <TextInput
               value={PhoneOTP}
-              onChangeNumber={onChangePhoneOTP}
+              onChangeText={(value) => {
+                setPhoneOTP(value);
+              }}
               keyboardType="number-pad"
               maxLength={4} // optional, limit digits
               placeholder="----"
               style={[
                 styles.input,
-                { borderRadius: 25, margin: 0, marginTop: 5, height: 60,  fontSize: 28, letterSpacing: 5, paddingHorizontal: "10%"},
+                {
+                  borderRadius: 25,
+                  margin: 0,
+                  marginTop: 5,
+                  height: 60,
+                  fontSize: 28,
+                  letterSpacing: 5,
+                  paddingHorizontal: '10%',
+                },
               ]}
             ></TextInput>
           </View>
 
           <TouchableOpacity
-            // onPress={}
+            onPress={handleOTPVerification}
             style={{
               marginTop: 30,
               padding: 8,
@@ -382,15 +553,232 @@ const SignUp = ({ navigation }) => {
               justifyContent: 'center',
               borderRadius: 20,
               width: '95%',
-              alignSelf: "center",
-              height: 60
+              alignSelf: 'center',
+              height: 60,
             }}
           >
             <Text style={styles_signup.buttonText}>Verify</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    </>
+      </View>
+
+      {/* Sign Up section Part 2 starts from here */}
+
+      <View
+        style={
+          signUpstage == 2 ? styles_signup.PopUpScreen : styles_signup.hide
+        }
+      >
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', padding: 2 }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              setSignUpStage(0);
+            }}
+            style={{ height: 40, width: '11%' }}
+          >
+            <Image
+              source={require('../assets/images/back_btn.png')}
+              style={{ height: '100%', width: '100%' }}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text
+              style={{
+                color: '#ffbc00',
+                fontFamily: 'Fredoka-SemiBold',
+                fontSize: 28,
+                letterSpacing: 2,
+              }}
+            >
+              Finishing signing up
+            </Text>
+          </View>
+        </View>
+        <View style={styles_signup.stage2Form}>
+          <View style={{ width: '90%', left: 20 }}>
+            <TextInput
+              value={firstName}
+              onChangeText={(value) => {
+                setFirstName(value);
+              }}
+              keyboardType="default"
+              placeholder="Fisrt Name*"
+              style={[styles.input, styles_signup.finalFormInput]}
+            ></TextInput>
+          </View>
+
+          <View style={{ width: '90%', left: 20 }}>
+            <TextInput
+              value={lastName}
+              onChangeText={(value) => {
+                setLastName(value);
+              }}
+              // keyboardType="number-pad"
+              placeholder="Last Name*"
+              style={[styles.input, styles_signup.finalFormInput]}
+            ></TextInput>
+          </View>
+
+          <View style={{ width: '90%', left: 20 }}>
+            <TouchableOpacity onPress={() => setShowPicker(true)}>
+              <Text
+                style={[
+                  styles.input,
+                  styles_signup.finalFormInput,
+                  { color: '#626262' },
+                ]}
+              >
+                {birth || 'Birthday*'}
+              </Text>
+            </TouchableOpacity>
+            {showPicker && (
+              <DateTimePicker
+                value={birth ? new Date(birth) : new Date(2000, 0, 1)}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                maximumDate={new Date()}
+                onChange={handleDateChange}
+              />
+            )}
+          </View>
+
+          {/* <View style={{ width: '90%', left: 20 }}>
+            <TextInput
+              value={gender}
+              onChangeText={(value) => {
+                setGender(value);
+              }}
+              // keyboardType="number-pad"
+              placeholder="Gender*"
+              style={[styles.input, styles_signup.finalFormInput]}
+            ></TextInput>
+          </View> */}
+
+          <View style={{ width: '90%', left: 20 }}>
+            <TouchableOpacity
+              onPress={() => setShowGenderPicker(true)}
+              style={[
+                styles.input,
+                styles_signup.finalFormInput,
+                { justifyContent: 'center' },
+              ]}
+            >
+              <Text style={{ color: gender ? '#000' : '#626262' }}>
+                {gender || 'Gender*'}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Modal for Gender selection */}
+            <Modal visible={showGenderPicker} transparent animationType="slide">
+              <View
+                style={[{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                }, styles.input, styles_signup.finalFormInput]}
+
+              >
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    padding: 20,
+                    borderRadius: 10,
+                    width: '80%',
+                  }}
+                >
+                  <Text style={{ fontSize: 18, marginBottom: 10 }}>
+                    Select Gender
+                  </Text>
+
+                  {['Male', 'Female', 'Other'].map((item) => (
+                    <TouchableOpacity
+                      key={item}
+                      onPress={() => {
+                        setGender(item);
+                        setShowGenderPicker(false);
+                      }}
+                      style={{ paddingVertical: 10 }}
+                    >
+                      <Text style={{ fontSize: 16 }}>{item}</Text>
+                    </TouchableOpacity>
+                  ))}
+
+                  <TouchableOpacity
+                    onPress={() => setShowGenderPicker(false)}
+                    style={{ marginTop: 20, alignItems: 'center' }}
+                  >
+                    <Text style={{ color: 'red' }}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          </View>
+
+          {/* <View style={{ width: '90%', left: 20 }}>
+            <RNPickerSelect
+              onValueChange={(value) => setGender(value)}
+              placeholder={{
+                label: 'Gender*',
+                value: null,
+                // color: '#626262', // placeholder color
+              }}
+              items={[
+                { label: 'Male', value: 'Male' },
+                { label: 'Female', value: 'Female' },
+                { label: 'Other', value: 'Other' },
+              ]}
+              style={[styles.input, styles_signup.finalFormInput]}
+              value={gender}
+            />
+          </View> */}
+
+          <View
+            style={{
+              flexDirection: 'row',
+              maxWidth: '80%',
+              alignSelf: 'center',
+            }}
+          >
+            <CheckBox
+              value={isChecked}
+              // onValueChange={setIsChecked}
+              tintColors={{ true: '#007aff', false: '#aaa' }}
+            />
+
+            <Text style={{ color: '#aaaaaa' }}>
+              By Selecting Agree & Continue, I agree with{' '}
+              <Text style={{ color: '#38b6ff' }}>
+                Terms and Conditions, Payment Terms of Service and Privacy
+                Policies.
+              </Text>
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={finishSignUp}
+            style={{
+              marginTop: 30,
+              padding: 8,
+              backgroundColor: '#ffcf00',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 20,
+              width: '95%',
+              alignSelf: 'center',
+              height: 60,
+            }}
+          >
+            <Text style={[styles_signup.buttonText, { fontSize: 20 }]}>
+              Complete Sign Up
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -450,7 +838,7 @@ const styles_signup = StyleSheet.create({
     opacity: 0.3,
     zIndex: -99,
   },
-  otpPopUpScreen: {
+  PopUpScreen: {
     top: '10%',
     position: 'relative',
     height: '90%',
@@ -464,11 +852,22 @@ const styles_signup = StyleSheet.create({
   stage2Form: {
     marginTop: 20,
     width: '100%',
-    height: "50%",
-    gap: 15
+    height: '50%',
+    gap: 15,
   },
   hide: {
     display: 'none',
+  },
+  finalFormInput: {
+    borderRadius: 25,
+    fontFamily: 'Fredoka-Medium',
+    margin: 0,
+    marginTop: 5,
+    height: 60,
+    fontSize: 18,
+    letterSpacing: 2,
+    paddingHorizontal: '10%',
+    color: '#aaaaaa',
   },
 });
 
