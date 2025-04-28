@@ -21,10 +21,8 @@ const tokenAuth = '447695T9MQQ9m86807c6ffP1';
 const PhoneWidgetId = '356476684d37333431323031';
 const EmailWidgetId = '356476764375383138393037';
 
-
-
 const saveValue = async (key, value) => {
-  try {
+  try {1234
     await AsyncStorage.setItem(key, value);
   } catch (error) {
     console.error('Error saving value', error);
@@ -47,9 +45,9 @@ const sendOTPPhone = async (number) => {
     identifier: `91${number}`,
   };
   console.log('here');
-
-  console.log('sending otp');
+  console.log('sending otp Phone');
   const otp_response = await OTPWidget.sendOTP(data);
+  console.log(otp_response)
   return otp_response;
 };
 
@@ -60,13 +58,15 @@ const sendOTPEmail = async (email) => {
   const data = {
     identifier: email,
   };
-
-  console.log('sending otp');
+  console.log('here');
+  console.log('sending otp email');
   const otp_response = await OTPWidget.sendOTP(data);
+  console.log(otp_response)
   return otp_response;
 };
 
 const SignUp = ({ navigation }) => {
+
   useEffect(() => {
     GoogleSignin.configure({
       scopes: [
@@ -81,6 +81,33 @@ const SignUp = ({ navigation }) => {
         '842164284838-nuqnp2moeos51tki7r5l8ee3tnvn3inc.apps.googleusercontent.com', // Get this from the JSON file
     });
   }, []);
+
+
+  // Sign stage changer + tracker, Initial signUP stage : 0
+  const [signUpstage, setSignUpStage] = useState(2);
+
+  // For SignUp Stage 0
+  // const [email, setEmail] = useState('yoyo@gmail.com');
+  // const [number, setNumber] = useState('9897445643');
+  const [email, setEmail] = useState(null);
+  const [number, setNumber] = useState(null);
+  const countryCode = '+91';
+
+  // For SignUp Stage 1
+  const [EmailOTP, setEmailOTP] = useState(null);
+  const [PhoneOTP, setPhoneOTP] = useState(null);
+
+  // For SignUp Stage 2
+  const [isChecked, setIsChecked] = useState(false);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [birth, setBirth] = useState(null);
+  // const [pass, setPass] = useState(null);
+  // const [confirmPass, setConfirmPass] = useState(null);
+  const [gender, setGender] = useState(null);
+
+  const [showPicker, setShowPicker] = useState(false);
+
 
   const handleSignin = async () => {
     try {
@@ -134,7 +161,8 @@ const SignUp = ({ navigation }) => {
       const otp_email_response = await sendOTPEmail(email);
 
       if (
-        otp_phone_response.type == 'success' &&
+        otp_phone_response.type == 'success'
+        &&
         otp_email_response.type == 'success'
       ) {
         const messageIDPhone = otp_phone_response.message;
@@ -151,29 +179,24 @@ const SignUp = ({ navigation }) => {
     }
   };
 
-  
-
   const EmailOTPVerification = async () => {
     OTPWidget.initializeWidget(EmailWidgetId, tokenAuth); //Widget initialization
     const messageIDEmail = await AsyncStorage.getItem('emailOTPMessageID');
-    console.log(messageIDEmail)
+    console.log(messageIDEmail);
 
     const body_email = {
       reqId: messageIDEmail,
       otp: EmailOTP,
     };
     const responseEmailOTP = await OTPWidget.verifyOTP(body_email);
-    console.log(responseEmailOTP)
+    console.log(responseEmailOTP);
 
-    if (responseEmailOTP.type == 'success'){
-      return true
+    if (responseEmailOTP.type == 'success') {
+      return true;
+    } else {
+      return false;
     }
-    else{
-      return false
-    }
-
-
-  }
+  };
   const PhoneOTPVerification = async () => {
     OTPWidget.initializeWidget(PhoneWidgetId, tokenAuth); //Widget initialization
 
@@ -184,59 +207,93 @@ const SignUp = ({ navigation }) => {
       otp: PhoneOTP,
     };
     const responsePhoneOTP = await OTPWidget.verifyOTP(body_phone);
-    console.log(responsePhoneOTP)
+    console.log(responsePhoneOTP);
 
-    if (responsePhoneOTP.type == 'success'){
-      return true
+    if (responsePhoneOTP.type == 'success') {
+      return true;
+    } else {
+      return false;
     }
-    else{
-      return false
-    }
-  }
+  };
   const handleOTPVerification = async () => {
     console.log('Entered Verification');
-    const responsePhoneOTP = await PhoneOTPVerification()
-    const responseEmailOTP = await EmailOTPVerification()
-    
-    
-    if (
-      responsePhoneOTP &&
-      responseEmailOTP
-    ) {
+    const responsePhoneOTP = await PhoneOTPVerification();
+    const responseEmailOTP = await EmailOTPVerification();
+
+    if (responsePhoneOTP && responseEmailOTP) {
       setSignUpStage(2);
-    }
-    else{
-      Alert.alert("Invalid OTP!")
+    } else {
+      Alert.alert('Invalid OTP!');
     }
   };
 
-  const finishSignUp = () => {
-    Alert.alert("Sign Up Completed!")
-  }
+  const finishSignUp = async () => {
 
-  // Sign stage changer + tracker, Initial signUP stage : 0
-  const [signUpstage, setSignUpStage] = useState(0);
+    console.log("inside this")
+    // if ((firstName && lastName && pass && birth)) {
+      // Alert.alert("Sign Up Completed!")
 
-  // For SignUp Stage 0
-  const [email, setEmail] = useState('');
-  const [number, setNumber] = useState('');
-  const countryCode = '+91';
+      // if (pass) {
+        console.log("inside this")
+        const user_data = {
+          email: email,
+          name: `${firstName} ${lastName}`,
+          photo: 'none',
+          phone: number,
+          dob: birth,
+          gender: gender,
+        };
+        console.log(user_data)
+        // const user_data = {
+        //   "email": "abc@gmail.com",
+        //   "name": "John Doe",
+        //   "photo": "1234",
+        //   "phone": "9876543210",await
+        //   "birth": "2024-04-25"
+        // }
+        try {
+          console.log("sending req")
+          const response = await fetch(
+            'http://192.168.31.166:3000/api/client/register/user/mannual',
+            // 'http://192.168.31.118:3000/api/client/register/user/mannual',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(user_data),
+              // body: user_data,
+            }
+          );
 
-  // For SignUp Stage 1
-  const [EmailOTP, setEmailOTP] = useState(null);
-  const [PhoneOTP, setPhoneOTP] = useState(null);
+          const data = await response.json();
+          console.log(data)
 
-  // For SignUp Stage 2
-  const [isChecked, setIsChecked] = useState(false);
-  const [firstName, setFirstName] = useState(null);
-  const [lastName, setLastName] = useState(null);
-  const [birth, setBirth] = useState(null);
-  const [pass, setPass] = useState(null);
-  const [confirmPass, setConfirmPass] = useState(null);
-  const [date, setDate] = useState(new Date());
+          // Setting Up session token and storing in AsyncStorage
+          if (data.success) {
+            await saveToken(data.token);
+            console.log(data.token);
+            navigation.navigate('HomeScreen');
+          } else {
+            Alert.alert(
+              'Login Failed Server refused the sign in request!',
+              error.message
+            );
+          }
+        } catch (error) {
+          Alert.alert(
+            'Login Failed Server refused the sign in request!',
+            error.message
+          );
+          console.error(error);
+        }
+      // }
+  //   } 
+  //   else {
+  //     Alert.alert('Error!', 'Please Fill Out the Every field of Form.');
+  //   }
+  };
 
-  const [showPicker, setShowPicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
 
   const handleDateChange = (event, selectedDate) => {
     setShowPicker(false);
@@ -245,15 +302,6 @@ const SignUp = ({ navigation }) => {
       setBirth(formatted);
     }
   };
-
-  // const handleBirth = (event, selectedDate) => {
-  //   // const onChangeDate = (event, selectedDate) => {
-  //   setShowPicker(false);
-  //   if (selectedDate) {
-  //     setDate(selectedDate);
-  //     setSelectedDate(selectedDate.toLocaleDateString()); // You can format as needed
-  //   }
-  // };
 
   return (
     <SafeAreaView>
@@ -554,7 +602,7 @@ const SignUp = ({ navigation }) => {
           <View style={{ width: '90%', left: 20 }}>
             <TextInput
               value={firstName}
-              onChangeNumber={(value) => {
+              onChangeText={(value) => {
                 setFirstName(value);
               }}
               keyboardType="default"
@@ -566,7 +614,7 @@ const SignUp = ({ navigation }) => {
           <View style={{ width: '90%', left: 20 }}>
             <TextInput
               value={lastName}
-              onChangeNumber={(value) => {
+              onChangeText ={(value) => {
                 setLastName(value);
               }}
               // keyboardType="number-pad"
@@ -581,7 +629,7 @@ const SignUp = ({ navigation }) => {
                 style={[
                   styles.input,
                   styles_signup.finalFormInput,
-                  {color:'#626262'}
+                  { color: '#626262' },
                 ]}
               >
                 {birth || 'Birthday*'}
@@ -600,24 +648,12 @@ const SignUp = ({ navigation }) => {
 
           <View style={{ width: '90%', left: 20 }}>
             <TextInput
-              value={pass}
-              onChangeNumber={(value) => {
-                setPass(value);
+              value={gender}
+              onChangeText={(value) => {
+                setGender(value);
               }}
               // keyboardType="number-pad"
-              placeholder="Password*"
-              style={[styles.input, styles_signup.finalFormInput]}
-            ></TextInput>
-          </View>
-
-          <View style={{ width: '90%', left: 20 }}>
-            <TextInput
-              value={confirmPass}
-              onChangeNumber={(value) => {
-                setConfirmPass(value);
-              }}
-              // keyboardType="number-pad"
-              placeholder="Confirm Password*"
+              placeholder="Gender*"
               style={[styles.input, styles_signup.finalFormInput]}
             ></TextInput>
           </View>
@@ -630,8 +666,8 @@ const SignUp = ({ navigation }) => {
             }}
           >
             <CheckBox
-              // value={isChecked}[[]]
-              onValueChange={setIsChecked}
+              value={isChecked}
+              // onValueChange={setIsChecked}
               tintColors={{ true: '#007aff', false: '#aaa' }}
             />
 
@@ -658,7 +694,9 @@ const SignUp = ({ navigation }) => {
               height: 60,
             }}
           >
-            <Text style={[styles_signup.buttonText, {fontSize: 20}]}>Complete Sign Up</Text>
+            <Text style={[styles_signup.buttonText, { fontSize: 20 }]}>
+              Complete Sign Up
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
