@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SERVER_IP} from '@env'
 import CheckBox from '@react-native-community/checkbox';
 import { OTPWidget } from '@msg91comm/sendotp-react-native';
 import { React, useState, useEffect } from 'react';
@@ -18,6 +19,7 @@ import {
 import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { faSlash } from '@fortawesome/free-solid-svg-icons';
+import { server } from '../../metro.config';
 
 const tokenAuth = '447695T9MQQ9m86807c6ffP1';
 const PhoneWidgetId = '356476684d37333431323031';
@@ -88,10 +90,10 @@ const SignUp = ({ navigation }) => {
   const [signUpstage, setSignUpStage] = useState(2);
 
   // For SignUp Stage 0
-  // const [email, setEmail] = useState('yoyo@gmail.com');
-  // const [number, setNumber] = useState('9897445643');
-  const [email, setEmail] = useState(null);
-  const [number, setNumber] = useState(null);
+  const [email, setEmail] = useState('yoyo@gmail.com');
+  const [number, setNumber] = useState('9897445643');
+  // const [email, setEmail] = useState(null);
+  // const [number, setNumber] = useState(null);
   const countryCode = '+91';
 
   // For SignUp Stage 1
@@ -117,6 +119,7 @@ const SignUp = ({ navigation }) => {
       const userInfo = await GoogleSignin.signIn();
       const user_data = userInfo.data.user;
 
+      
       try {
         const response = await fetch(
           'http://192.168.31.166:3000/api/client/register/user',
@@ -222,6 +225,14 @@ const SignUp = ({ navigation }) => {
     const responseEmailOTP = await EmailOTPVerification();
 
     if (responsePhoneOTP && responseEmailOTP) {
+      const checkIfUserExist = fetch(`${SERVER_IP}/api/client/user/existing/check`, {
+        method:"POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email: email})
+      })
+      
       setSignUpStage(2);
     } else {
       Alert.alert('Invalid OTP!');
@@ -229,9 +240,6 @@ const SignUp = ({ navigation }) => {
   };
 
   const finishSignUp = async () => {
-    console.log('inside this');
-    // if ((firstName && lastName && pass && birth)) {
-    // Alert.alert("Sign Up Completed!")
 
     // if (pass) {
     console.log('inside this');
@@ -262,7 +270,6 @@ const SignUp = ({ navigation }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(user_data),
-          // body: user_data,
         }
       );
 
