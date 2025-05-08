@@ -102,7 +102,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
     height: '80%',
     width: '70%',
-    zIndex: 99,
+    zIndex: 50,
     // borderWidth: 2,
     // borderColor: "black",
   },
@@ -334,7 +334,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.18)',
-    zIndex: 99,
+    zIndex: 80,
   },
   specialTag: {
     position: 'absolute',
@@ -394,7 +394,7 @@ export const styles = StyleSheet.create({
     // borderWidth: 2,
     padding: '5%',
     justifyContent: 'center',
-    zIndex: 99
+    zIndex: 50
   },
   emailInput: {
     // borderWidth: 5,
