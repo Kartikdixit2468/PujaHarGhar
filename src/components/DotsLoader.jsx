@@ -52,12 +52,15 @@ const DotsLoader = () => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'relative',
+    position: 'absolute',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
     width: '100%',
+    zIndex: 99,
+    borderWidth: 2,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   dot: {
     width: 20,
@@ -65,6 +68,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 10,
     backgroundColor: '#ffcf00',
+    zIndex: 99
   },
 });
 

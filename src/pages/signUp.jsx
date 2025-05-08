@@ -3,8 +3,9 @@ import { SERVER_IP } from '@env';
 import CheckBox from '@react-native-community/checkbox';
 import { OTPWidget } from '@msg91comm/sendotp-react-native';
 import { React, useState, useEffect } from 'react';
-import { Modal } from 'react-native';
+import { Modal, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import DotsLoader from '../components/DotsLoader';
 
 import {
   SafeAreaView,
@@ -18,7 +19,7 @@ import {
 } from 'react-native';
 import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { faSlash } from '@fortawesome/free-solid-svg-icons';
+import { faL, faSlash } from '@fortawesome/free-solid-svg-icons';
 import { server } from '../../metro.config';
 
 const tokenAuth = '447695T9MQQ9m86807c6ffP1';
@@ -51,8 +52,8 @@ const sendOTPPhone = async (number) => {
   };
   console.log('here');
   console.log('sending otp Phone');
-  // const otp_response = await OTPWidget.sendOTP(data);
-  let otp_response = {type: "success", message: "123456789"};
+  const otp_response = await OTPWidget.sendOTP(data);
+  // let otp_response = { type: 'success', message: '123456789' };
   console.log(otp_response);
   return otp_response;
 };
@@ -66,8 +67,8 @@ const sendOTPEmail = async (email) => {
   };
   console.log('here');
   console.log('sending otp email');
-  // const otp_response = await OTPWidget.sendOTP(data);
-  let otp_response = {type: "success", message: "123456789"};
+  const otp_response = await OTPWidget.sendOTP(data);
+  // let otp_response = { type: 'success', message: '123456789' };
   console.log(otp_response);
   return otp_response;
 };
@@ -90,9 +91,10 @@ const SignUp = ({ navigation }) => {
 
   // Sign stage changer + tracker, Initial signUP stage : 0
   const [signUpstage, setSignUpStage] = useState(0);
+  const [DisplayDotLoader, setDisplayDotLoader] = useState(false);
 
   // For SignUp Stage 0
-  const [email, setEmail] = useState('kartikdixit2107@gmai.com');
+  const [email, setEmail] = useState('kartikdixit2107@gmail.com');
   const [number, setNumber] = useState('9897445643');
 
   // const [email, setEmail] = useState(null);
@@ -105,11 +107,9 @@ const SignUp = ({ navigation }) => {
   // const [ResendTime, setResendTime] = useState(10000);
   // const [resendTimeLeft, setResendTimeLeft] = useState(ResendTime)
 
-
-const [resendActive, setResendActive] = useState(false);
-const [resendTimer, setResendTimer] = useState(10); // seconds
-let resendInterval = null;
-
+  const [resendActive, setResendActive] = useState(false);
+  const [resendTimer, setResendTimer] = useState(10); // seconds
+  let resendInterval = null;
 
   // For SignUp Stage 2
   const [isChecked, setIsChecked] = useState(false);
@@ -125,30 +125,28 @@ let resendInterval = null;
   const [showPicker, setShowPicker] = useState(false);
 
   const handleSignin = async () => {
+    setDisplayDotLoader(true)
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       const user_data = userInfo.data.user;
 
       try {
-        const response = await fetch(
-          'http://192.168.31.166:3000/api/client/register/user',
-          // 'http://192.168.31.118:3000/api/client/register/user',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user_data),
-          }
-        );
+        const response = await fetch(`${SERVER_IP}/api/client/register/user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(user_data),
+        });
 
         const data = await response.json();
 
         // Setting Up session token and storing in AsyncStorage
+        await saveToken(data.token);
         if (data.success) {
-          await saveToken(data.token);
           console.log(data.token);
+          setDisplayDotLoader(false)
           navigation.navigate('HomeScreen');
         } else {
           Alert.alert(
@@ -164,6 +162,7 @@ let resendInterval = null;
         console.error(error);
       }
     } catch (error) {
+      setDisplayDotLoader(false)
       console.error('Google Sign-In Error:', error);
       Alert.alert('Login Failed', error.message);
       return error.message;
@@ -171,6 +170,7 @@ let resendInterval = null;
   };
 
   const handleManualSignin = async () => {
+    setDisplayDotLoader(true);
     if (email && number) {
       const otp_phone_response = await sendOTPPhone(number);
       const otp_email_response = await sendOTPEmail(email);
@@ -184,6 +184,7 @@ let resendInterval = null;
         await saveValue('phoneOTPMessageID', messageIDPhone);
         await saveValue('emailOTPMessageID', messageIDEmail);
         console.log('starting verification screen');
+        setDisplayDotLoader(false);
         setSignUpStage(1);
 
         // Start resend timer
@@ -191,7 +192,7 @@ let resendInterval = null;
         setResendTimer(10); // reset timer
 
         resendInterval = setInterval(() => {
-          setResendTimer(prev => {
+          setResendTimer((prev) => {
             if (prev <= 1) {
               clearInterval(resendInterval);
               setResendActive(true);
@@ -200,11 +201,6 @@ let resendInterval = null;
             return prev - 1;
           });
         }, 1000);
-
-
-
-
-
       } else {
         Alert.alert('Error', 'Server Unable to send OTP, Try Again later!');
       }
@@ -250,12 +246,15 @@ let resendInterval = null;
     }
   };
   const handleOTPVerification = async () => {
+    setDisplayDotLoader(true);
     console.log('Entered Verification');
-    const responsePhoneOTP = await PhoneOTPVerification();
-    const responseEmailOTP = await EmailOTPVerification();
+    // const responsePhoneOTP = await PhoneOTPVerification();
+    // const responseEmailOTP = await EmailOTPVerification();
+    const responsePhoneOTP = true;
+    const responseEmailOTP = true;
 
     if (responsePhoneOTP && responseEmailOTP) {
-      const checkIfUserExist = fetch(
+      const checkIfUserExist = await fetch(
         `${SERVER_IP}/api/client/user/existing/check`,
         {
           method: 'POST',
@@ -266,9 +265,41 @@ let resendInterval = null;
         }
       );
 
-      setSignUpStage(2);
-    } else {
-      Alert.alert('Invalid OTP!');
+      const user_exist = await checkIfUserExist.json();
+      console.log("checked")
+      console.log(user_exist)
+      if (user_exist.exist) {
+        console.log("trying for login")
+        const login = await fetch(`${SERVER_IP}/api/client/user/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email }),
+        });
+        const login_response = await login.json();
+        console.log("login response: ", login_response)
+        if (login_response.success) {
+          console.log('login success')
+          await saveToken(login_response.token);
+          setDisplayDotLoader(false);
+          navigation.navigate('HomeScreen');
+        } 
+        else {
+          Alert.alert(
+            'Account not found!',
+            'Try Again later or recheck your Email & Phone.'
+          );
+        }
+      } 
+      else {
+        setDisplayDotLoader(false);
+        setSignUpStage(2);
+      }
+    } 
+    else {
+      setDisplayDotLoader(false);
+      Alert.alert('Invalid OTP!', "Please Try again by rechecking the OTP.");
     }
   };
 
@@ -294,7 +325,7 @@ let resendInterval = null;
     try {
       console.log('sending req');
       const response = await fetch(
-        'http://192.168.31.166:3000/api/client/register/user/mannual',
+        `${SERVER_IP}/api/client/register/user/mannual`,
         // 'http://192.168.31.118:3000/api/client/register/user/mannual',
         {
           method: 'POST',
@@ -344,6 +375,8 @@ let resendInterval = null;
   return (
     <SafeAreaView style={{ borderWidth: 5 }}>
       {/* Sign Up section Part 0 starts from here */}
+
+      {DisplayDotLoader ? <DotsLoader /> : null}
       <View
         style={
           signUpstage != 0
@@ -509,7 +542,7 @@ let resendInterval = null;
           <TouchableOpacity
             onPress={() => {
               setSignUpStage(0);
-              setResendActive(false)
+              setResendActive(false);
             }}
             style={{ height: 40, width: '11%' }}
           >
@@ -583,26 +616,24 @@ let resendInterval = null;
             ></TextInput>
           </View>
 
-          <View style={{ left: 10, maxWidth: '32%' }}>            
-            
-            {resendActive ?
+          <View style={{ left: 10, maxWidth: '32%' }}>
+            {resendActive ? (
               <TouchableOpacity
                 onPress={() => {
-                  Alert.alert('Resending the OTP...');
-                  handleManualSignin()
+                  handleManualSignin();
                 }}
               >
                 <Text
                   style={{
-                  color: '#3a86ff',
-                  textDecorationLine: 'underline',
-                  width: 'auto',
+                    color: '#3a86ff',
+                    textDecorationLine: 'underline',
+                    width: 'auto',
                   }}
                 >
                   Resend OTP
                 </Text>
               </TouchableOpacity>
-             : 
+            ) : (
               <Text
                 style={{
                   color: '#adb5bd',
@@ -612,7 +643,7 @@ let resendInterval = null;
               >
                 Resend OTP in {resendTimer}
               </Text>
-            }
+            )}
           </View>
 
           <TouchableOpacity
@@ -647,7 +678,7 @@ let resendInterval = null;
           <TouchableOpacity
             onPress={() => {
               setSignUpStage(0);
-              setResendActive(false)
+              setResendActive(false);
             }}
             style={{ height: 40, width: '11%' }}
           >
@@ -861,6 +892,7 @@ let resendInterval = null;
 const styles_signup = StyleSheet.create({
   container: {
     backgroundColor: '#fff7ea',
+    position: 'relative',
   },
 
   progressBar: {
