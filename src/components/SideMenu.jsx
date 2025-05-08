@@ -8,9 +8,13 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+
 import { styles } from '../css/style';
+// import { FontAwesome5 } from '@fortawesome/react-native-fontawesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {
   faArrowAltCircleUp,
   faArrowUp,
@@ -85,6 +89,7 @@ const SideMenu = ({
       </Pressable>
 
       <View>
+
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
           <FontAwesome5
             icon={faGreaterThan}
@@ -92,29 +97,25 @@ const SideMenu = ({
             color="black"
             style={{ transform: [{ rotate: '-90deg' }] }}
           />
-          <Pressable
-            onPress={() => {
-              navigation.navigate('Bookings');
-            }}
-          >
+          <Pressable 
+          onPress={()=> {navigation.navigate('Bookings')}}
+          > 
             <Text style={{ fontSize: MobileWidth * 0.05 }}>My Bookings</Text>
           </Pressable>
-        </TouchableOpacity>
+        </TouchableOpacity>{' '}
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
           <FontAwesome5
             icon={faGreaterThan}
             size={MobileWidth * 0.06}
-            color="black"
+            color="black" 
             style={{ transform: [{ rotate: '-90deg' }] }}
           />
-          <Pressable
-            onPress={() => {
-              navigation.navigate('Categories');
-            }}
+          <Pressable 
+          onPress={()=> {navigation.navigate('Categories')}}
           >
             <Text style={{ fontSize: MobileWidth * 0.05 }}>Categories</Text>
           </Pressable>
-        </TouchableOpacity>
+        </TouchableOpacity>{' '}
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
           <FontAwesome5
             icon={faGreaterThan}
@@ -123,27 +124,25 @@ const SideMenu = ({
             style={{ transform: [{ rotate: '-90deg' }] }}
           />
           <Pressable
-            onPress={() => {
-              navigation.navigate('Support');
-            }}
+          onPress={()=> {navigation.navigate('Support')}}
           >
             <Text style={{ fontSize: MobileWidth * 0.05 }}>Support</Text>
           </Pressable>
         </TouchableOpacity>
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
-          <FontAwesome5
+        <FontAwesome5
             icon={faGreaterThan}
             size={MobileWidth * 0.06}
-            color="black"
+            color="black" 
             style={{ transform: [{ rotate: '-90deg' }] }}
           />
-          <Pressable
-            onPress={async () => {
+        <Pressable
+            onPress={async ()=> {
               // Add a popup for confirmation  then this
-              await AsyncStorage.removeItem('authToken');
-              navigation.navigate('SignUp');
+              await AsyncStorage.removeItem('authToken')
+              navigation.navigate('SignUp')
             }}
-          >
+            >
             <Text style={{ fontSize: MobileWidth * 0.05 }}>Logout</Text>
           </Pressable>
         </TouchableOpacity>

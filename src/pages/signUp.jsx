@@ -1,11 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SERVER_IP } from '@env';
 import CheckBox from '@react-native-community/checkbox';
 import { OTPWidget } from '@msg91comm/sendotp-react-native';
 import { React, useState, useEffect } from 'react';
-import { Modal, ScrollView } from 'react-native';
+import { Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import DotsLoader from '../components/DotsLoader';
 
 import {
   SafeAreaView,
@@ -19,8 +17,7 @@ import {
 } from 'react-native';
 import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { faL, faSlash } from '@fortawesome/free-solid-svg-icons';
-import { server } from '../../metro.config';
+import { faSlash } from '@fortawesome/free-solid-svg-icons';
 
 const tokenAuth = '447695T9MQQ9m86807c6ffP1';
 const PhoneWidgetId = '356476684d37333431323031';
@@ -53,7 +50,6 @@ const sendOTPPhone = async (number) => {
   console.log('here');
   console.log('sending otp Phone');
   const otp_response = await OTPWidget.sendOTP(data);
-  // let otp_response = { type: 'success', message: '123456789' };
   console.log(otp_response);
   return otp_response;
 };
@@ -68,7 +64,6 @@ const sendOTPEmail = async (email) => {
   console.log('here');
   console.log('sending otp email');
   const otp_response = await OTPWidget.sendOTP(data);
-  // let otp_response = { type: 'success', message: '123456789' };
   console.log(otp_response);
   return otp_response;
 };
@@ -90,26 +85,18 @@ const SignUp = ({ navigation }) => {
   }, []);
 
   // Sign stage changer + tracker, Initial signUP stage : 0
-  const [signUpstage, setSignUpStage] = useState(0);
-  const [DisplayDotLoader, setDisplayDotLoader] = useState(false);
+  const [signUpstage, setSignUpStage] = useState(2);
 
   // For SignUp Stage 0
-  const [email, setEmail] = useState('kartikdixit2107@gmail.com');
-  const [number, setNumber] = useState('9897445643');
-
-  // const [email, setEmail] = useState(null);
-  // const [number, setNumber] = useState(null);
+  // const [email, setEmail] = useState('yoyo@gmail.com');
+  // const [number, setNumber] = useState('9897445643');
+  const [email, setEmail] = useState(null);
+  const [number, setNumber] = useState(null);
   const countryCode = '+91';
 
   // For SignUp Stage 1
   const [EmailOTP, setEmailOTP] = useState(null);
   const [PhoneOTP, setPhoneOTP] = useState(null);
-  // const [ResendTime, setResendTime] = useState(10000);
-  // const [resendTimeLeft, setResendTimeLeft] = useState(ResendTime)
-
-  const [resendActive, setResendActive] = useState(false);
-  const [resendTimer, setResendTimer] = useState(10); // seconds
-  let resendInterval = null;
 
   // For SignUp Stage 2
   const [isChecked, setIsChecked] = useState(false);
@@ -125,28 +112,30 @@ const SignUp = ({ navigation }) => {
   const [showPicker, setShowPicker] = useState(false);
 
   const handleSignin = async () => {
-    setDisplayDotLoader(true)
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       const user_data = userInfo.data.user;
 
       try {
-        const response = await fetch(`${SERVER_IP}/api/client/register/user`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(user_data),
-        });
+        const response = await fetch(
+          'http://192.168.31.166:3000/api/client/register/user',
+          // 'http://192.168.31.118:3000/api/client/register/user',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user_data),
+          }
+        );
 
         const data = await response.json();
 
         // Setting Up session token and storing in AsyncStorage
-        await saveToken(data.token);
         if (data.success) {
+          await saveToken(data.token);
           console.log(data.token);
-          setDisplayDotLoader(false)
           navigation.navigate('HomeScreen');
         } else {
           Alert.alert(
@@ -162,7 +151,6 @@ const SignUp = ({ navigation }) => {
         console.error(error);
       }
     } catch (error) {
-      setDisplayDotLoader(false)
       console.error('Google Sign-In Error:', error);
       Alert.alert('Login Failed', error.message);
       return error.message;
@@ -170,7 +158,6 @@ const SignUp = ({ navigation }) => {
   };
 
   const handleManualSignin = async () => {
-    setDisplayDotLoader(true);
     if (email && number) {
       const otp_phone_response = await sendOTPPhone(number);
       const otp_email_response = await sendOTPEmail(email);
@@ -184,23 +171,7 @@ const SignUp = ({ navigation }) => {
         await saveValue('phoneOTPMessageID', messageIDPhone);
         await saveValue('emailOTPMessageID', messageIDEmail);
         console.log('starting verification screen');
-        setDisplayDotLoader(false);
         setSignUpStage(1);
-
-        // Start resend timer
-        setResendActive(false);
-        setResendTimer(10); // reset timer
-
-        resendInterval = setInterval(() => {
-          setResendTimer((prev) => {
-            if (prev <= 1) {
-              clearInterval(resendInterval);
-              setResendActive(true);
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
       } else {
         Alert.alert('Error', 'Server Unable to send OTP, Try Again later!');
       }
@@ -246,64 +217,22 @@ const SignUp = ({ navigation }) => {
     }
   };
   const handleOTPVerification = async () => {
-    setDisplayDotLoader(true);
     console.log('Entered Verification');
-    // const responsePhoneOTP = await PhoneOTPVerification();
-    // const responseEmailOTP = await EmailOTPVerification();
-    const responsePhoneOTP = true;
-    const responseEmailOTP = true;
+    const responsePhoneOTP = await PhoneOTPVerification();
+    const responseEmailOTP = await EmailOTPVerification();
 
     if (responsePhoneOTP && responseEmailOTP) {
-      const checkIfUserExist = await fetch(
-        `${SERVER_IP}/api/client/user/existing/check`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email: email }),
-        }
-      );
-
-      const user_exist = await checkIfUserExist.json();
-      console.log("checked")
-      console.log(user_exist)
-      if (user_exist.exist) {
-        console.log("trying for login")
-        const login = await fetch(`${SERVER_IP}/api/client/user/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email: email }),
-        });
-        const login_response = await login.json();
-        console.log("login response: ", login_response)
-        if (login_response.success) {
-          console.log('login success')
-          await saveToken(login_response.token);
-          setDisplayDotLoader(false);
-          navigation.navigate('HomeScreen');
-        } 
-        else {
-          Alert.alert(
-            'Account not found!',
-            'Try Again later or recheck your Email & Phone.'
-          );
-        }
-      } 
-      else {
-        setDisplayDotLoader(false);
-        setSignUpStage(2);
-      }
-    } 
-    else {
-      setDisplayDotLoader(false);
-      Alert.alert('Invalid OTP!', "Please Try again by rechecking the OTP.");
+      setSignUpStage(2);
+    } else {
+      Alert.alert('Invalid OTP!');
     }
   };
 
   const finishSignUp = async () => {
+    console.log('inside this');
+    // if ((firstName && lastName && pass && birth)) {
+    // Alert.alert("Sign Up Completed!")
+
     // if (pass) {
     console.log('inside this');
     const user_data = {
@@ -325,7 +254,7 @@ const SignUp = ({ navigation }) => {
     try {
       console.log('sending req');
       const response = await fetch(
-        `${SERVER_IP}/api/client/register/user/mannual`,
+        'http://192.168.31.166:3000/api/client/register/user/mannual',
         // 'http://192.168.31.118:3000/api/client/register/user/mannual',
         {
           method: 'POST',
@@ -333,6 +262,7 @@ const SignUp = ({ navigation }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(user_data),
+          // body: user_data,
         }
       );
 
@@ -373,10 +303,8 @@ const SignUp = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ borderWidth: 5 }}>
+    <SafeAreaView>
       {/* Sign Up section Part 0 starts from here */}
-
-      {DisplayDotLoader ? <DotsLoader /> : null}
       <View
         style={
           signUpstage != 0
@@ -542,7 +470,6 @@ const SignUp = ({ navigation }) => {
           <TouchableOpacity
             onPress={() => {
               setSignUpStage(0);
-              setResendActive(false);
             }}
             style={{ height: 40, width: '11%' }}
           >
@@ -616,36 +543,6 @@ const SignUp = ({ navigation }) => {
             ></TextInput>
           </View>
 
-          <View style={{ left: 10, maxWidth: '32%' }}>
-            {resendActive ? (
-              <TouchableOpacity
-                onPress={() => {
-                  handleManualSignin();
-                }}
-              >
-                <Text
-                  style={{
-                    color: '#3a86ff',
-                    textDecorationLine: 'underline',
-                    width: 'auto',
-                  }}
-                >
-                  Resend OTP
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <Text
-                style={{
-                  color: '#adb5bd',
-                  width: 'auto',
-                  // textDecorationLine: 'underline',
-                }}
-              >
-                Resend OTP in {resendTimer}
-              </Text>
-            )}
-          </View>
-
           <TouchableOpacity
             onPress={handleOTPVerification}
             style={{
@@ -678,7 +575,6 @@ const SignUp = ({ navigation }) => {
           <TouchableOpacity
             onPress={() => {
               setSignUpStage(0);
-              setResendActive(false);
             }}
             style={{ height: 40, width: '11%' }}
           >
@@ -778,16 +674,13 @@ const SignUp = ({ navigation }) => {
             {/* Modal for Gender selection */}
             <Modal visible={showGenderPicker} transparent animationType="slide">
               <View
-                style={[
-                  {
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(0,0,0,0.5)',
-                  },
-                  styles.input,
-                  styles_signup.finalFormInput,
-                ]}
+                style={[{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                }, styles.input, styles_signup.finalFormInput]}
+
               >
                 <View
                   style={{
@@ -892,7 +785,6 @@ const SignUp = ({ navigation }) => {
 const styles_signup = StyleSheet.create({
   container: {
     backgroundColor: '#fff7ea',
-    position: 'relative',
   },
 
   progressBar: {

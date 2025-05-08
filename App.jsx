@@ -13,7 +13,6 @@ import Support from './src/pages/support';
 import PujaPage from './src/pages/PujaPage';
 import WelcomeScreen from './src/pages/WelcomScreen';
 import { Text, View } from 'react-native';
-import DotsLoader from './src/components/DotsLoader';
 
 function MenuNavigation() {
 
@@ -22,8 +21,8 @@ function MenuNavigation() {
     const checkLogIn =async () => {
       const token = await AsyncStorage.getItem('authToken')
       if (token){
-        const verifyToken = await fetch('http://192.168.31.118:3000/api/client/user/verify/securitytoken',
-        // const verifyToken = await fetch('http://192.168.31.166:3000/api/client/user/verify/securitytoken',
+        // const verifyToken = await fetch('http://192.168.31.118:3000/api/client/user/verify/securitytoken',
+        const verifyToken = await fetch('http://192.168.31.166:3000/api/client/user/verify/securitytoken',
           {
             method: 'POST',
             headers: {
@@ -162,7 +161,6 @@ const App = () => {
     <NavigationContainer>
       <MenuNavigation />
     </NavigationContainer>
-    // <DotsLoader/>
   );
 };
 
