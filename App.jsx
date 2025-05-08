@@ -13,6 +13,7 @@ import Support from './src/pages/support';
 import PujaPage from './src/pages/PujaPage';
 import WelcomeScreen from './src/pages/WelcomScreen';
 import { Text, View } from 'react-native';
+import DotsLoader from './src/components/DotsLoader';
 
 function MenuNavigation() {
 
@@ -161,6 +162,7 @@ const App = () => {
     <NavigationContainer>
       <MenuNavigation />
     </NavigationContainer>
+    // <DotsLoader/>
   );
 };
 

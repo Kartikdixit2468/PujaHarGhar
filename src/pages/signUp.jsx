@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {SERVER_IP} from '@env'
+import { SERVER_IP } from '@env';
 import CheckBox from '@react-native-community/checkbox';
 import { OTPWidget } from '@msg91comm/sendotp-react-native';
 import { React, useState, useEffect } from 'react';
@@ -51,7 +51,8 @@ const sendOTPPhone = async (number) => {
   };
   console.log('here');
   console.log('sending otp Phone');
-  const otp_response = await OTPWidget.sendOTP(data);
+  // const otp_response = await OTPWidget.sendOTP(data);
+  let otp_response = {type: "success", message: "123456789"};
   console.log(otp_response);
   return otp_response;
 };
@@ -65,7 +66,8 @@ const sendOTPEmail = async (email) => {
   };
   console.log('here');
   console.log('sending otp email');
-  const otp_response = await OTPWidget.sendOTP(data);
+  // const otp_response = await OTPWidget.sendOTP(data);
+  let otp_response = {type: "success", message: "123456789"};
   console.log(otp_response);
   return otp_response;
 };
@@ -87,11 +89,12 @@ const SignUp = ({ navigation }) => {
   }, []);
 
   // Sign stage changer + tracker, Initial signUP stage : 0
-  const [signUpstage, setSignUpStage] = useState(2);
+  const [signUpstage, setSignUpStage] = useState(0);
 
   // For SignUp Stage 0
-  const [email, setEmail] = useState('yoyo@gmail.com');
+  const [email, setEmail] = useState('kartikdixit2107@gmai.com');
   const [number, setNumber] = useState('9897445643');
+
   // const [email, setEmail] = useState(null);
   // const [number, setNumber] = useState(null);
   const countryCode = '+91';
@@ -99,6 +102,14 @@ const SignUp = ({ navigation }) => {
   // For SignUp Stage 1
   const [EmailOTP, setEmailOTP] = useState(null);
   const [PhoneOTP, setPhoneOTP] = useState(null);
+  // const [ResendTime, setResendTime] = useState(10000);
+  // const [resendTimeLeft, setResendTimeLeft] = useState(ResendTime)
+
+
+const [resendActive, setResendActive] = useState(false);
+const [resendTimer, setResendTimer] = useState(10); // seconds
+let resendInterval = null;
+
 
   // For SignUp Stage 2
   const [isChecked, setIsChecked] = useState(false);
@@ -119,7 +130,6 @@ const SignUp = ({ navigation }) => {
       const userInfo = await GoogleSignin.signIn();
       const user_data = userInfo.data.user;
 
-      
       try {
         const response = await fetch(
           'http://192.168.31.166:3000/api/client/register/user',
@@ -175,6 +185,26 @@ const SignUp = ({ navigation }) => {
         await saveValue('emailOTPMessageID', messageIDEmail);
         console.log('starting verification screen');
         setSignUpStage(1);
+
+        // Start resend timer
+        setResendActive(false);
+        setResendTimer(10); // reset timer
+
+        resendInterval = setInterval(() => {
+          setResendTimer(prev => {
+            if (prev <= 1) {
+              clearInterval(resendInterval);
+              setResendActive(true);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+
+
+
+
+
       } else {
         Alert.alert('Error', 'Server Unable to send OTP, Try Again later!');
       }
@@ -225,14 +255,17 @@ const SignUp = ({ navigation }) => {
     const responseEmailOTP = await EmailOTPVerification();
 
     if (responsePhoneOTP && responseEmailOTP) {
-      const checkIfUserExist = fetch(`${SERVER_IP}/api/client/user/existing/check`, {
-        method:"POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email: email})
-      })
-      
+      const checkIfUserExist = fetch(
+        `${SERVER_IP}/api/client/user/existing/check`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email }),
+        }
+      );
+
       setSignUpStage(2);
     } else {
       Alert.alert('Invalid OTP!');
@@ -240,7 +273,6 @@ const SignUp = ({ navigation }) => {
   };
 
   const finishSignUp = async () => {
-
     // if (pass) {
     console.log('inside this');
     const user_data = {
@@ -310,7 +342,7 @@ const SignUp = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ borderWidth: 5 }}>
       {/* Sign Up section Part 0 starts from here */}
       <View
         style={
@@ -477,6 +509,7 @@ const SignUp = ({ navigation }) => {
           <TouchableOpacity
             onPress={() => {
               setSignUpStage(0);
+              setResendActive(false)
             }}
             style={{ height: 40, width: '11%' }}
           >
@@ -550,6 +583,38 @@ const SignUp = ({ navigation }) => {
             ></TextInput>
           </View>
 
+          <View style={{ left: 10, maxWidth: '32%' }}>            
+            
+            {resendActive ?
+              <TouchableOpacity
+                onPress={() => {
+                  Alert.alert('Resending the OTP...');
+                  handleManualSignin()
+                }}
+              >
+                <Text
+                  style={{
+                  color: '#3a86ff',
+                  textDecorationLine: 'underline',
+                  width: 'auto',
+                  }}
+                >
+                  Resend OTP
+                </Text>
+              </TouchableOpacity>
+             : 
+              <Text
+                style={{
+                  color: '#adb5bd',
+                  width: 'auto',
+                  // textDecorationLine: 'underline',
+                }}
+              >
+                Resend OTP in {resendTimer}
+              </Text>
+            }
+          </View>
+
           <TouchableOpacity
             onPress={handleOTPVerification}
             style={{
@@ -582,6 +647,7 @@ const SignUp = ({ navigation }) => {
           <TouchableOpacity
             onPress={() => {
               setSignUpStage(0);
+              setResendActive(false)
             }}
             style={{ height: 40, width: '11%' }}
           >
@@ -681,13 +747,16 @@ const SignUp = ({ navigation }) => {
             {/* Modal for Gender selection */}
             <Modal visible={showGenderPicker} transparent animationType="slide">
               <View
-                style={[{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(0,0,0,0.5)',
-                }, styles.input, styles_signup.finalFormInput]}
-
+                style={[
+                  {
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                  },
+                  styles.input,
+                  styles_signup.finalFormInput,
+                ]}
               >
                 <View
                   style={{
