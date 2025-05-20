@@ -11,6 +11,7 @@ import Profile from './src/pages/Profile';
 import Bookings from './src/pages/Bookings';
 import Support from './src/pages/support';
 import PujaPage from './src/pages/PujaPage';
+import PackageBookingScreen from './src/components/PackageBookingScreen';
 import WelcomeScreen from './src/pages/WelcomScreen';
 import { Text, View } from 'react-native';
 import DotsLoader from './src/components/DotsLoader';
@@ -64,7 +65,7 @@ function MenuNavigation() {
   return (
     <Stack.Navigator
       // initialRouteName="Home"
-      initialRouteName={isLoggedIn ? "HomeScreen" : "WelcomeScreen"}
+      initialRouteName={isLoggedIn ? "PackageBookingScreen" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
@@ -83,6 +84,12 @@ function MenuNavigation() {
         name="HomeScreen"
         component={HomeScreen}
         options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="PackageBookingScreen"
+        component={PackageBookingScreen}
+        // options={{ headerShown: false }}
       />
 
       <Stack.Screen
