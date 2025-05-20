@@ -9,15 +9,7 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-
 import DateTimePicker from '@react-native-community/datetimepicker';
-
-const priestOptions = [
-  'Pandit Sharma',
-  'Pandit Mishra',
-  'Pandit Joshi',
-  'Any Available Priest',
-];
 
 const priests = [
   {
