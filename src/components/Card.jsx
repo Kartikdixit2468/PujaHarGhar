@@ -30,9 +30,7 @@ function TrendingCard({ data, CARD_WIDTH, CARD_HEIGHT }) {
       snapToInterval={CARD_WIDTH + 20}
       contentContainerStyle={styles.listContainer}
       renderItem={({ item }) => (
-        <View
-          style={[styles.card, { width: CARD_WIDTH, height: CARD_HEIGHT }]}
-        >
+        <View style={[styles.card, { width: CARD_WIDTH, height: CARD_HEIGHT }]}>
           <View
             style={[styles.trending_card_image, { height: CARD_HEIGHT * 0.7 }]}
           >
