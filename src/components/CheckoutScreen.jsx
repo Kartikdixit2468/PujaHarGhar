@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Linking
 } from 'react-native';
 import { Checkbox } from 'react-native-paper';
 
@@ -98,8 +99,8 @@ export default CheckoutScreen = ({ route, navigation }) => {
           </View>
         </View>
 
-              {/* ✅ Checkbox Section */}
-      <View className="flex-row items-start space-x-2 mt-6">
+      {/* ✅ Checkbox Section */}
+      <View className="flex-row items-start space-x-2 mt-6" style={{flexDirection:'row', maxWidth:"90%", borderWidth:2}}>
         <Checkbox
           status={agree ? 'checked' : 'unchecked'}
           onPress={() => setAgree(!agree)}
@@ -107,15 +108,15 @@ export default CheckoutScreen = ({ route, navigation }) => {
         />
         <Text className="flex-1 text-sm text-gray-700">
           I agree to the{' '}
-          <Text className="text-indigo-600 underline" onPress={() => Linking.openURL('#')}>
+          <Text className="text-indigo-600 underline" onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
             Terms & Conditions
           </Text>
           ,{' '}
-          <Text className="text-indigo-600 underline" onPress={() => Linking.openURL('#')}>
+          <Text className="text-indigo-600 underline" onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
             Privacy Policy
           </Text>{' '}
           and{' '}
-          <Text className="text-indigo-600 underline" onPress={() => Linking.openURL('#')}>
+          <Text className="text-indigo-600 underline" onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
             Refund Policy
           </Text>.
         </Text>
