@@ -12,6 +12,7 @@ import Bookings from './src/pages/Bookings';
 import Support from './src/pages/support';
 import PujaPage from './src/pages/PujaPage';
 import { PreistSelectionScreen, PackageSelectionScreen } from './src/components/BookingScreens';
+import CheckoutScreen from './src/components/CheckoutScreen';
 import WelcomeScreen from './src/pages/WelcomScreen';
 import { Text, View } from 'react-native';
 import DotsLoader from './src/components/DotsLoader';
@@ -65,7 +66,7 @@ function MenuNavigation() {
   return (
     <Stack.Navigator
       // initialRouteName="Home"
-      initialRouteName={isLoggedIn ? "PreistSelectionScreen" : "WelcomeScreen"}
+      initialRouteName={isLoggedIn ? "CheckoutScreen" : "WelcomeScreen"}
       // initialRouteName={isLoggedIn ? "PackageSelectionScreen" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
@@ -96,6 +97,12 @@ function MenuNavigation() {
       <Stack.Screen
         name="PreistSelectionScreen"
         component={PreistSelectionScreen}
+        // options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="CheckoutScreen"
+        component={CheckoutScreen}
         // options={{ headerShown: false }}
       />
 
