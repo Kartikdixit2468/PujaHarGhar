@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { styles } from '../css/style';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   faArrowAltCircleUp,
@@ -86,12 +86,7 @@ const SideMenu = ({
 
       <View>
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
-          <FontAwesome5
-            icon={faGreaterThan}
-            size={MobileWidth * 0.06}
-            color="black"
-            style={{ transform: [{ rotate: '-90deg' }] }}
-          />
+          <Icon name="chevron-down" size={MobileWidth * 0.06} color="black" />
           <Pressable
             onPress={() => {
               navigation.navigate('Bookings');
@@ -100,13 +95,9 @@ const SideMenu = ({
             <Text style={{ fontSize: MobileWidth * 0.05 }}>My Bookings</Text>
           </Pressable>
         </TouchableOpacity>
+
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
-          <FontAwesome5
-            icon={faGreaterThan}
-            size={MobileWidth * 0.06}
-            color="black"
-            style={{ transform: [{ rotate: '-90deg' }] }}
-          />
+          <Icon name="chevron-down" size={MobileWidth * 0.06} color="black" />
           <Pressable
             onPress={() => {
               navigation.navigate('Categories');
@@ -115,13 +106,9 @@ const SideMenu = ({
             <Text style={{ fontSize: MobileWidth * 0.05 }}>Categories</Text>
           </Pressable>
         </TouchableOpacity>
+
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
-          <FontAwesome5
-            icon={faGreaterThan}
-            size={MobileWidth * 0.06}
-            color="black"
-            style={{ transform: [{ rotate: '-90deg' }] }}
-          />
+          <Icon name="chevron-down" size={MobileWidth * 0.06} color="black" />
           <Pressable
             onPress={() => {
               navigation.navigate('Support');
@@ -130,13 +117,9 @@ const SideMenu = ({
             <Text style={{ fontSize: MobileWidth * 0.05 }}>Support</Text>
           </Pressable>
         </TouchableOpacity>
+
         <TouchableOpacity style={{ ...styles.sideBarServices }}>
-          <FontAwesome5
-            icon={faGreaterThan}
-            size={MobileWidth * 0.06}
-            color="black"
-            style={{ transform: [{ rotate: '-90deg' }] }}
-          />
+          <Icon name="chevron-down" size={MobileWidth * 0.06} color="black" />
           <Pressable
             onPress={async () => {
               // Add a popup for confirmation  then this

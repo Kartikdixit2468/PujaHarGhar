@@ -66,8 +66,8 @@ function MenuNavigation() {
   return (
     <Stack.Navigator
       // initialRouteName="Home"
-      initialRouteName={isLoggedIn ? "CheckoutScreen" : "WelcomeScreen"}
-      // initialRouteName={isLoggedIn ? "PackageSelectionScreen" : "WelcomeScreen"}
+      // initialRouteName={isLoggedIn ? "CheckoutScreen" : "WelcomeScreen"}
+      initialRouteName={isLoggedIn ? "HomeScreen" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {

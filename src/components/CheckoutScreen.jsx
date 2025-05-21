@@ -99,28 +99,28 @@ export default CheckoutScreen = ({ route, navigation }) => {
           </View>
         </View>
 
-      {/* ✅ Checkbox Section */}
-      <View className="flex-row items-start space-x-2 mt-6" style={{flexDirection:'row', maxWidth:"90%", borderWidth:2}}>
+        <View style={styles.checkboxContainer}>
         <Checkbox
           status={agree ? 'checked' : 'unchecked'}
           onPress={() => setAgree(!agree)}
           color="#4F46E5" // Indigo
         />
-        <Text className="flex-1 text-sm text-gray-700">
+        <Text style={styles.checkboxText}>
           I agree to the{' '}
-          <Text className="text-indigo-600 underline" onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
+          <Text style={styles.link} onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
             Terms & Conditions
           </Text>
           ,{' '}
-          <Text className="text-indigo-600 underline" onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
+          <Text style={styles.link} onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
             Privacy Policy
           </Text>{' '}
           and{' '}
-          <Text className="text-indigo-600 underline" onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
+          <Text style={styles.link} onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
             Refund Policy
           </Text>.
         </Text>
       </View>
+
       </ScrollView>
 
       {/* Footer */}
@@ -238,4 +238,22 @@ const styles = StyleSheet.create({
     color: '#777',
     textAlign: 'center',
   },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginTop: 24,
+    gap: 8, // Optional: adjust for spacing between checkbox and text
+    paddingRight: 16,
+    maxWidth: '90%',
+  },
+  checkboxText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#374151', // Tailwind's gray-700
+  },
+  link: {
+    color: '#4F46E5', // Indigo-600
+    textDecorationLine: 'underline',
+  },
+
 });
