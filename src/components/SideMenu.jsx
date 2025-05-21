@@ -213,7 +213,6 @@ const SideMenu = ({ visible, onCloseComplete, onSelect }) => {
 
     </Animated.View>
     // </View>
-
   );
 };
 

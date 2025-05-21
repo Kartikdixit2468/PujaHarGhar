@@ -7,7 +7,6 @@ const height = Dimensions.get('window').height;
 // const CARD_HEIGHT = 160;
 
 export const styles = StyleSheet.create({
-
   section: {
     marginVertical: 10,
     width: "100%",
@@ -174,7 +173,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.18)',
-    zIndex: 80,
+    zIndex: 99,
   },
   specialTag: {
     position: 'absolute',
@@ -234,7 +233,7 @@ export const styles = StyleSheet.create({
     // borderWidth: 2,
     padding: '5%',
     justifyContent: 'center',
-    zIndex: 50
+    zIndex: 99
   },
   emailInput: {
     // borderWidth: 5,
