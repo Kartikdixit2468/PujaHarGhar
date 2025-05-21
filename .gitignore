@@ -100,3 +100,4 @@ yarn-error.log
 backup_temp.jsx
 
 # custom files
+.env

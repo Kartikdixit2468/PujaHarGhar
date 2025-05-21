@@ -96,7 +96,7 @@ const Home = ({ navigation }) => {
               <Text style={local_styles.alertTitle}>Incomplete Profile</Text>
             </View>
             <Text style={local_styles.alertDescription}>
-              Your profile isn’t completed. You will need to complete your
+              Your profile isn’t completed. You will need to complete yours
               profile before continuing to book for any event.{' '}
               <Text
                 style={local_styles.alertLink}
