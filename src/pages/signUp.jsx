@@ -1,9 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CheckBox from '@react-native-community/checkbox';
+import { SERVER_IP } from '@env';
+// import CheckBox from '@react-native-community/checkbox';
 import { OTPWidget } from '@msg91comm/sendotp-react-native';
 import { React, useState, useEffect } from 'react';
 import { Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import DotsLoader from '../components/DotsLoader';
+import { Checkbox } from 'react-native-paper';
 
 import {
   SafeAreaView,
@@ -17,7 +20,6 @@ import {
 } from 'react-native';
 import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { faSlash } from '@fortawesome/free-solid-svg-icons';
 
 const tokenAuth = '447695T9MQQ9m86807c6ffP1';
 const PhoneWidgetId = '356476684d37333431323031';
@@ -86,12 +88,14 @@ const SignUp = ({ navigation }) => {
 
   // Sign stage changer + tracker, Initial signUP stage : 0
   const [signUpstage, setSignUpStage] = useState(2);
+  const [DisplayDotLoader, setDisplayDotLoader] = useState(false);
 
   // For SignUp Stage 0
-  // const [email, setEmail] = useState('yoyo@gmail.com');
-  // const [number, setNumber] = useState('9897445643');
-  const [email, setEmail] = useState(null);
-  const [number, setNumber] = useState(null);
+  const [email, setEmail] = useState('rakesh.kumar223@gmail.com');
+  const [number, setNumber] = useState('9342496564');
+
+  // const [email, setEmail] = useState(null);
+  // const [number, setNumber] = useState(null);
   const countryCode = '+91';
 
   // For SignUp Stage 1
@@ -112,6 +116,7 @@ const SignUp = ({ navigation }) => {
   const [showPicker, setShowPicker] = useState(false);
 
   const handleSignin = async () => {
+    setDisplayDotLoader(true);
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
@@ -136,6 +141,7 @@ const SignUp = ({ navigation }) => {
         if (data.success) {
           await saveToken(data.token);
           console.log(data.token);
+          setDisplayDotLoader(false);
           navigation.navigate('HomeScreen');
         } else {
           Alert.alert(
@@ -151,6 +157,8 @@ const SignUp = ({ navigation }) => {
         console.error(error);
       }
     } catch (error) {
+      setDisplayDotLoader(false);
+
       console.error('Google Sign-In Error:', error);
       Alert.alert('Login Failed', error.message);
       return error.message;
@@ -222,9 +230,50 @@ const SignUp = ({ navigation }) => {
     const responseEmailOTP = await EmailOTPVerification();
 
     if (responsePhoneOTP && responseEmailOTP) {
-      setSignUpStage(2);
+      const checkIfUserExist = await fetch(
+        `${SERVER_IP}/api/client/user/existing/check`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email }),
+        }
+      );
+        
+
+      const user_exist = await checkIfUserExist.json();
+      console.log('checked');
+      console.log(user_exist);
+      if (user_exist.exist) {
+        console.log('trying for login');
+        const login = await fetch(`${SERVER_IP}/api/client/user/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email }),
+        });
+        const login_response = await login.json();
+        console.log('login response: ', login_response);
+        if (login_response.success) {
+          console.log('login success');
+          await saveToken(login_response.token);
+          setDisplayDotLoader(false);
+          navigation.navigate('HomeScreen');
+        } else {
+          Alert.alert(
+            'Account not found!',
+            'Try Again later or recheck your Email & Phone.'
+          );
+        }
+      } else {
+        setDisplayDotLoader(false);
+        setSignUpStage(2);
+      }
     } else {
-      Alert.alert('Invalid OTP!');
+      setDisplayDotLoader(false);
+      Alert.alert('Invalid OTP!', 'Please Try again by rechecking the OTP.');
     }
   };
 
@@ -645,18 +694,6 @@ const SignUp = ({ navigation }) => {
             )}
           </View>
 
-          {/* <View style={{ width: '90%', left: 20 }}>
-            <TextInput
-              value={gender}
-              onChangeText={(value) => {
-                setGender(value);
-              }}
-              // keyboardType="number-pad"
-              placeholder="Gender*"
-              style={[styles.input, styles_signup.finalFormInput]}
-            ></TextInput>
-          </View> */}
-
           <View style={{ width: '90%', left: 20 }}>
             <TouchableOpacity
               onPress={() => setShowGenderPicker(true)}
@@ -718,24 +755,6 @@ const SignUp = ({ navigation }) => {
             </Modal>
           </View>
 
-          {/* <View style={{ width: '90%', left: 20 }}>
-            <RNPickerSelect
-              onValueChange={(value) => setGender(value)}
-              placeholder={{
-                label: 'Gender*',
-                value: null,
-                // color: '#626262', // placeholder color
-              }}
-              items={[
-                { label: 'Male', value: 'Male' },
-                { label: 'Female', value: 'Female' },
-                { label: 'Other', value: 'Other' },
-              ]}
-              style={[styles.input, styles_signup.finalFormInput]}
-              value={gender}
-            />
-          </View> */}
-
           <View
             style={{
               flexDirection: 'row',
@@ -743,10 +762,19 @@ const SignUp = ({ navigation }) => {
               alignSelf: 'center',
             }}
           >
-            <CheckBox
+            {/* <CheckBox
               value={isChecked}
-              // onValueChange={setIsChecked}
+              onValueChange={(newValue) => {
+                console.log('setting it check');
+                setIsChecked(newValue);
+              }}
               tintColors={{ true: '#007aff', false: '#aaa' }}
+            /> */}
+
+            <Checkbox
+              status={isChecked ? 'checked' : 'unchecked'}
+              onPress={() => setIsChecked(!isChecked)}
+              color="#007aff"
             />
 
             <Text style={{ color: '#aaaaaa' }}>
