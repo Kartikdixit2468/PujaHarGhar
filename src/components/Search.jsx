@@ -20,7 +20,6 @@ const Search = ({ route, navigation }) => {
           navigation.navigate(page);
         }}
       >
-        {' '}
         <Icon name="arrow-back" size={32} color="#8a8a8a" />
       </TouchableOpacity>
       <View style={styles.group}>

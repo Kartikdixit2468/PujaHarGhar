@@ -11,20 +11,24 @@ import {
   StyleSheet,
 } from 'react-native';
 import { styles } from '../css/style';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // at top
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
+
 function TrendingCard({ data }) {
+  const navigation = useNavigation();
   const CARD_WIDTH = screenWidth * 0.65;
   const CARD_HEIGHT = CARD_WIDTH * 0.6;
+
   return (
     <FlatList
       data={data}
       horizontal
       showsHorizontalScrollIndicator={false}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.PUJA_ID}
       pagingEnabled
       snapToInterval={CARD_WIDTH + 20}
       contentContainerStyle={local_styles.listContainer}
@@ -40,15 +44,17 @@ function TrendingCard({ data }) {
             style={[local_styles.imageWrapper, { height: CARD_HEIGHT * 0.65 }]}
           >
             <Image
-              // source={require('../assets/images/1.png')}
-              source={require('../assets/images/puja3.jpg')}
+              // source={require('../assets/images/puja3.jpg')}
+              source={{uri: `http://192.168.31.166:3000/uploads/pujas/${item.img1}`}}
+
               style={local_styles.image}
             />
+            
 
             {/* Booking Tag */}
             <View style={local_styles.tagContainer}>
               <Text style={local_styles.tagText}>
-                🔥 {item.bookings} Bookings in 24hrs
+                🔥Most Famous
               </Text>
             </View>
           </View>
@@ -57,9 +63,11 @@ function TrendingCard({ data }) {
           <View
             style={[local_styles.bottomRow, { height: CARD_HEIGHT * 0.35 }]}
           >
-            <Text style={local_styles.title}>{item.title}</Text>
+            <Text style={local_styles.title}>{item.NAME}</Text>
             {/* Inside renderItem */}
-            <TouchableOpacity style={local_styles.bookNowButton}>
+            <TouchableOpacity style={local_styles.bookNowButton}
+            onPress={()=>{navigation.navigate('PujaPage', {id: item.PUJA_ID})}}            
+            >
               <Text style={local_styles.bookNowText}>Book Now</Text>
               <Icon
                 name="chevron-right"
@@ -114,19 +122,20 @@ function CategoryCard({ data, type }) {
           <Pressable
             style={[styles.catCard, localStyles.catCard]}
             onPress={() => {
-              Alert.alert('Welcome to a dedicate page for ' + item.Name);
+              Alert.alert('Welcome to a dedicate page for ' + item.name);
             }}
           >
             <View style={styles.category_card_image}>
               <Image
-                source={require('../assets/images/imagesCategory/1.jpg')}
+                source={{uri: `http://192.168.31.166:3000/uploads/category/${item.image}`}}
+                // source={require('../assets/images/imagesCategory/1.jpg')}
                 // source={require(item.Image_URL)} // ❌ Fetching image dynamically from data
                 style={styles.catCard_image}
               />
               {/* <View style={[styles.overlay]} /> */}
             </View>
             <View style={styles.bottomRowCategory}>
-              <Text style={styles.title}>{item.Name}</Text>
+              <Text style={styles.title}>{item.name}</Text>
             </View>
           </Pressable>
         )}
@@ -147,19 +156,19 @@ function CategoryCard({ data, type }) {
           <Pressable
             style={[styles.catCard, localStyles.catCard]}
             onPress={() => {
-              Alert.alert('Welcome to a dedicate page for ' + item.Name);
+              Alert.alert('Welcome to a dedicate page for ' + item.name);
             }}
           >
             <View style={styles.category_card_image}>
               <Image
-                source={require('../assets/images/imagesCategory/1.jpg')}
-                // source={require(item.Image_URL)} // ❌ Fetching image dynamically from data
+                source={{uri: `http://192.168.31.166:3000/uploads/category/${item.image}`}}
+                // source={require('../assets/images/imagesCategory/1.jpg')}
                 style={styles.catCard_image}
               />
               {/* <View style={[styles.overlay]} /> */}
             </View>
             <View style={styles.bottomRowCategory}>
-              <Text style={[styles.title, localStyles.title]}>{item.Name}</Text>
+              <Text style={[styles.title, localStyles.title]}>{item.name}</Text>
             </View>
           </Pressable>
         )}
@@ -172,6 +181,7 @@ const local_styles = StyleSheet.create({
   listContainer: {
     paddingLeft: 15,
     paddingRight: 5,
+    // borderWidth: 3,
   },
   card: {
     backgroundColor: '#fff',

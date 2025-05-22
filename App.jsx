@@ -53,7 +53,7 @@ function MenuNavigation() {
 
   const Stack = createNativeStackNavigator();
 
-  console.log(isLoggedIn)
+  // console.log(isLoggedIn)
 
   if (isLoggedIn === null) {
     return ( // or a splash/loading spinner
@@ -66,8 +66,8 @@ function MenuNavigation() {
     <Stack.Navigator
       // initialRouteName="Home"
       // initialRouteName={isLoggedIn ? "CheckoutScreen" : "WelcomeScreen"}
-      // initialRouteName={"HomeScreen"}
-      initialRouteName={isLoggedIn ? "HomeScreen" : "WelcomeScreen"}
+      // initialRouteName={"Home"}
+      initialRouteName={isLoggedIn ? "Home" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
@@ -83,7 +83,7 @@ function MenuNavigation() {
       />
 
       <Stack.Screen
-        name="HomeScreen"
+        name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
       />

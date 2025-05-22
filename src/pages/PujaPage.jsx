@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,25 +9,61 @@ import {
   Pressable,
   Alert,
 } from 'react-native';
+import { SERVER_IP } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useRoute } from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
-
-import { styles as styleImported } from '../css/profile_styles';
-// import { styles } from '';
 import { Dimensions } from 'react-native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
+
 export default function PujaDetails() {
+  const route = useRoute();
+  const { id } = route.params;
+
+  const [pujaDetails, setPujaDetails] = useState([]);
+
+  useEffect(() => {
+    const fetchPujaDetails = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        const response = await fetch(
+          `${SERVER_IP}/api/client/fetch/puja/details/${id}`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+          setPujaDetails(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching puja details:', error);
+      }
+    };
+
+    fetchPujaDetails();
+  }, []);
+
+  const imageUrls = [pujaDetails.img1, pujaDetails.img2, pujaDetails.img3];
+
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
-
 
       {/* Image Carousel */}
       <View style={styles.pujaDetailsContainer}>
         <Text style={styles.sideTitle}>Puja Details</Text>
         <View style={styles.swiperContainer}>
+        
           <Swiper
             style={styles.swiper}
             height={250}
@@ -41,7 +77,7 @@ export default function PujaDetails() {
             prevButton={<Text style={styles.arrowButtons}>‹</Text>}
             autoplay
           >
-            {[1, 2, 3, 4].map((item, index) => (
+            {imageUrls.map((url, index) => (
               <View
                 key={index}
                 style={{
@@ -56,19 +92,20 @@ export default function PujaDetails() {
                 }}
               >
                 <Image
-                  source={require('../assets/1.png')} // Replace with your image
+                  source={{ uri: `http://192.168.31.166:3000/uploads/pujas/${url}`,
+                }}
                   style={{ ...styles.image }}
                   resizeMode="cover"
                 />
               </View>
             ))}
           </Swiper>
-
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            {[1, 2, 3, 4].map((item, index) => (
+            {imageUrls.map((url, index) => (
               <Image
                 key={index}
-                source={require('../assets/1.png')} // Replace with your image
+                // source={require('../assets/1.png')} // Replace with your image
+                source={{ uri: `http://192.168.31.166:3000/uploads/pujas/${url}`,}}
                 style={{
                   ...styles.image,
                   width: 0.12 * width,
@@ -82,7 +119,7 @@ export default function PujaDetails() {
         </View>
 
         {/* Title */}
-        <Text style={styles.title}>Ganesh Utsav Puja Booking</Text>
+        <Text style={styles.title}>{pujaDetails.NAME}</Text>
         <Text style={styles.titleAfter} />
         <View
           style={{
@@ -107,9 +144,10 @@ export default function PujaDetails() {
         </View>
         {/* Description */}
         <Text style={styles.description}>
-          Ganesh Utsav Puja is a revered pujan festival dedicated to Lord
+          {/* Ganesh Utsav Puja is a revered pujan festival dedicated to Lord
           Ganesha Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
-          aliquam at.
+          aliquam at. */}
+          {PujaDetails.Description}
         </Text>
 
         {/* Book Now Button */}
@@ -378,7 +416,7 @@ const styles = StyleSheet.create({
     marginLeft: -24,
     marginTop: 15,
     backgroundColor: '#ffcf00',
-    maxWidth: width*0.45,
+    maxWidth: width * 0.45,
     fontSize: 0.045 * width,
     borderRadius: 50,
     fontWeight: 900,

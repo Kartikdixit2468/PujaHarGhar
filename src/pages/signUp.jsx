@@ -90,7 +90,7 @@ const SignUp = ({ navigation }) => {
   }, []);
 
   // Sign stage changer + tracker, Initial signUP stage : 0
-  const [signUpstage, setSignUpStage] = useState(2);
+  const [signUpstage, setSignUpStage] = useState(0);
   const [DisplayDotLoader, setDisplayDotLoader] = useState(false);
 
   // For SignUp Stage 0
@@ -132,7 +132,10 @@ const SignUp = ({ navigation }) => {
       const user_data = userInfo.data.user;
 
       try {
-        const response = await fetch(`${SERVER_IP}/api/client/register/user`, {
+        console.log(SERVER_IP)
+        // const response = await fetch(`${SERVER_IP}/api/client/register/user`, {
+        // const response = await fetch(`${SERVER_IP}/api/client/register/user`, {
+        const response = await fetch(`http://192.168.31.166:3000/api/client/register/user`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -147,7 +150,7 @@ const SignUp = ({ navigation }) => {
         if (data.success) {
           console.log(data.token);
           setDisplayDotLoader(false);
-          navigation.navigate('HomeScreen');
+          navigation.navigate('Home');
         } else {
           Alert.alert(
             'Login Failed Server refused the sign in request!',
@@ -156,7 +159,7 @@ const SignUp = ({ navigation }) => {
         }
       } catch (error) {
         Alert.alert(
-          'Login Failed Server refused the sign in request!',
+          'Login Failed Server refused the sign in request!!!',
           error.message
         );
         console.error(error);
