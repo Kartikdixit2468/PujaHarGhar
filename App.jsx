@@ -66,6 +66,7 @@ function MenuNavigation() {
     <Stack.Navigator
       // initialRouteName="Home"
       // initialRouteName={isLoggedIn ? "CheckoutScreen" : "WelcomeScreen"}
+      // initialRouteName={"HomeScreen"}
       initialRouteName={isLoggedIn ? "HomeScreen" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
@@ -114,10 +115,7 @@ function MenuNavigation() {
       <Stack.Screen
         name="Search"
         component={Search}
-        options={{
-          title: 'Search',
-          headerStyle: { backgroundColor: '#fff7ea' },
-        }}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen

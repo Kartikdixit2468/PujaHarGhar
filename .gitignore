@@ -98,6 +98,7 @@ yarn-error.log
 
 # backup file 
 backup_temp.jsx
+temp.jsx
 
 # custom files
 .env
