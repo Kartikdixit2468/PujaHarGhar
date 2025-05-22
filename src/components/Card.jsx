@@ -58,7 +58,7 @@ function TrendingCard({ data }) {
             style={[local_styles.bottomRow, { height: CARD_HEIGHT * 0.35 }]}
           >
             <Text style={local_styles.title}>{item.title}</Text>
-            // Inside renderItem
+            {/* Inside renderItem */}
             <TouchableOpacity style={local_styles.bookNowButton}>
               <Text style={local_styles.bookNowText}>Book Now</Text>
               <Icon
@@ -75,8 +75,7 @@ function TrendingCard({ data }) {
   );
 }
 
-function CategoryCard({ data, type}) {
-
+function CategoryCard({ data, type }) {
   const CARD_HEIGHT = screenHeight * 0.35;
   const CARD_WIDTH = CARD_HEIGHT * 0.6;
 
@@ -143,9 +142,7 @@ function CategoryCard({ data, type}) {
         keyExtractor={(item) => item.id.toString()}
         pagingEnabled
         snapToInterval={CARD_WIDTH + 20}
-        contentContainerStyle={[
-          localStyles.categoryGridContainer,
-        ]}
+        contentContainerStyle={[localStyles.categoryGridContainer]}
         renderItem={({ item }) => (
           <Pressable
             style={[styles.catCard, localStyles.catCard]}
@@ -170,7 +167,6 @@ function CategoryCard({ data, type}) {
     );
   }
 }
-
 
 const local_styles = StyleSheet.create({
   listContainer: {
@@ -240,6 +236,5 @@ const local_styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
 
 export { TrendingCard, CategoryCard };
