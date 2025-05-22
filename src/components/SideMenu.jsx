@@ -86,7 +86,7 @@ const SideMenu = ({visible, onCloseComplete, onSelect }) => {
             <Ionicons
               name={item.icon}
               size={30}
-              color={isActive ? '#fff' : '#bdc1c6'}
+              color={isActive ? '#fff' : '#888'}
             />
 
             <Text style={[styles.menuText, isActive && styles.activeMenuText]}>
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   menuText: {
     marginLeft: 15,
     fontSize: 18,
-    color: '#bdc1c6',
+    color: '#888',
     fontWeight: '600',
   },
   logout: {

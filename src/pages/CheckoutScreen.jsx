@@ -12,11 +12,9 @@ import { Checkbox } from 'react-native-paper';
 
 export default CheckoutScreen = ({ route, navigation }) => {
   //   const { priest, dateOption, selectedDate } = route.params;
-  const { priest, dateOption, selectedDate } = [
-    'Shri Mahavir Shashtri Ji',
-    'help',
-    new Date(),
-  ];
+  const { priest, dateOption, selectedDate, package_id} = route.params 
+  console.log("hey!")
+  console.log("here -> ", route.params)
 
   // Mock Puja/Package Details
   const pujaDetails = {
