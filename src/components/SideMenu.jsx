@@ -1,4 +1,4 @@
-/import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
