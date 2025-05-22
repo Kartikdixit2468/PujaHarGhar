@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,14 +11,67 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
+import {SERVER_IP} from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FAIcon from 'react-native-vector-icons/FontAwesome5';
-import { catData, data } from '../../data/data';
 import { styles } from '../css/style';
 import { CategoryCard, TrendingCard } from '../components/Card';
 import SideMenu from '../components/SideMenu';
 
 const Home = ({ navigation }) => {
+
+  const [trendingPujas, setTrendingPujas] = useState([]);
+  const [pujaCategories, setPujaCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchTrendingPujas = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        const response = await fetch(`${SERVER_IP}/api/client/trending/pujas`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+        if (data.success){
+        setTrendingPujas(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching trending pujas:', error);
+      }
+    };
+    
+      const fetchPujaCategories = async () => {
+        try {
+          const token = await AsyncStorage.getItem('authToken');
+          const response = await fetch(`${SERVER_IP}/api/client/pujas/Category`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+    
+        const data = await response.json();
+        if (data.success){
+        setPujaCategories(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching puja categories:', error);
+      }
+    };
+
+  
+    fetchTrendingPujas();
+    fetchPujaCategories();
+  }, []);
+  
+
+
   const [ShowMenu, setShowMenu] = useState(false);
   const [MenuMount, setMenuMount] = useState(false);
 
@@ -33,7 +86,6 @@ const Home = ({ navigation }) => {
     else{
       setMenuMount(true)
       setShowMenu(true)
-      console.log("Both are true now!")
     }
   }
 
@@ -67,7 +119,7 @@ const Home = ({ navigation }) => {
             color="#4B5563"
             style={local_styles.icon}
             onPress={() => {
-              navigation.navigate('Search', { page: 'HomeScreen' });
+              navigation.navigate('Search', { page: 'Home' });
             }}
           />
           <Image
@@ -121,7 +173,7 @@ const Home = ({ navigation }) => {
               style={styles.heading_underline}
               source={require('../assets/underline.png')}
             />
-            <TrendingCard data={data} />
+            <TrendingCard data={trendingPujas} />
           </View>
 
           <View style={[styles.section, styles.category_section]}>
@@ -138,7 +190,7 @@ const Home = ({ navigation }) => {
               source={require('../assets/underline.png')}
             />
 
-            <CategoryCard type="scroll" data={catData} />
+            <CategoryCard type="scroll" data={pujaCategories} />
           </View>
         </>
       )}

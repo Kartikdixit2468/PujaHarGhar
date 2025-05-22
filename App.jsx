@@ -11,8 +11,8 @@ import Profile from './src/pages/Profile';
 import Bookings from './src/pages/Bookings';
 import Support from './src/pages/support';
 import PujaPage from './src/pages/PujaPage';
-import { PreistSelectionScreen, PackageSelectionScreen } from './src/components/BookingScreens';
-import CheckoutScreen from './src/components/CheckoutScreen';
+import { PreistSelectionScreen, PackageSelectionScreen } from './src/pages/BookingScreens';
+import CheckoutScreen from './src/pages/CheckoutScreen';
 import WelcomeScreen from './src/pages/WelcomScreen';
 import { Text, View } from 'react-native';
 
@@ -20,7 +20,7 @@ function MenuNavigation() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   useEffect(()=>{
-    const checkLogIn =async () => {
+    const checkLogIn = async () => {
       const token = await AsyncStorage.getItem('authToken')
       if (token){
         // const verifyToken = await fetch('http://192.168.31.118:3000/api/client/user/verify/securitytoken',
@@ -53,11 +53,11 @@ function MenuNavigation() {
 
   const Stack = createNativeStackNavigator();
 
-  console.log(isLoggedIn)
+  // console.log(isLoggedIn)
 
   if (isLoggedIn === null) {
     return ( // or a splash/loading spinner
-        // <Text>Loading</Text>
+        // <Text>Loading</Text>r
         <View/>
     )
   }
@@ -66,7 +66,8 @@ function MenuNavigation() {
     <Stack.Navigator
       // initialRouteName="Home"
       // initialRouteName={isLoggedIn ? "CheckoutScreen" : "WelcomeScreen"}
-      initialRouteName={isLoggedIn ? "HomeScreen" : "WelcomeScreen"}
+      // initialRouteName={"Home"}
+      initialRouteName={isLoggedIn ? "Home" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
@@ -82,7 +83,7 @@ function MenuNavigation() {
       />
 
       <Stack.Screen
-        name="HomeScreen"
+        name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
       />
@@ -91,16 +92,24 @@ function MenuNavigation() {
         name="PackageSelectionScreen"
         component={PackageSelectionScreen}
         // options={{ headerShown: false }}
+        options={{
+          title: 'Select a Package',
+          headerStyle: { backgroundColor: '#f7f7f7' },
+          // headerShown: false
+        }}
       />
 
       <Stack.Screen
         name="PreistSelectionScreen"
         component={PreistSelectionScreen}
-        // options={{ headerShown: false }}
-      />
+        options={{
+          title: 'Select a Priest',
+          headerStyle: { backgroundColor: '#f7f7f7' },
+          // headerShown: false
+        }}      />
 
       <Stack.Screen
-        name="CheckoutScreen"
+        name="Checkout"
         component={CheckoutScreen}
         // options={{ headerShown: false }}
       />
@@ -114,10 +123,7 @@ function MenuNavigation() {
       <Stack.Screen
         name="Search"
         component={Search}
-        options={{
-          title: 'Search',
-          headerStyle: { backgroundColor: '#fff7ea' },
-        }}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
+import { SERVER_IP } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const priests = [
@@ -35,7 +37,7 @@ const priests = [
   },
 ];
 
-const packages = [
+const packages_ = [
   {
     name: 'Basic Package',
     features: [
@@ -62,19 +64,49 @@ const packages = [
   },
 ];
 
-export const PackageSelectionScreen = ({ navigation }) => {
+export const PackageSelectionScreen = ({ route, navigation }) => {
+  const { id } = route.params;
+
+  const [packages, setPackages] = useState([]);
+
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        const response = await fetch(`${SERVER_IP}/api/client/packages/${id}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          setPackages(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching puja Packages:', error);
+      }
+    };
+
+    fetchPackages();
+  }, []);
+
+  // console.log("here ->")
+  // console.log("here ->",id)
   const [selected, setSelected] = useState(null);
 
   return (
     <ScrollView style={stylesPackageScreen.container}>
       <Text style={stylesPackageScreen.heading}>Choose Your Package</Text>
-      {packages.map((pkg, index) => (
+      {packages.map((pkg) => (
         <TouchableOpacity
-          key={index}
-          onPress={() => setSelected(index)}
+          key={pkg.id}
+          onPress={() => setSelected(pkg.id)}
           style={[
             stylesPackageScreen.card,
-            selected === index && stylesPackageScreen.selectedCard,
+            selected === pkg.id && stylesPackageScreen.selectedCard,
           ]}
         >
           <Text style={stylesPackageScreen.packageName}>{pkg.name}</Text>
@@ -91,9 +123,8 @@ export const PackageSelectionScreen = ({ navigation }) => {
         disabled={selected === null}
         onPress={() => {
           if (selected !== null) {
-            const selectedPackage = packages[selected];
             // You can pass this to next screen or handle accordingly
-            navigation.navigate('BookingDetails', { selectedPackage });
+            navigation.navigate('PreistSelectionScreen', { package_id: selected });
           }
         }}
       >
@@ -152,7 +183,39 @@ const stylesPackageScreen = StyleSheet.create({
   },
 });
 
-export const PreistSelectionScreen = ({ navigation }) => {
+export const PreistSelectionScreen = ({ route, navigation }) => {
+  // const {id} = route.params;
+  // console.log("here ->")
+  // console.log("here ->",id)
+
+  const { package_id } = route.params;
+
+  const [priestList, setPriestList] = useState([]);
+
+  useEffect(() => {
+    const fetchPriestList = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        const response = await fetch(`${SERVER_IP}/api/client/fetch/priest/`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          setPriestList(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching puja Packages:', error);
+      }
+    };
+
+    fetchPriestList();
+  }, []);
+
   const [selectedPriest, setSelectedPriest] = useState(null);
   const [dateOption, setDateOption] = useState(null); // "help" or "specific"
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -184,7 +247,7 @@ export const PreistSelectionScreen = ({ navigation }) => {
       <ScrollView contentContainerStyle={stylesPreistSelection.scrollContent}>
         <View style={stylesPreistSelection.dropdownContainer}>
           <Text style={stylesPreistSelection.label}>Choose Priest</Text>
-  
+
           <TouchableOpacity
             onPress={() => setIsOpen(!isOpen)}
             style={stylesPreistSelection.dropdown}
@@ -192,8 +255,8 @@ export const PreistSelectionScreen = ({ navigation }) => {
             {selectedPriest ? (
               <View style={stylesPreistSelection.item}>
                 <Image
-                  source={require('../assets/images/pandit-img.png')}
-                  style={stylesPreistSelection.image}
+                    source={{uri: `http://192.168.31.166:3000/uploads/priest/${selectedPriest.img}`}}
+                    style={stylesPreistSelection.image}
                 />
                 <View>
                   <Text style={stylesPreistSelection.name}>
@@ -210,38 +273,37 @@ export const PreistSelectionScreen = ({ navigation }) => {
               </Text>
             )}
           </TouchableOpacity>
-  
+
           {isOpen && (
             <View style={stylesPreistSelection.dropdownList}>
-              {priests.map((priest) => (
+              {priestList.map((priest) => (
                 <TouchableOpacity
                   key={priest.id}
                   style={stylesPreistSelection.item}
                   onPress={() => handleSelect(priest)}
                 >
                   <Image
-                    source={{
-                      uri: 'https://imgs.search.brave.com/m12gFeEaYTH9TW9JHo1E4K4UFZBIAGpFdv-O_jdbty0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzQ2LzgzLzk2/LzM2MF9GXzM0Njgz/OTY4M182bkFQemJo/cFNrSXBiOHBtQXd1/ZmtDN2M1ZUQ3d1l3/cy5qcGc',
-                    }}
+                    source={{uri: `http://192.168.31.166:3000/uploads/priest/${priest.img}`}}
+
                     style={stylesPreistSelection.image}
                   />
                   <View>
                     <Text style={stylesPreistSelection.name}>
-                      Shri {priest.name}
+                    {priest.gender === 'female' ? 'Shrimat' : 'Shri'} {priest.name}
                     </Text>
                     <Text style={stylesPreistSelection.experience}>
-                      {priest.experience} years of experience
+                      {priest.exp} years of experience
                     </Text>
                   </View>
                 </TouchableOpacity>
               ))}
             </View>
           )}
-  
+
           <Text style={stylesPreistSelection.heading}>
             Select Date Preference
           </Text>
-  
+
           <View style={stylesPreistSelection.optionRow}>
             <TouchableOpacity
               style={[
@@ -254,11 +316,12 @@ export const PreistSelectionScreen = ({ navigation }) => {
                 Let us help you
               </Text>
             </TouchableOpacity>
-  
+
             <TouchableOpacity
               style={[
                 stylesPreistSelection.optionButton,
-                dateOption === 'specific' && stylesPreistSelection.optionSelected,
+                dateOption === 'specific' &&
+                  stylesPreistSelection.optionSelected,
               ]}
               onPress={() => setDateOption('specific')}
             >
@@ -267,7 +330,7 @@ export const PreistSelectionScreen = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           </View>
-  
+
           {dateOption === 'specific' && (
             <TouchableOpacity
               onPress={() => setShowDatePicker(true)}
@@ -278,7 +341,7 @@ export const PreistSelectionScreen = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           )}
-  
+
           {showDatePicker && (
             <DateTimePicker
               value={selectedDate}
@@ -290,27 +353,29 @@ export const PreistSelectionScreen = ({ navigation }) => {
           )}
         </View>
       </ScrollView>
-  
+
       <View style={stylesPreistSelection.footer}>
         <TouchableOpacity
           style={stylesPreistSelection.button}
           onPress={() => {
             navigation.navigate('Checkout', {
-              priest: selectedPriest,
+              priest_id: selectedPriest.id,
               dateOption,
               selectedDate: dateOption === 'specific' ? selectedDate : null,
+              package_id: package_id
             });
           }}
         >
           <Text style={stylesPreistSelection.buttonText}>Checkout</Text>
         </TouchableOpacity>
-  
+
         <Text style={stylesPreistSelection.note}>
-          Note: You’ll be asked to pay partially now, and the rest as we proceed further.
+          Note: You’ll be asked to pay partially now, and the rest as we proceed
+          further.
         </Text>
       </View>
     </View>
-  );  
+  );
 };
 
 const stylesPreistSelection = StyleSheet.create({
@@ -318,7 +383,7 @@ const stylesPreistSelection = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 8,
     flex: 1,
-    maxHeight: "100%"
+    maxHeight: '100%',
   },
   heading: {
     fontSize: 18,
@@ -388,10 +453,10 @@ const stylesPreistSelection = StyleSheet.create({
     fontSize: 13,
     textAlign: 'center',
   },
-  label: { 
-    fontSize: 16, 
-    fontWeight: '600', 
-    marginBottom: 8 , 
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
     padding: 5,
   },
   dropdown: {
@@ -445,7 +510,4 @@ const stylesPreistSelection = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#eee',
   },
-  
 });
-
-
