@@ -13,57 +13,6 @@ import { SERVER_IP } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const priests = [
-  {
-    id: 1,
-    name: 'Ramesh Tiwari',
-    experience: 5,
-    image:
-      'https://imgs.search.brave.com/m12gFeEaYTH9TW9JHo1E4K4UFZBIAGpFdv-O_jdbty0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzQ2LzgzLzk2/LzM2MF9GXzM0Njgz/OTY4M182bkFQemJo/cFNrSXBiOHBtQXd1/ZmtDN2M1ZUQ3d1l3/cy5qcGc',
-  },
-  {
-    id: 2,
-    name: 'Mahesh Shastri',
-    experience: 7,
-    image:
-      'https://imgs.search.brave.com/m12gFeEaYTH9TW9JHo1E4K4UFZBIAGpFdv-O_jdbty0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzQ2LzgzLzk2/LzM2MF9GXzM0Njgz/OTY4M182bkFQemJo/cFNrSXBiOHBtQXd1/ZmtDN2M1ZUQ3d1l3/cy5qcGc',
-  },
-  {
-    id: 3,
-    name: 'Suresh Pandey',
-    experience: 4,
-    image:
-      'https://imgs.search.brave.com/m12gFeEaYTH9TW9JHo1E4K4UFZBIAGpFdv-O_jdbty0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzQ2LzgzLzk2/LzM2MF9GXzM0Njgz/OTY4M182bkFQemJo/cFNrSXBiOHBtQXd1/ZmtDN2M1ZUQ3d1l3/cy5qcGc',
-  },
-];
-
-const packages_ = [
-  {
-    name: 'Basic Package',
-    features: [
-      'Includes 10 essential puja items',
-      'Suitable for home puja',
-      'Digital darshan access',
-    ],
-  },
-  {
-    name: 'Standard Package',
-    features: [
-      'Includes 15+ puja items',
-      'Experienced priest guided puja',
-      'Video recording shared',
-    ],
-  },
-  {
-    name: 'Premium Package',
-    features: [
-      'Complete puja kit with all items',
-      'Personalized puja with priest',
-      'Live video call & HD recording',
-    ],
-  },
-];
-
 export const PackageSelectionScreen = ({ route, navigation }) => {
   const { id } = route.params;
 
@@ -73,7 +22,7 @@ export const PackageSelectionScreen = ({ route, navigation }) => {
     const fetchPackages = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
-        const response = await fetch(`${SERVER_IP}/api/client/packages/${id}`, {
+        const response = await fetch(`${SERVER_IP}/api/client/puja/packages/${id}`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -93,8 +42,7 @@ export const PackageSelectionScreen = ({ route, navigation }) => {
     fetchPackages();
   }, []);
 
-  // console.log("here ->")
-  // console.log("here ->",id)
+
   const [selected, setSelected] = useState(null);
 
   return (
@@ -109,7 +57,12 @@ export const PackageSelectionScreen = ({ route, navigation }) => {
             selected === pkg.id && stylesPackageScreen.selectedCard,
           ]}
         >
-          <Text style={stylesPackageScreen.packageName}>{pkg.name}</Text>
+          <View style={stylesPackageScreen.cardHeader}>
+            <Text style={stylesPackageScreen.packageName}>{pkg.name}</Text>
+            <Text style={stylesPackageScreen.packagePrice}>₹{pkg.price}</Text>
+          </View>
+
+          {/* 👈 Added this line */}
           {pkg.features.map((feature, i) => (
             <Text key={i} style={stylesPackageScreen.feature}>
               • {feature}
@@ -124,7 +77,9 @@ export const PackageSelectionScreen = ({ route, navigation }) => {
         onPress={() => {
           if (selected !== null) {
             // You can pass this to next screen or handle accordingly
-            navigation.navigate('PreistSelectionScreen', { package_id: selected });
+            navigation.navigate('PreistSelectionScreen', {
+              package_id: selected,
+            });
           }
         }}
       >
@@ -181,12 +136,22 @@ const stylesPackageScreen = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
   },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  
+  packagePrice: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#333',
+  },
 });
 
 export const PreistSelectionScreen = ({ route, navigation }) => {
-  // const {id} = route.params;
-  // console.log("here ->")
-  // console.log("here ->",id)
+
 
   const { package_id } = route.params;
 
@@ -217,7 +182,7 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
   }, []);
 
   const [selectedPriest, setSelectedPriest] = useState(null);
-  const [dateOption, setDateOption] = useState(null); // "help" or "specific"
+  const [dateOption, setDateOption] = useState('specific'); // "help" or "specific"
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isOpen, setIsOpen] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -255,15 +220,17 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
             {selectedPriest ? (
               <View style={stylesPreistSelection.item}>
                 <Image
-                    source={{uri: `http://192.168.31.166:3000/uploads/priest/${selectedPriest.img}`}}
-                    style={stylesPreistSelection.image}
+                  source={{
+                    uri: `http://192.168.31.166:3000/uploads/priest/${selectedPriest.img}`,
+                  }}
+                  style={stylesPreistSelection.image}
                 />
                 <View>
                   <Text style={stylesPreistSelection.name}>
                     Shri {selectedPriest.name}
                   </Text>
                   <Text style={stylesPreistSelection.experience}>
-                    {selectedPriest.experience} years of experience
+                    {selectedPriest.exp} years of experience
                   </Text>
                 </View>
               </View>
@@ -283,13 +250,15 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
                   onPress={() => handleSelect(priest)}
                 >
                   <Image
-                    source={{uri: `http://192.168.31.166:3000/uploads/priest/${priest.img}`}}
-
+                    source={{
+                      uri: `http://192.168.31.166:3000/uploads/priest/${priest.img}`,
+                    }}
                     style={stylesPreistSelection.image}
                   />
                   <View>
                     <Text style={stylesPreistSelection.name}>
-                    {priest.gender === 'female' ? 'Shrimat' : 'Shri'} {priest.name}
+                      {priest.gender === 'female' ? 'Shrimat' : 'Shri'}{' '}
+                      {priest.name}
                     </Text>
                     <Text style={stylesPreistSelection.experience}>
                       {priest.exp} years of experience
@@ -362,7 +331,7 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
               priest_id: selectedPriest.id,
               dateOption,
               selectedDate: dateOption === 'specific' ? selectedDate : null,
-              package_id: package_id
+              package_id: package_id,
             });
           }}
         >
