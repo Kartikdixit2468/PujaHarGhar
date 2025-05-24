@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,20 +9,55 @@ import {
   Pressable,
   Alert,
 } from 'react-native';
+import { SERVER_IP } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useRoute } from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
-
-import { styles as styleImported } from '../css/profile_styles';
-// import { styles } from '';
 import { Dimensions } from 'react-native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
-export default function PujaDetails() {
+
+export default function PujaDetails({navigation}) {
+  const route = useRoute();
+  const { id } = route.params;
+
+  const [pujaDetails, setPujaDetails] = useState([]);
+
+  useEffect(() => {
+    const fetchPujaDetails = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        const response = await fetch(
+          `${SERVER_IP}/api/client/fetch/puja/details/${id}`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        const data = await response.json();
+        if (data.success) {
+          setPujaDetails(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching puja details:', error);
+      }
+    };
+
+    fetchPujaDetails();
+  }, []);
+
+  const imageUrls = [pujaDetails.img1, pujaDetails.img2, pujaDetails.img3];
+
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
-
 
       {/* Image Carousel */}
       <View style={styles.pujaDetailsContainer}>
@@ -41,7 +76,7 @@ export default function PujaDetails() {
             prevButton={<Text style={styles.arrowButtons}>‹</Text>}
             autoplay
           >
-            {[1, 2, 3, 4].map((item, index) => (
+            {imageUrls.map((url, index) => (
               <View
                 key={index}
                 style={{
@@ -56,19 +91,23 @@ export default function PujaDetails() {
                 }}
               >
                 <Image
-                  source={require('../assets/1.png')} // Replace with your image
+                  source={{
+                    uri: `http://192.168.31.166:3000/uploads/pujas/${url}`,
+                  }}
                   style={{ ...styles.image }}
                   resizeMode="cover"
                 />
               </View>
             ))}
           </Swiper>
-
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            {[1, 2, 3, 4].map((item, index) => (
+            {imageUrls.map((url, index) => (
               <Image
                 key={index}
-                source={require('../assets/1.png')} // Replace with your image
+                // source={require('../assets/1.png')} // Replace with your image
+                source={{
+                  uri: `http://192.168.31.166:3000/uploads/pujas/${url}`,
+                }}
                 style={{
                   ...styles.image,
                   width: 0.12 * width,
@@ -82,7 +121,7 @@ export default function PujaDetails() {
         </View>
 
         {/* Title */}
-        <Text style={styles.title}>Ganesh Utsav Puja Booking</Text>
+        <Text style={styles.title}>{pujaDetails.NAME}</Text>
         <Text style={styles.titleAfter} />
         <View
           style={{
@@ -107,13 +146,17 @@ export default function PujaDetails() {
         </View>
         {/* Description */}
         <Text style={styles.description}>
-          Ganesh Utsav Puja is a revered pujan festival dedicated to Lord
+          {/* Ganesh Utsav Puja is a revered pujan festival dedicated to Lord
           Ganesha Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
-          aliquam at.
+          aliquam at. */}
+          {pujaDetails.Description}
         </Text>
 
         {/* Book Now Button */}
-        <TouchableOpacity style={styles.bookNow}>
+        <TouchableOpacity 
+        onPress={()=> {navigation.navigate('PackageSelectionScreen', {id: pujaDetails.PUJA_ID})}}
+        style={styles.bookNow}
+        >
           <Text style={styles.bookNowText}>Book Now</Text>
         </TouchableOpacity>
 
@@ -161,22 +204,22 @@ export default function PujaDetails() {
               promise: 'Professional Guidance and Support',
               image: 'person-sharp',
             },
-            { promise: 'Guranteed Puntuality', image: 'star' },
           ].map((item, index) => (
             <View
               key={index}
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: '17.4%',
+                width: '20%',
               }}
             >
-              <Ionicons name={item.image} size={20} color="brown" />
+              <Ionicons name={item.image} size={25} color="#ffcf00" />
               <Text
                 style={{
-                  fontWeight: 'bold',
-                  color: 'grey',
-                  fontSize: 0.018 * width,
+                  fontWeight: '700',
+                  fontFamily: 'Fredoka-SemiBold',
+                  color: '#000',
+                  fontSize: 10,
                   textAlign: 'center',
                 }}
               >
@@ -218,7 +261,7 @@ export default function PujaDetails() {
               review:
                 'My Experience with Puja Har Ghar was amazing. I booked Ganesh Utsav Puja and the pandit was very knowledgeable and performed the rituals with utmost devotion. Highly recommend!',
               image: '../../assets/images/vrindiiiiiii.jpeg',
-              rating: 4.5,
+              rating: 2.5,
             },
             {
               name: 'Vrinda',
@@ -242,23 +285,32 @@ export default function PujaDetails() {
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginTop: 10,
+                  marginTop: 5,
                 }}
               >
-                <Image
-                  source={require('../assets/1.png')}
+                <MaterialCommunityIcons
+                  name={
+                    item.rating >= 3
+                      ? 'emoticon-happy'
+                      : 'emoticon-neutral'
+                      // ? 'emoticon-happy-outline'
+                      // : 'emoticon-neutral-outline'
+                  }
+                  key={index}
+                  size={50}
+                  // color="#ffcf00"
+                  color="#ffd52e"
                   style={{
-                    width: 0.1 * width,
-                    height: 0.1 * width,
-                    borderRadius: 50,
+                    marginBottom: 5,
                   }}
-                  resizeMode="contain"
                 />
+
                 <Text
                   style={{
-                    fontSize: 0.04 * width,
+                    fontSize: 20,
                     fontWeight: 'bold',
                     marginLeft: 10,
+                    marginTop: -10,
                   }}
                 >
                   {item.name}
@@ -269,22 +321,22 @@ export default function PujaDetails() {
                       <Ionicons
                         name="star"
                         key={index}
-                        size={11}
-                        color={'yellow'}
+                        size={18}
+                        color={'#ffd52e'}
                       />
                     ) : num - item.rating == 0.5 ? (
                       <Ionicons
                         name="star-outline"
                         key={index}
-                        size={11}
-                        color={'yellow'}
+                        size={18}
+                        color={'#ffd52e'}
                       />
                     ) : (
                       <Ionicons
                         name="star-half"
                         key={index}
-                        size={11}
-                        color={'yellow'}
+                        size={18}
+                        color={'#ffd52e'}
                       />
                     )
                   )}
@@ -292,10 +344,13 @@ export default function PujaDetails() {
               </View>
               <Text
                 style={{
-                  fontSize: 0.02 * width,
-                  color: '#555',
-                  textAlign: 'justify',
-                  paddingHorizontal: 16,
+                  fontSize: 11.5,
+                  // letterSpacing: 0.5,
+                  textAlign: "center",
+                  color: '#333',
+                  margin: 'auto',
+                  paddingHorizontal: 8,
+                  fontWeight: "500"
                 }}
               >
                 {item.review}
@@ -378,7 +433,7 @@ const styles = StyleSheet.create({
     marginLeft: -24,
     marginTop: 15,
     backgroundColor: '#ffcf00',
-    maxWidth: width*0.45,
+    maxWidth: width * 0.45,
     fontSize: 0.045 * width,
     borderRadius: 50,
     fontWeight: 900,
@@ -414,7 +469,7 @@ const styles = StyleSheet.create({
   promises: {
     width: 0.9 * width,
     height: 0.1 * height,
-    backgroundColor: '#ffcf00',
+    backgroundColor: '#fffaf1',
     borderRadius: 20,
     margin: 'auto',
     marginTop: 10,
@@ -423,23 +478,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     overflow: 'hidden',
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#fcd34d',
   },
   reviewCard: {
     display: 'flex',
-    marginRight: 5,
-    width: 0.29 * width,
-    height: 0.2 * height,
+    width: 0.4 * width,
+    height: 0.25 * height,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#f7b731',
-    margin: 'auto',
-    marginTop: 10,
+    backgroundColor: '#fffaf1',
+    margin: 10,
     alignContent: 'center',
-    justifyContent: 'center',
     flexDirection: 'column',
-    paddingHorizontal: 5,
+    padding: 5,
     overflow: 'hidden',
-    marginBottom: 10,
   },
   customerReviewsContainer: {
     display: 'flex',

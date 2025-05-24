@@ -1,35 +1,87 @@
 import React from 'react';
 import HomeScreen from './src/pages/Home';
-// import { createStaticNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignUp from './src/pages/signUp';
 import Search from './src/components/Search';
 import Categories from './src/pages/Categories';
 import Profile from './src/pages/Profile';
-import Bookings from './src/pages/bookings';
+import Bookings from './src/pages/Bookings';
 import Support from './src/pages/support';
 import PujaPage from './src/pages/PujaPage';
+import { PreistSelectionScreen, PackageSelectionScreen } from './src/pages/BookingScreens';
+import CheckoutScreen from './src/pages/CheckoutScreen';
+import WelcomeScreen from './src/pages/WelcomScreen';
+import { Text, View } from 'react-native';
 
 function MenuNavigation() {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  useEffect(()=>{
+    const checkLogIn = async () => {
+      const token = await AsyncStorage.getItem('authToken')
+      if (token){
+        // const verifyToken = await fetch('http://192.168.31.118:3000/api/client/user/verify/securitytoken',
+        const verifyToken = await fetch('http://192.168.31.166:3000/api/client/user/verify/securitytoken',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            // body: JSON.stringify(completeUserData),
+            body: JSON.stringify({token: token}),
+          }
+        );
+
+        const isTokenValid = await verifyToken.json()
+
+        if (isTokenValid){       
+          setIsLoggedIn(true)
+        }
+        else{
+          setIsLoggedIn(false)
+        }
+      }
+      else{
+        setIsLoggedIn(false)
+      }
+    };
+    checkLogIn()
+  }, [])
+
   const Stack = createNativeStackNavigator();
 
+  // console.log(isLoggedIn)
+
+  if (isLoggedIn === null) {
+    return ( // or a splash/loading spinner
+        // <Text>Loading</Text>r
+        <View/>
+    )
+  }
+  
   return (
     <Stack.Navigator
       // initialRouteName="Home"
-      initialRouteName="PujaPage"
+      // initialRouteName={isLoggedIn ? "CheckoutScreen" : "WelcomeScreen"}
+      initialRouteName={"Home"}
+      // initialRouteName={isLoggedIn ? "Home" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
-          // fontWeight: 'bold',
           fontFamily: 'Fredoka-SemiBold',
           fontSize: 25,
         },
-        // headerStyle: {
-        //   height: 200
-        // },
       }}
     >
+      <Stack.Screen
+        name="WelcomeScreen"
+        component={WelcomeScreen}
+        options={{ headerShown: false }}
+      />
+
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -37,21 +89,41 @@ function MenuNavigation() {
       />
 
       <Stack.Screen
+        name="PackageSelectionScreen"
+        component={PackageSelectionScreen}
+        // options={{ headerShown: false }}
+        options={{
+          title: 'Select a Package',
+          headerStyle: { backgroundColor: '#f7f7f7' },
+          // headerShown: false
+        }}
+      />
+
+      <Stack.Screen
+        name="PreistSelectionScreen"
+        component={PreistSelectionScreen}
+        options={{
+          title: 'Select a Priest',
+          headerStyle: { backgroundColor: '#f7f7f7' },
+          // headerShown: false
+        }}      />
+
+      <Stack.Screen
+        name="Checkout"
+        component={CheckoutScreen}
+        // options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
         name="SignUp"
         component={SignUp}
-        options={{
-          title: 'Sign Up',
-          headerStyle: { backgroundColor: '#fff7ea' },
-        }}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
         name="Search"
         component={Search}
-        options={{
-          title: 'Search',
-          headerStyle: { backgroundColor: '#fff7ea' },
-        }}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
@@ -65,7 +137,7 @@ function MenuNavigation() {
             fontSize: 40,
           },
         }}
-      /> 
+      />
 
       <Stack.Screen
         name="Bookings"
@@ -81,8 +153,8 @@ function MenuNavigation() {
         component={PujaPage}
         options={{
           title: 'Puja Details',
-          headerStyle: { backgroundColor: '#f3f3f3' },
-          // headerShown: false 
+          headerStyle: { backgroundColor: '#f7f7f7' },
+          // headerShown: false
         }}
       />
 

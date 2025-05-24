@@ -7,174 +7,12 @@ const height = Dimensions.get('window').height;
 // const CARD_HEIGHT = 160;
 
 export const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff7ea',
-    padding: 0,
-  },
-  topbar_title: {
-    color: 'white',
-  },
-  topbar_input: {
-    minWidth: '55%',
-    maxWidth: '55%',
-  },
-  safeareabar: {
-    top: 0,
-    height: 25,
-    width: '100%',
-    backgroundColor: 'grey',
-  },
-  topbar: {
-    backgroundColor: '#ffbc00',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 5,
-  },
-  header: {
-    // flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#f9f7f9',
-    paddingHorizontal: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    maxHeight: 60,
-    height: '100%',
-  },
-  menu_ico: {
-    flex: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 3,
-    width: '50%',
-    maxHeight: 120,
-  },
-  menu_ico_bar: {
-    maxWidth: 45,
-    backgroundColor: '#f08c1f',
-    maxHeight: 8,
-    height: '10%',
-    width: '90%',
-    margin: 2,
-    borderRadius: 20,
-    alignSelf: 'flex-start',
-  },
-  bar1: {
-    width: '90%',
-  },
-  bar2: {
-    width: '75%',
-  },
-  bar3: {
-    width: '50%',
-  },
-  logo_container: {
-    height: '100%',
-    flex: 7,
-    paddingHorizontal: 5,
-  },
-
-  logo: {
-    width: '100%',
-    height: '100%',
-  },
-  flowerbar: {
-    flex: 7,
-    overflow: 'hidden',
-    height: '90%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 2,
-  },
-  flowerbar_ico: {
-    resizeMode: 'contain',
-    height: 100,
-    width: '100%',
-  },
-  pressed: {
-    opacity: 0.6,
-  },
-  search_ico: {
-    flex: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  search_ico_img: {
-    resizeMode: 'contain',
-    height: '80%',
-    width: '70%',
-    zIndex: 99,
-    // borderWidth: 2,
-    // borderColor: "black",
-  },
-  title: {
-    fontWeight: 400,
-    fontSize: 15,
-
-    color: 'black',
-    fontFamily: 'Fredoka-SemiBold',
-    marginVertical: 1,
-    paddingVertical: 10,
-  },
-  background: {
-    resizeMode: 'contain', // or 'contain', 'stretch'
-    height: '100%',
-    paddingHorizontal: 10,
-  },
-  home_section: {
-    maxWidth: '100%',
-    maxHeight: '45%',
-    overflow: 'hidden',
-    // borderWidth: 6,
-    // borderColor: "green",
-  },
-  top_heading: {
-    marginTop: 20,
-    marginVertical: 10,
-    color: 'white',
-    fontSize: 25,
-    maxWidth: '70%',
-    fontFamily: 'Fredoka-SemiBold',
-    // borderWidth: 4,
-    // borderColor: "green",
-  },
-  verified_img: {
-    // position: "absolute",
-    // resizeMode: 'stretch', // or 'contain', 'stretch'
-    marginTop: -15,
-    left: -6,
-    maxWidth: '75%',
-    maxHeight: 80,
-    // borderWidth: 2,
-    // borderColor: "red",
-  },
-  glow_heading: {
-    marginTop: -30,
-    marginHorizontal: 10,
-    color: 'white',
-    fontSize: 40,
-    fontFamily: 'Fredoka-Bold',
-    fontWeight: 500,
-    textShadowColor: 'rgba(255, 255, 255, 0.8)', // Glow effect
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 30, // Adjust for a stronger glow
-    // borderWidth: 4,
-    // borderColor: "purple",
-  },
-  vrindavan_img: {
-    resizeMode: 'contain',
-    marginVertical: 5,
-    maxHeight: 100,
-    maxWidth: '90%',
-    // borderWidth: 4,
-    // borderColor: "green",
-  },
   section: {
-    margin: 10,
-    // borderWidth: 2,
-    borderColor: 'green',
+    marginVertical: 10,
+    width: "100%",
   },
   trending_section: {
-    maxHeight: height * 0.33,
+    maxHeight: height * 0.25,
   },
   category_section: {
     maxHeight: height * 0.65,
@@ -187,25 +25,26 @@ export const styles = StyleSheet.create({
     // borderColor: 'green',
   },
   heading_text: {
-    margin: 4,
+    margin: 2,
     color: '#ffbc00',
-    fontSize: 30,
+    // color: '#000',
+    fontSize: 20,
     fontFamily: 'bernoru-blackultraexpanded',
     fontWeight: 'bold',
   },
   swastik: {
     marginTop: 5,
     resizeMode: 'contain',
-    marginHorizontal: 5,
-    height: 40,
-    width: 40,
+    // marginHorizontal: 2,
+    height: 25,
+    width: 25,
     // borderWidth: 4,
     // borderColor: 'green',
   },
   heading_underline: {
     marginBottom: 10,
     resizeMode: 'cover',
-    maxWidth: '60%',
+    maxWidth: '40%',
     maxHeight: 10,
     // borderWidth: 4,
     // borderColor: "yellow",
@@ -394,6 +233,7 @@ export const styles = StyleSheet.create({
     // borderWidth: 2,
     padding: '5%',
     justifyContent: 'center',
+    zIndex: 99
   },
   emailInput: {
     // borderWidth: 5,

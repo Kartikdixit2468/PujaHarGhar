@@ -11,41 +11,70 @@ import {
   StyleSheet,
 } from 'react-native';
 import { styles } from '../css/style';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // at top
 
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
-function TrendingCard({ data, CARD_WIDTH, CARD_HEIGHT }) {
-  // const CARD_WIDTH = width * 0.7; // Adjust for two cards per screen
-  // const CARD_HEIGHT = 160;
+
+function TrendingCard({ data }) {
+  const navigation = useNavigation();
+  const CARD_WIDTH = screenWidth * 0.65;
+  const CARD_HEIGHT = CARD_WIDTH * 0.6;
 
   return (
     <FlatList
       data={data}
       horizontal
       showsHorizontalScrollIndicator={false}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.PUJA_ID}
       pagingEnabled
       snapToInterval={CARD_WIDTH + 20}
-      contentContainerStyle={styles.listContainer}
+      contentContainerStyle={local_styles.listContainer}
       renderItem={({ item }) => (
         <View
-          style={[styles.card, { width: CARD_WIDTH, height: CARD_HEIGHT }]}
+          style={[
+            local_styles.card,
+            { width: CARD_WIDTH, height: CARD_HEIGHT },
+          ]}
         >
+          {/* Top: Image Section */}
           <View
-            style={[styles.trending_card_image, { height: CARD_HEIGHT * 0.7 }]}
+            style={[local_styles.imageWrapper, { height: CARD_HEIGHT * 0.65 }]}
           >
-            <Image source={require('../assets/1.png')} style={styles.image} />
-            <Text style={styles.specialTag}>{item.specialTag}</Text>
-            <View style={styles.overlay} />
-          </View>
-          <View style={[styles.bottomRow, { maxHeight: CARD_HEIGHT * 0.3 }]}>
-            <Text style={styles.title}>{item.title}</Text>
-            <TouchableOpacity style={styles.bookNowContainer}>
-              <Text style={[styles.bookNow, { fontSize: CARD_WIDTH * 0.05 }]}>
-                Book Now →
+            <Image
+              // source={require('../assets/images/puja3.jpg')}
+              source={{uri: `http://192.168.31.166:3000/uploads/pujas/${item.img1}`}}
+
+              style={local_styles.image}
+            />
+            
+
+            {/* Booking Tag */}
+            <View style={local_styles.tagContainer}>
+              <Text style={local_styles.tagText}>
+                🔥Most Famous
               </Text>
+            </View>
+          </View>
+
+          {/* Bottom: Title and Button */}
+          <View
+            style={[local_styles.bottomRow, { height: CARD_HEIGHT * 0.35 }]}
+          >
+            <Text style={local_styles.title}>{item.NAME}</Text>
+            {/* Inside renderItem */}
+            <TouchableOpacity style={local_styles.bookNowButton}
+            onPress={()=>{navigation.navigate('PujaPage', {id: item.PUJA_ID})}}            
+            >
+              <Text style={local_styles.bookNowText}>Book Now</Text>
+              <Icon
+                name="chevron-right"
+                size={20}
+                color="#fff"
+                style={{ marginLeft: 4 }}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -54,17 +83,18 @@ function TrendingCard({ data, CARD_WIDTH, CARD_HEIGHT }) {
   );
 }
 
-function CategoryCard({ data, type, CARD_WIDTH, CARD_HEIGHT }) {
+function CategoryCard({ data, type }) {
+  const CARD_HEIGHT = screenHeight * 0.35;
+  const CARD_WIDTH = CARD_HEIGHT * 0.6;
+
   const localStyles = StyleSheet.create({
     categoryGridContainer: {
-      // something special to be coded here
-    },
-    categoryGridContainer: {
       alignSelf: 'center',
-      width: width - (width / 10) * 0.5,
-      // borderWidth: 2,
-      // justifyContent: 'space-between'
+      width: screenWidth - (screenWidth / 10) * 0.5,
       marginBottom: 50,
+    },
+    categoryContainer: {
+      maxHeight: screenHeight * 0.4,
     },
     catCard: {
       width: CARD_WIDTH,
@@ -78,7 +108,6 @@ function CategoryCard({ data, type, CARD_WIDTH, CARD_HEIGHT }) {
   if (type == 'scroll') {
     return (
       <FlatList
-        style={{ marginHorizontal: 10 }}
         data={data}
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -93,19 +122,20 @@ function CategoryCard({ data, type, CARD_WIDTH, CARD_HEIGHT }) {
           <Pressable
             style={[styles.catCard, localStyles.catCard]}
             onPress={() => {
-              Alert.alert('Welcome to a dedicate page for ' + item.Name);
+              Alert.alert('Welcome to a dedicate page for ' + item.name);
             }}
           >
             <View style={styles.category_card_image}>
               <Image
-                source={require('../assets/images/imagesCategory/1.jpg')}
+                source={{uri: `http://192.168.31.166:3000/uploads/category/${item.image}`}}
+                // source={require('../assets/images/imagesCategory/1.jpg')}
                 // source={require(item.Image_URL)} // ❌ Fetching image dynamically from data
                 style={styles.catCard_image}
               />
               {/* <View style={[styles.overlay]} /> */}
             </View>
             <View style={styles.bottomRowCategory}>
-              <Text style={styles.title}>{item.Name}</Text>
+              <Text style={styles.title}>{item.name}</Text>
             </View>
           </Pressable>
         )}
@@ -121,27 +151,24 @@ function CategoryCard({ data, type, CARD_WIDTH, CARD_HEIGHT }) {
         keyExtractor={(item) => item.id.toString()}
         pagingEnabled
         snapToInterval={CARD_WIDTH + 20}
-        contentContainerStyle={[
-          styles.categoryContainer,
-          localStyles.categoryGridContainer,
-        ]}
+        contentContainerStyle={[localStyles.categoryGridContainer]}
         renderItem={({ item }) => (
           <Pressable
             style={[styles.catCard, localStyles.catCard]}
             onPress={() => {
-              Alert.alert('Welcome to a dedicate page for ' + item.Name);
+              Alert.alert('Welcome to a dedicate page for ' + item.name);
             }}
           >
             <View style={styles.category_card_image}>
               <Image
-                source={require('../assets/images/imagesCategory/1.jpg')}
-                // source={require(item.Image_URL)} // ❌ Fetching image dynamically from data
+                source={{uri: `http://192.168.31.166:3000/uploads/category/${item.image}`}}
+                // source={require('../assets/images/imagesCategory/1.jpg')}
                 style={styles.catCard_image}
               />
               {/* <View style={[styles.overlay]} /> */}
             </View>
             <View style={styles.bottomRowCategory}>
-              <Text style={[styles.title, localStyles.title]}>{item.Name}</Text>
+              <Text style={[styles.title, localStyles.title]}>{item.name}</Text>
             </View>
           </Pressable>
         )}
@@ -149,5 +176,75 @@ function CategoryCard({ data, type, CARD_WIDTH, CARD_HEIGHT }) {
     );
   }
 }
+
+const local_styles = StyleSheet.create({
+  listContainer: {
+    paddingLeft: 15,
+    paddingRight: 5,
+    // borderWidth: 3,
+  },
+  card: {
+    backgroundColor: '#fff',
+    // backgroundColor: '#fff6e7',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    overflow: 'hidden',
+    marginRight: 20,
+  },
+  imageWrapper: {
+    width: '100%',
+    overflow: 'hidden',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  tagContainer: {
+    position: 'absolute',
+    top: 8,
+    left: 0,
+    backgroundColor: '#FFE600',
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  tagText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  bottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    flex: 1,
+    color: '#222',
+  },
+  bookNowButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFA500',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  bookNowText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});
 
 export { TrendingCard, CategoryCard };
