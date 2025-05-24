@@ -42,7 +42,6 @@ export default function PujaDetails({navigation}) {
         );
 
         const data = await response.json();
-
         if (data.success) {
           setPujaDetails(data.data);
         }
@@ -150,7 +149,7 @@ export default function PujaDetails({navigation}) {
           {/* Ganesh Utsav Puja is a revered pujan festival dedicated to Lord
           Ganesha Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
           aliquam at. */}
-          {PujaDetails.Description}
+          {pujaDetails.Description}
         </Text>
 
         {/* Book Now Button */}

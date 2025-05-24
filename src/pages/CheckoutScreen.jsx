@@ -1,45 +1,58 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Linking
+  Linking,
 } from 'react-native';
+import { SERVER_IP } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Checkbox } from 'react-native-paper';
-
 
 export default CheckoutScreen = ({ route, navigation }) => {
   //   const { priest, dateOption, selectedDate } = route.params;
-  const { priest, dateOption, selectedDate, package_id} = route.params 
-  console.log("hey!")
-  console.log("here -> ", route.params)
+  const { priest, dateOption, selectedDate, package_id } = route.params;
 
-  // Mock Puja/Package Details
-  const pujaDetails = {
-    name: 'Satyanarayan Puja',
-    description:
-      'A traditional Hindu puja to seek blessings for happiness and prosperity.',
-    package: {
-      name: 'Premium Package',
-      features: [
-        'Puja Samagri included',
-        '2 Hours Duration',
-        'Personalized Guidance',
-        'Sanskrit Mantras Explained',
-      ],
-      price: 2500,
-    },
-    travelCost: 500,
-    tax: 0.1, // 10%
-  };
+
+  const [checkoutInfo, setCheckoutInfo] = useState({});
+
+  useEffect(() => {
+    const fetchCheckoutInfo = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        const response = await fetch(
+          `${SERVER_IP}/api/client/fetch/checkout/${package_id}`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        const data = await response.json();
+        if (data.success) {
+          setCheckoutInfo(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching puja Packages:', error);
+      }
+    };
+
+    fetchCheckoutInfo();
+  }, []);
+
 
   const [agree, setAgree] = useState(false);
 
-  const totalCost = pujaDetails.package.price + pujaDetails.travelCost;
-  const taxAmount = totalCost * pujaDetails.tax;
-  const finalAmount = totalCost + taxAmount;
+  const totalCost = checkoutInfo.package_price + checkoutInfo.travel_cost;
+  const tax = 0.18;
+  const taxAmount = totalCost * tax;
+  const discount = taxAmount;
+  const finalAmount = totalCost + taxAmount - discount;
 
   return (
     <View style={styles.container}>
@@ -48,17 +61,19 @@ export default CheckoutScreen = ({ route, navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         {/* Puja Info */}
-        <Text style={styles.heading}>{pujaDetails.name}</Text>
-        <Text style={styles.description}>{pujaDetails.description}</Text>
+        <Text style={styles.heading}>{checkoutInfo.puja_name}</Text>
+        <Text style={styles.description}>{checkoutInfo.puja_desc}</Text>
 
         {/* Package Details */}
         <View style={styles.section}>
-          <Text style={styles.subheading}>{pujaDetails.package.name}</Text>
-          {pujaDetails.package.features.map((feature, index) => (
-            <Text key={index} style={styles.featureText}>
-              • {feature}
-            </Text>
-          ))}
+          <Text style={styles.subheading}>{checkoutInfo.package_name}</Text>
+
+          {Array.isArray(checkoutInfo.features) &&
+            checkoutInfo.features.map((feature, i) => (
+              <Text key={i} style={styles.featureText}>
+                • {feature}
+              </Text>
+            ))}
         </View>
 
         {/* Cost Breakdown */}
@@ -66,14 +81,18 @@ export default CheckoutScreen = ({ route, navigation }) => {
           <Text style={styles.subheading}>Cost Breakdown</Text>
           <View style={styles.row}>
             <Text style={styles.label}>Puja Base Price</Text>
-            <Text style={styles.value}>₹{pujaDetails.package.price}</Text>
+            <Text style={styles.value}>₹{checkoutInfo.package_price}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Intra-State Travel Cost</Text>
-            <Text style={styles.value}>₹{pujaDetails.travelCost}</Text>
+            <Text style={styles.value}>₹{checkoutInfo.travel_cost}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>GST (10%)</Text>
+            <Text style={styles.label}>GST (18%)</Text>
+            <Text style={styles.value}>₹{taxAmount.toFixed(0)}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Discount</Text>
             <Text style={styles.value}>₹{taxAmount.toFixed(0)}</Text>
           </View>
           <View style={styles.row}>
@@ -98,27 +117,36 @@ export default CheckoutScreen = ({ route, navigation }) => {
         </View>
 
         <View style={styles.checkboxContainer}>
-        <Checkbox
-          status={agree ? 'checked' : 'unchecked'}
-          onPress={() => setAgree(!agree)}
-          color="#4F46E5" // Indigo
-        />
-        <Text style={styles.checkboxText}>
-          I agree to the{' '}
-          <Text style={styles.link} onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
-            Terms & Conditions
+          <Checkbox
+            status={agree ? 'checked' : 'unchecked'}
+            onPress={() => setAgree(!agree)}
+            color="#4F46E5" // Indigo
+          />
+          <Text style={styles.checkboxText}>
+            I agree to the{' '}
+            <Text
+              style={styles.link}
+              onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}
+            >
+              Terms & Conditions
+            </Text>
+            ,{' '}
+            <Text
+              style={styles.link}
+              onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}
+            >
+              Privacy Policy
+            </Text>{' '}
+            and{' '}
+            <Text
+              style={styles.link}
+              onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}
+            >
+              Refund Policy
+            </Text>
+            .
           </Text>
-          ,{' '}
-          <Text style={styles.link} onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
-            Privacy Policy
-          </Text>{' '}
-          and{' '}
-          <Text style={styles.link} onPress={() => Linking.openURL('https://kartikdixit.vercel.app')}>
-            Refund Policy
-          </Text>.
-        </Text>
-      </View>
-
+        </View>
       </ScrollView>
 
       {/* Footer */}
@@ -129,7 +157,6 @@ export default CheckoutScreen = ({ route, navigation }) => {
             // Handle Payment Navigation
             navigation.navigate('Payment', { finalAmount });
           }}
-
         >
           <Text style={styles.buttonText}>
             Proceed to Pay ₹{finalAmount.toFixed(0)}
@@ -253,5 +280,4 @@ const styles = StyleSheet.create({
     color: '#4F46E5', // Indigo-600
     textDecorationLine: 'underline',
   },
-
 });
