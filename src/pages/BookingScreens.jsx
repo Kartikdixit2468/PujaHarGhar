@@ -257,7 +257,7 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
                   />
                   <View>
                     <Text style={stylesPreistSelection.name}>
-                      {priest.gender === 'female' ? 'Shrimat' : 'Shri'}{' '}
+                      {priest.gender === 'female' ? 'Shrimati' : 'Shri'}{' '}
                       {priest.name}
                     </Text>
                     <Text style={stylesPreistSelection.experience}>
