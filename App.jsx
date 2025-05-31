@@ -15,6 +15,7 @@ import { PreistSelectionScreen, PackageSelectionScreen } from './src/pages/Booki
 import CheckoutScreen from './src/pages/CheckoutScreen';
 import WelcomeScreen from './src/pages/WelcomScreen';
 import { Text, View } from 'react-native';
+import Payment from './src/pages/Payment';
 
 function MenuNavigation() {
 
@@ -66,8 +67,8 @@ function MenuNavigation() {
     <Stack.Navigator
       // initialRouteName="Home"
       // initialRouteName={isLoggedIn ? "CheckoutScreen" : "WelcomeScreen"}
-      initialRouteName={"Home"}
-      // initialRouteName={isLoggedIn ? "Home" : "WelcomeScreen"}
+      // initialRouteName={"Home"}
+      initialRouteName={isLoggedIn ? "Home" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
@@ -112,6 +113,12 @@ function MenuNavigation() {
         name="Checkout"
         component={CheckoutScreen}
         // options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Payment"
+        component={Payment}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen

@@ -11,12 +11,21 @@ import { SERVER_IP } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Checkbox } from 'react-native-paper';
 
-export default CheckoutScreen = ({ route, navigation }) => {
+export default CheckoutScreen = ({ navigation, route }) => {
   //   const { priest, dateOption, selectedDate } = route.params;
   const { priest, dateOption, selectedDate, package_id } = route.params;
 
 
   const [checkoutInfo, setCheckoutInfo] = useState({});
+  const [orderInfo, setOrderInfo] = useState({});
+  const [agree, setAgree] = useState(false);
+
+  const tax = 0.18;
+  const [finalAmount, setFinalAmount] = useState(null);
+  const [totalCost, setTotalCost] = useState(null);
+  const [taxAmount, setTaxAmount] = useState(null);
+  const [discount, setDiscount] = useState(null);
+
 
   useEffect(() => {
     const fetchCheckoutInfo = async () => {
@@ -32,27 +41,53 @@ export default CheckoutScreen = ({ route, navigation }) => {
             },
           }
         );
-
+    
         const data = await response.json();
         if (data.success) {
-          setCheckoutInfo(data.data);
+          const fetchedData = data.data;
+          const _totalCost = fetchedData.package_price + fetchedData.travel_cost;
+          const _taxAmount = _totalCost * tax;
+          const _discount = _taxAmount;
+          const _finalAmount = _totalCost + _taxAmount - _discount;
+          console.log(_finalAmount)
+    
+          setCheckoutInfo(fetchedData);
+          setTotalCost(_totalCost);
+          setTaxAmount(_taxAmount);
+          setDiscount(_discount);
+          setFinalAmount(_finalAmount);
+
+          await fetchPaymentInfo(_finalAmount);
         }
       } catch (error) {
         console.error('Error fetching puja Packages:', error);
       }
     };
 
+    const fetchPaymentInfo = async (amount) => {
+      console.log("final amount is: ", amount);
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        const res = await fetch(`${SERVER_IP}/api/payment/create-order/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ amount: (amount*100) / 2 }), // Half payment
+        });
+    
+        const data = await res.json();
+        setOrderInfo(data.data);
+        console.log("Order info:", data.data);
+      } catch (err) {
+        console.error('Failed to fetch Razorpay order:', err);
+      }
+    };
+    
+
     fetchCheckoutInfo();
   }, []);
-
-
-  const [agree, setAgree] = useState(false);
-
-  const totalCost = checkoutInfo.package_price + checkoutInfo.travel_cost;
-  const tax = 0.18;
-  const taxAmount = totalCost * tax;
-  const discount = taxAmount;
-  const finalAmount = totalCost + taxAmount - discount;
 
   return (
     <View style={styles.container}>
@@ -89,11 +124,11 @@ export default CheckoutScreen = ({ route, navigation }) => {
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>GST (18%)</Text>
-            <Text style={styles.value}>₹{taxAmount.toFixed(0)}</Text>
+            <Text style={styles.value}>₹{taxAmount}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Discount</Text>
-            <Text style={styles.value}>₹{taxAmount.toFixed(0)}</Text>
+            <Text style={styles.value}>₹{discount}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Selected Date</Text>
@@ -105,13 +140,13 @@ export default CheckoutScreen = ({ route, navigation }) => {
           </View>
           <View style={styles.rowTotal}>
             <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>₹{finalAmount.toFixed(0)}</Text>
+            <Text style={styles.totalValue}>₹{finalAmount}</Text>
           </View>
 
           <View style={styles.rowTotal}>
             <Text style={styles.totalLabel}>Current Payable (50%)</Text>
             <Text style={styles.totalValue}>
-              ₹{(finalAmount / 2).toFixed(0)}
+              ₹{(finalAmount / 2)}
             </Text>
           </View>
         </View>
@@ -155,11 +190,11 @@ export default CheckoutScreen = ({ route, navigation }) => {
           style={styles.button}
           onPress={() => {
             // Handle Payment Navigation
-            navigation.navigate('Payment', { finalAmount });
+            navigation.navigate('Payment', { finalAmount:finalAmount*100, currentAmount: (finalAmount/2)*100, orderInfo: orderInfo });
           }}
         >
           <Text style={styles.buttonText}>
-            Proceed to Pay ₹{finalAmount.toFixed(0)}
+            Proceed to Pay ₹{(finalAmount/2)}
           </Text>
         </TouchableOpacity>
         <Text style={styles.note}>

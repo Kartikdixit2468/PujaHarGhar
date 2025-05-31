@@ -27,10 +27,14 @@ export const styles = StyleSheet.create({
   heading_text: {
     margin: 2,
     color: '#ffbc00',
+    // color: '#555',
     // color: '#000',
     fontSize: 20,
     fontFamily: 'bernoru-blackultraexpanded',
     fontWeight: 'bold',
+    textShadowColor: '#ffbc00',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 0,
   },
   swastik: {
     marginTop: 5,
