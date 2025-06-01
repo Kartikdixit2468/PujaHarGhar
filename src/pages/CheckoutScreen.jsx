@@ -13,8 +13,14 @@ import { Checkbox } from 'react-native-paper';
 
 export default CheckoutScreen = ({ navigation, route }) => {
   //   const { priest, dateOption, selectedDate } = route.params;
-  const { priest, dateOption, selectedDate, package_id } = route.params;
+  const { priest_id, dateOption, selectedDate, package_id } = route.params;
 
+  const BookingObject = { 
+    package_id: package_id,
+    dateOption: dateOption, 
+    date: new Date(selectedDate).toLocaleDateString(),
+    priest_id: priest_id
+  }
 
   const [checkoutInfo, setCheckoutInfo] = useState({});
   const [orderInfo, setOrderInfo] = useState({});
@@ -190,7 +196,7 @@ export default CheckoutScreen = ({ navigation, route }) => {
           style={styles.button}
           onPress={() => {
             // Handle Payment Navigation
-            navigation.navigate('Payment', { finalAmount:finalAmount*100, currentAmount: (finalAmount/2)*100, orderInfo: orderInfo });
+            navigation.navigate('Payment', { finalAmount:finalAmount*100, currentAmount: (finalAmount/2)*100, orderInfo: orderInfo , BookingObject:BookingObject});
           }}
         >
           <Text style={styles.buttonText}>

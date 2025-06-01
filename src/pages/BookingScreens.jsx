@@ -327,6 +327,8 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
         <TouchableOpacity
           style={stylesPreistSelection.button}
           onPress={() => {
+            console.log(selectedDate)
+            console.log(formatDate(selectedDate))
             navigation.navigate('Checkout', {
               priest_id: selectedPriest.id,
               dateOption,

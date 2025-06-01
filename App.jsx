@@ -14,6 +14,8 @@ import PujaPage from './src/pages/PujaPage';
 import { PreistSelectionScreen, PackageSelectionScreen } from './src/pages/BookingScreens';
 import CheckoutScreen from './src/pages/CheckoutScreen';
 import WelcomeScreen from './src/pages/WelcomScreen';
+import BookingSuccess from './src/pages/BookingSuccess';
+import BookingFailiure from './src/pages/BookingFailiure';
 import { Text, View } from 'react-native';
 import Payment from './src/pages/Payment';
 
@@ -112,6 +114,17 @@ function MenuNavigation() {
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
+        // options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="BookingSuccess"
+        component={BookingSuccess}
+        // options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BookingFailiure"
+        component={BookingFailiure}
         // options={{ headerShown: false }}
       />
 

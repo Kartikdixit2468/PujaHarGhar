@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import RazorpayCheckout from 'react-native-razorpay';
 
 const Payment = ({ navigation, route }) => {
-  const { finalAmount, currentAmount, orderInfo } = route.params;
+  const { finalAmount, currentAmount, orderInfo, BookingObject } = route.params;
 
   const VerifyPayment = async (verificationObject) => {
     try {
@@ -22,11 +22,11 @@ const Payment = ({ navigation, route }) => {
       const data = await response.json();
       console.log(data);
       if (data.success) {
-        console.log("Payment was legit.")
+        console.log('Payment was legit.');
         return { success: true };
       }
     } catch (error) {
-      console.log("Payment was fraudalent.")
+      console.log('Payment was fraudalent.');
       return { success: false, message: error.message };
     }
   };
@@ -49,23 +49,53 @@ const Payment = ({ navigation, route }) => {
     };
 
     RazorpayCheckout.open(options)
-      .then((data) => {
-        const isPaymentLegit = VerifyPayment(data)
-        if(isPaymentLegit.success)
-        console.log(isPaymentLegit)
-      else{
-        console.log(`Payment Error: ${isPaymentLegit.message}`);
-      }
+      .then(async (data) => {
+        console.log('In verification');
+        const isPaymentLegit = await VerifyPayment(data);
+        console.log('In verification II');
+        console.log(isPaymentLegit);
+
+        if (isPaymentLegit.success) {
+          const BookingDetails = {
+            ...BookingObject,
+            payment_id: data.razorpay_payment_id,
+          };
+          console.log(BookingDetails);
+          const token = await AsyncStorage.getItem('authToken');
+          const response = await fetch(
+            `${SERVER_IP}/api/client/create-order/booking/`,
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(BookingDetails),
+            }
+          );
+
+          const isBooked = await response.json();
+
+          if (isBooked.success) {
+            navigation.navigate('BookingSuccess');
+          } else {
+            navigation.navigate('BookingFailiure');
+          }
+        } else {
+          console.log(`Payment Error: ${isPaymentLegit.message}`);
+          navigation.navigate('BookingFailiure');
+        }
       })
       .catch((error) => {
         console.log(`Payment Error: ${error.code} | ${error.description}`);
+        navigation.navigate('BookingFailiure');
       });
   };
 
-    // Fetch order info on mount
+  // Fetch order info on mount
   useEffect(() => {
     openRazorpayCheckout(orderInfo);
-  }, []); 
+  }, []);
 
   return (
     <View>
