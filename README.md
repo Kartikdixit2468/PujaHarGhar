@@ -1,129 +1,83 @@
-<<<<<<< HEAD
-# Rsbuild project
+# 🙏 Pujaharghar – Online Puja Booking App (React Native)
 
-## Setup
+Hey there! 👋  
+This is my **current project**, called **Pujaharghar**, and while I don’t work on it daily, I am steadily building it. Initially, I started this to bring the **concept of online puja bookings and spiritual services to every home**, but later I decided to make it **open source**, so more people can contribute, learn, and make it better. 🚀  
 
-Install the dependencies:
+---
 
-```bash
-pnpm install
-```
+## 🎯 Purpose of the App
 
-## Get started
+In India, spiritual practices and rituals like **pujas** are deeply rooted in culture.  
+However, not everyone can easily connect with a **pandit (priest)**, arrange rituals, or handle payments smoothly.  
 
-Start the dev server:
+That’s where **Pujaharghar** comes in:  
 
-```bash
-pnpm dev
-```
+- 🌐 **Bridge the gap** between devotees and priests through technology.  
+- 📅 Allow users to **book pujas online** from their phones.  
+- 💳 Enable **secure digital payments** for rituals, donations, and services.  
+- 📱 Provide a **simple and modern mobile experience** that preserves tradition.  
 
-Build the app for production:
+---
 
-```bash
-pnpm build
-```
+## ✨ Features (Work in Progress)
 
-Preview the production build locally:
+Here are the main features I’m building (and open for contributions to improve 👇):
 
-```bash
-pnpm preview
-```
-=======
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+- 🔑 **Google Sign-In Authentication**  
+- 📲 **User profile management** (basic details, saved addresses, etc.)  
+- 🧘 **Browse & book pujas** (with descriptions, required items, duration, etc.)  
+- 💳 **Payments via Razorpay** (secure & easy integration)  
+- 📜 **My Bookings** (history and upcoming pujas)  
+- 🔔 **Push Notifications** (reminders & updates — planned)  
+- 🎥 **Virtual Pujas** (live or recorded session option — future idea)  
+- 🕉️ **Localized experience** (support for Hindi/English, extendable to more languages)  
 
-# Getting Started
+---
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 🏗️ Project Structure
 
-## Step 1: Start Metro
+This repository contains the **React Native frontend**.  
+The **backend** (Node.js + Express + MongoDB) is in a separate repository:  
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+👉 [Pujaharghar Backend](https://github.com/kartikdixit2468/pujaharghar-backend)
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
 
+## ⚡ Getting Started
+
+Make sure your environment is set up for React Native first:  
+👉 [React Native Environment Setup Guide](https://reactnative.dev/docs/environment-setup)
+
+### 1️⃣ Clone the repo
 ```sh
+git clone https://github.com/kartikdixit2468/pujaharghar.git
+cd pujaharghar
+
+
+
+ml;df
+```
+## Initial Setup
 # Using npm
+npm install
+
+# OR using Yarn
+yarn install
+
+## Starting Metro Bundler
 npm start
-
-# OR using Yarn
+# OR
 yarn start
-```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+## Running app on Android
 npm run android
-
-# OR using Yarn
+# OR
 yarn android
-```
 
-### iOS
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+---
 
-```sh
-bundle install
-```
+Would you like me to also add **screenshots/diagrams placeholders** in the README (like *“App Screenshots Coming Soon”* with an image section) so future contributors/users get a visual idea?
 
-Then, and every time you update your native dependencies, run:
 
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
->>>>>>> master
