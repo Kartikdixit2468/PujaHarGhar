@@ -22,9 +22,9 @@ import { styles } from '../css/style';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 
-const tokenAuth = '447695T9MQQ9m86807c6ffP1';
-const PhoneWidgetId = '356476684d37333431323031';
-const EmailWidgetId = '356476764375383138393037';
+const tokenAuth = 'AUTH_TOKEN';
+const PhoneWidgetId = 'PHONE_WIDGET_ID';
+const EmailWidgetId = 'EMAIL_WIDGET_ID';
 
 const saveValue = async (key, value) => {
   try {
@@ -960,3 +960,4 @@ const styles_signup = StyleSheet.create({
 });
 
 export default SignUp;
+
