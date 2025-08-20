@@ -94,8 +94,8 @@ const SignUp = ({ navigation }) => {
   const [DisplayDotLoader, setDisplayDotLoader] = useState(false);
 
   // For SignUp Stage 0
-  const [email, setEmail] = useState('rakesh.kumar223@gmail.com');
-  const [number, setNumber] = useState('9342496564');
+  const [email, setEmail] = useState('abc@email.com');
+  const [number, setNumber] = useState('1234567890');
 
   // const [email, setEmail] = useState(null);
   // const [number, setNumber] = useState(null);
@@ -960,4 +960,5 @@ const styles_signup = StyleSheet.create({
 });
 
 export default SignUp;
+
 
