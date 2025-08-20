@@ -57,19 +57,17 @@ cd pujaharghar
 
 ml;df
 ```
-## Initial Setup
 # Using npm
 npm install
 
 # OR using Yarn
 yarn install
 
-## Starting Metro Bundler
 npm start
 # OR
 yarn start
 
-## Running app on Android
+# Running app on Android
 npm run android
 # OR
 yarn android
@@ -79,5 +77,6 @@ yarn android
 ---
 
 Would you like me to also add **screenshots/diagrams placeholders** in the README (like *“App Screenshots Coming Soon”* with an image section) so future contributors/users get a visual idea?
+
 
 
