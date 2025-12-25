@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SERVER_IP } from '@env';
 import React, { useState, useEffect } from 'react';
 import RazorpayCheckout from 'react-native-razorpay';
+// console.log(SERVER_IP)
 
 const Payment = ({ navigation, route }) => {
   const { finalAmount, currentAmount, orderInfo, BookingObject } = route.params;

@@ -30,8 +30,10 @@ export default function PujaDetails({navigation}) {
     const fetchPujaDetails = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
+        console.log(SERVER_IP)
         const response = await fetch(
           `${SERVER_IP}/api/client/fetch/puja/details/${id}`,
+          // `http://192.168.5.178:3000/api/client/fetch/puja/details/${id}`,
           {
             method: 'GET',
             headers: {
@@ -42,6 +44,8 @@ export default function PujaDetails({navigation}) {
         );
 
         const data = await response.json();
+        console.log("Check it here!")
+        console.log(data)
         if (data.success) {
           setPujaDetails(data.data);
         }
@@ -91,23 +95,19 @@ export default function PujaDetails({navigation}) {
                 }}
               >
                 <Image
-                  source={{
-                    uri: `http://192.168.31.166:3000/uploads/pujas/${url}`,
-                  }}
+                  source={{uri: `${SERVER_IP}/uploads/pujas/${url}`}}
                   style={{ ...styles.image }}
                   resizeMode="cover"
                 />
               </View>
             ))}
           </Swiper>
+
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             {imageUrls.map((url, index) => (
               <Image
                 key={index}
-                // source={require('../assets/1.png')} // Replace with your image
-                source={{
-                  uri: `http://192.168.31.166:3000/uploads/pujas/${url}`,
-                }}
+                source={{uri: `${SERVER_IP}/uploads/pujas/${url}`}}
                 style={{
                   ...styles.image,
                   width: 0.12 * width,
@@ -121,7 +121,7 @@ export default function PujaDetails({navigation}) {
         </View>
 
         {/* Title */}
-        <Text style={styles.title}>{pujaDetails.NAME}</Text>
+        <Text style={styles.title}>{pujaDetails.name}</Text>
         <Text style={styles.titleAfter} />
         <View
           style={{
@@ -149,12 +149,12 @@ export default function PujaDetails({navigation}) {
           {/* Ganesh Utsav Puja is a revered pujan festival dedicated to Lord
           Ganesha Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
           aliquam at. */}
-          {pujaDetails.Description}
+          {pujaDetails.description}
         </Text>
 
         {/* Book Now Button */}
         <TouchableOpacity 
-        onPress={()=> {navigation.navigate('PackageSelectionScreen', {id: pujaDetails.PUJA_ID})}}
+        onPress={()=> {navigation.navigate('PackageSelectionScreen', {id: pujaDetails.puja_id})}}
         style={styles.bookNow}
         >
           <Text style={styles.bookNowText}>Book Now</Text>

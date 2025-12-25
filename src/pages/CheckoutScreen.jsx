@@ -11,6 +11,7 @@ import { SERVER_IP } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Checkbox } from 'react-native-paper';
 
+
 export default CheckoutScreen = ({ navigation, route }) => {
   //   const { priest, dateOption, selectedDate } = route.params;
   const { priest_id, dateOption, selectedDate, package_id } = route.params;
@@ -21,6 +22,9 @@ export default CheckoutScreen = ({ navigation, route }) => {
     date: new Date(selectedDate).toLocaleDateString(),
     priest_id: priest_id
   }
+
+  console.log("See below!")
+  console.log(BookingObject)
 
   const [checkoutInfo, setCheckoutInfo] = useState({});
   const [orderInfo, setOrderInfo] = useState({});

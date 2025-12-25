@@ -31,6 +31,7 @@ const Categories = () => {
     
         const data = await response.json();
         if (data.success){
+          console.log("category fetching successfull")
         setPujaCategories(data.data);
         }
       } catch (error) {
