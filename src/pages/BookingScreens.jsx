@@ -13,12 +13,17 @@ import { SERVER_IP } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+
+// console.log(SERVER_IP)
 export const PackageSelectionScreen = ({ route, navigation }) => {
   const { id } = route.params;
 
   const [packages, setPackages] = useState([]);
 
+  console.log("Everything is going great till here")
+  
   useEffect(() => {
+    console.log("Everything is going great till here")
     const fetchPackages = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
@@ -29,13 +34,16 @@ export const PackageSelectionScreen = ({ route, navigation }) => {
             'Content-Type': 'application/json',
           },
         });
-
+        
         const data = await response.json();
         if (data.success) {
+          console.log("Everything is going great till !")
+          console.log("Success fetching the package data!")
           setPackages(data.data);
         }
       } catch (error) {
         console.error('Error fetching puja Packages:', error);
+        console.log("Failure fetching the package data!")
       }
     };
 
@@ -221,7 +229,9 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
               <View style={stylesPreistSelection.item}>
                 <Image
                   source={{
-                    uri: `http://192.168.31.166:3000/uploads/priest/${selectedPriest.img}`,
+                    // uri: `http://127.0.0.1:3000/uploads/priest/${selectedPriest.img}`,
+                    uri: `${SERVER_IP}/uploads/priest/${selectedPriest.img}`,
+                    // uri: `http://10.51.2.157:3000/uploads/priest/${selectedPriest.img}`,
                   }}
                   style={stylesPreistSelection.image}
                 />
@@ -251,13 +261,15 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
                 >
                   <Image
                     source={{
-                      uri: `http://192.168.31.166:3000/uploads/priest/${priest.img}`,
+                      // uri: `http://10.51.2.157:3000/uploads/priest/${priest.img}`,
+                      // uri: `http://127.0.0.1:3000/uploads/priest/${priest.img}`,
+                      uri: `${SERVER_IP}/uploads/priest/${priest.img}`,
                     }}
                     style={stylesPreistSelection.image}
                   />
                   <View>
                     <Text style={stylesPreistSelection.name}>
-                      {priest.gender === 'female' ? 'Shrimat' : 'Shri'}{' '}
+                      {priest.gender === 'female' ? 'Shrimati' : 'Shri'}{' '}
                       {priest.name}
                     </Text>
                     <Text style={stylesPreistSelection.experience}>
@@ -327,6 +339,8 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
         <TouchableOpacity
           style={stylesPreistSelection.button}
           onPress={() => {
+            console.log(selectedDate)
+            console.log(formatDate(selectedDate))
             navigation.navigate('Checkout', {
               priest_id: selectedPriest.id,
               dateOption,

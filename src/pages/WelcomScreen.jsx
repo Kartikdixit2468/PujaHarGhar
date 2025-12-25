@@ -11,6 +11,7 @@ import {
 
 const { width, height } = Dimensions.get('window');
 export default function WelcomeScreen({ navigation }) {
+  console.log("Rendering Welcome Screen")
   return (
     <SafeAreaView style={styles.container}>
       {/* Double Lines bar */}

@@ -11,6 +11,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { styles } from '../css/style';
+import { SERVER_IP } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // at top
 
@@ -28,7 +29,7 @@ function TrendingCard({ data }) {
       data={data}
       horizontal
       showsHorizontalScrollIndicator={false}
-      keyExtractor={(item) => item.PUJA_ID}
+      keyExtractor={(item) => item.puja_id}
       pagingEnabled
       snapToInterval={CARD_WIDTH + 20}
       contentContainerStyle={local_styles.listContainer}
@@ -45,7 +46,8 @@ function TrendingCard({ data }) {
           >
             <Image
               // source={require('../assets/images/puja3.jpg')}
-              source={{uri: `http://192.168.31.166:3000/uploads/pujas/${item.img1}`}}
+              source={{uri: `${SERVER_IP}/uploads/pujas/${item.img1}`}}
+              // source={{uri: `http://192.168.10.128:3000/uploads/pujas/${item.img1}`}}
 
               style={local_styles.image}
             />
@@ -63,10 +65,10 @@ function TrendingCard({ data }) {
           <View
             style={[local_styles.bottomRow, { height: CARD_HEIGHT * 0.35 }]}
           >
-            <Text style={local_styles.title}>{item.NAME}</Text>
+            <Text style={local_styles.title}>{item.name}</Text>
             {/* Inside renderItem */}
             <TouchableOpacity style={local_styles.bookNowButton}
-            onPress={()=>{navigation.navigate('PujaPage', {id: item.PUJA_ID})}}            
+            onPress={()=>{navigation.navigate('PujaPage', {id: item.puja_id})}}            
             >
               <Text style={local_styles.bookNowText}>Book Now</Text>
               <Icon
@@ -127,9 +129,8 @@ function CategoryCard({ data, type }) {
           >
             <View style={styles.category_card_image}>
               <Image
-                source={{uri: `http://192.168.31.166:3000/uploads/category/${item.image}`}}
-                // source={require('../assets/images/imagesCategory/1.jpg')}
-                // source={require(item.Image_URL)} // ❌ Fetching image dynamically from data
+                source={{uri: `${SERVER_IP}/uploads/category/${item.image}`}}
+                // source={{uri: `http://10.51.2.157:3000/uploads/category/${item.image}`}}
                 style={styles.catCard_image}
               />
               {/* <View style={[styles.overlay]} /> */}
@@ -161,7 +162,7 @@ function CategoryCard({ data, type }) {
           >
             <View style={styles.category_card_image}>
               <Image
-                source={{uri: `http://192.168.31.166:3000/uploads/category/${item.image}`}}
+                source={{uri: `http://192.168.10.128:3000/uploads/category/${item.image}`}}
                 // source={require('../assets/images/imagesCategory/1.jpg')}
                 style={styles.catCard_image}
               />

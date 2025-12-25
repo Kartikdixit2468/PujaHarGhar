@@ -21,6 +21,8 @@ import SideMenu from '../components/SideMenu';
 
 const Home = ({ navigation }) => {
 
+      console.log("here yes")
+
   const [trendingPujas, setTrendingPujas] = useState([]);
   const [pujaCategories, setPujaCategories] = useState([]);
 
@@ -28,8 +30,10 @@ const Home = ({ navigation }) => {
     const fetchTrendingPujas = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
+        console.log(SERVER_IP)
+        console.log("token here - ", token)
         const response = await fetch(`${SERVER_IP}/api/client/trending/pujas`, {
-          method: 'GET',
+          method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -38,6 +42,7 @@ const Home = ({ navigation }) => {
 
         const data = await response.json();
         if (data.success){
+        console.log(data.data)
         setTrendingPujas(data.data);
         }
       } catch (error) {

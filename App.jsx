@@ -6,25 +6,33 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignUp from './src/pages/signUp';
 import Search from './src/components/Search';
-import Categories from './src/pages/Categories';
+import Categories from './src/pages/Categories'; 
 import Profile from './src/pages/Profile';
 import Bookings from './src/pages/Bookings';
 import Support from './src/pages/support';
 import PujaPage from './src/pages/PujaPage';
+import { SERVER_IP } from '@env';
 import { PreistSelectionScreen, PackageSelectionScreen } from './src/pages/BookingScreens';
 import CheckoutScreen from './src/pages/CheckoutScreen';
 import WelcomeScreen from './src/pages/WelcomScreen';
+import BookingSuccess from './src/pages/BookingSuccess';
+import BookingFailiure from './src/pages/BookingFailiure';
 import { Text, View } from 'react-native';
+import Payment from './src/pages/Payment';
+import { tokens } from 'react-native-paper/lib/typescript/styles/themes/v3/tokens';
 
 function MenuNavigation() {
-
+  console.log("here yes")
+  console.log(SERVER_IP)
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   useEffect(()=>{
     const checkLogIn = async () => {
       const token = await AsyncStorage.getItem('authToken')
+      console.log(token)
       if (token){
-        // const verifyToken = await fetch('http://192.168.31.118:3000/api/client/user/verify/securitytoken',
-        const verifyToken = await fetch('http://192.168.31.166:3000/api/client/user/verify/securitytoken',
+        console.log("is Token valid");
+        const verifyToken = await fetch(`${SERVER_IP}/api/client/user/verify/securitytoken`,
+        // const verifyToken = await fetch(`http://10.51.2.150:3000/api/client/user/verify/securitytoken`,
           {
             method: 'POST',
             headers: {
@@ -34,13 +42,16 @@ function MenuNavigation() {
             body: JSON.stringify({token: token}),
           }
         );
-
+        
         const isTokenValid = await verifyToken.json()
-
+        
         if (isTokenValid){       
-          setIsLoggedIn(true)
+          setIsLoggedIn(true);
+          console.log("Token is valid");
+          console.log("Token is valid");
         }
         else{
+          console.log("Token is valid");
           setIsLoggedIn(false)
         }
       }
@@ -66,8 +77,8 @@ function MenuNavigation() {
     <Stack.Navigator
       // initialRouteName="Home"
       // initialRouteName={isLoggedIn ? "CheckoutScreen" : "WelcomeScreen"}
-      initialRouteName={"Home"}
-      // initialRouteName={isLoggedIn ? "Home" : "WelcomeScreen"}
+      // initialRouteName={"Home"}
+      initialRouteName={isLoggedIn ? "Home" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
@@ -112,6 +123,23 @@ function MenuNavigation() {
         name="Checkout"
         component={CheckoutScreen}
         // options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="BookingSuccess"
+        component={BookingSuccess}
+        // options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BookingFailiure"
+        component={BookingFailiure}
+        // options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Payment"
+        component={Payment}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
