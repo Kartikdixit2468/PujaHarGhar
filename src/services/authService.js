@@ -18,6 +18,11 @@ export const sendOTPPhone = async (number) => {
     };
     const otp_response = await OTPWidget.sendOTP(data);
     return otp_response;
+    // return {
+    //   type: 'success',
+    //   message: 'mocked-message-id-1234',
+    // }; // Temporarily bypassing OTP sending
+
   } catch (error) {
     console.error('Error sending OTP to phone:', error);
     throw error;
@@ -60,6 +65,7 @@ export const verifyPhoneOTP = async (phoneOTP, messageIDPhone) => {
     };
     const responsePhoneOTP = await OTPWidget.verifyOTP(body_phone);
     return responsePhoneOTP.type === 'success';
+    // return true; // Temporarily bypassing OTP verification
   } catch (error) {
     console.error('Error verifying phone OTP:', error);
     return false;
@@ -86,6 +92,7 @@ export const checkUserExists = async (email, phone) => {
       }
     );
     const user_exist = await checkIfUserExist.json();
+    console.log("Check User Exists Response at core function: ", user_exist);
     return user_exist;
   } catch (error) {
     console.error('Error checking if user exists:', error);
@@ -98,14 +105,14 @@ export const checkUserExists = async (email, phone) => {
  * @param {string} email - User email
  * @returns {Promise<Object>} Login response with token and success flag
  */
-export const loginUser = async (email) => {
+export const loginUser = async (email, phone) => {
   try {
     const login = await fetch(`${SERVER_IP}/api/client/user/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: email }),
+      body: JSON.stringify({ email: email, phone: phone }),
     });
     const login_response = await login.json();
     return login_response;
@@ -147,6 +154,9 @@ export const registerUserManual = async (userData) => {
  */
 export const registerUserGoogle = async (userData) => {
   try {
+    userData = {...userData,
+      e_verified: 1
+    }
     const response = await fetch(`${SERVER_IP}/api/client/register/user`, {
       method: 'POST',
       headers: {
@@ -158,6 +168,80 @@ export const registerUserGoogle = async (userData) => {
     return data;
   } catch (error) {
     console.error('Error registering with Google:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch user profile details
+ * @param {string} token - Authentication token
+ * @param {string} email - User email
+ * @param {string} phone - User phone
+ * @returns {Promise<Object>} User details object
+ */
+export const fetchUserDetails = async (token, email, phone) => {
+  try {
+    console.log('Fetching user details with email:', email, 'phone:', phone);
+    console.log('Using url:', `${SERVER_IP}/api/client/user/details/fetch`);
+    const response = await fetch(`${SERVER_IP}/api/client/user/details/fetch`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        email: email,
+        phone: phone,
+      }),
+    });
+
+    console.log('Response status:', response.status);
+
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('User details fetched successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update user profile details
+ * @param {string} token - Authentication token
+ * @param {string} email - User email
+ * @param {string} phone - User phone
+ * @param {Object} userData - Updated user data object
+ * @returns {Promise<Object>} Update response
+ */
+export const updateUserDetails = async (token, email, phone, userData) => {
+  try {
+    console.log('Updating user details:', userData);
+    
+    const response = await fetch(`${SERVER_IP}/api/client/user/details/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(userData),
+    });
+
+    console.log('Update response status:', response.status);
+
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('User details updated successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Error updating user details:', error);
     throw error;
   }
 };

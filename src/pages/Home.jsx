@@ -21,16 +21,63 @@ import SideMenu from '../components/SideMenu';
 
 const Home = ({ navigation }) => {
 
-      console.log("here yes")
+  console.log("here yes")
 
   const [trendingPujas, setTrendingPujas] = useState([]);
   const [pujaCategories, setPujaCategories] = useState([]);
+  const [userData, setUserData] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+
+  const fetchUserData = async () => {
+    try {
+      setLoadingUser(true);
+      const token = await AsyncStorage.getItem('authToken');
+      const storedEmail = await AsyncStorage.getItem('userEmail');
+      const storedPhone = await AsyncStorage.getItem('userPhone');
+
+      console.log('Fetching user details - Email:', storedEmail, 'Phone:', storedPhone);
+
+      if (!token || !(storedEmail || storedPhone)) {
+        console.warn('Missing token or credentials');
+        setLoadingUser(false);
+        return;
+      }
+
+      const response = await fetch(`${SERVER_IP}/api/client/user/details/fetch`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: storedEmail,
+          phone: storedPhone,
+        }),
+      });
+      console.log('Fetch user details response status:', response.status);
+
+      const data = await response.json();
+      console.log('User details response:', data);
+
+      if (data && data.data) {
+        setUserData(data.data);
+        console.log("User Data Set: ", data.data);
+      } else if (data && data.success) {
+        setUserData(data);
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      setLoadingUser(false);
+    }
+  };
 
   useEffect(() => {
+    console.log("Use Effect Called - Home Page");
+    fetchUserData();
     const fetchTrendingPujas = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
-        console.log(SERVER_IP)
         console.log("token here - ", token)
         const response = await fetch(`${SERVER_IP}/api/client/trending/pujas`, {
           method: 'POST',
@@ -39,10 +86,8 @@ const Home = ({ navigation }) => {
             'Content-Type': 'application/json',
           },
         });
-
         const data = await response.json();
         if (data.success){
-        console.log(data.data)
         setTrendingPujas(data.data);
         }
       } catch (error) {
@@ -94,6 +139,16 @@ const Home = ({ navigation }) => {
     }
   }
 
+  // Format name to show maximum 2 words
+  const formatUserName = (name) => {
+    if (!name) return 'User';
+    const words = name.trim().split(/\s+/);
+    return words.slice(0, 2).join(' ');
+  };
+
+  // console.log("Trending Pujas: ", trendingPujas);
+  console.log("userData: here -----------------------------------> ", userData);
+
   return (
     <ScrollView style={local_styles.container}>
       {/* Top Row */}
@@ -112,7 +167,7 @@ const Home = ({ navigation }) => {
           {/* User Greeting */}
           <View style={local_styles.nameBlock}>
             <Text style={local_styles.hello}>Hello,</Text>
-            <Text style={local_styles.name}>Kartik Dixit</Text>
+            <Text style={local_styles.name}>{formatUserName(userData?.name)}</Text>
           </View>
         </View>
 
@@ -128,7 +183,9 @@ const Home = ({ navigation }) => {
             }}
           />
           <Image
-            source={require('../assets/images/profile_icon.png')} // Replace with dynamic URI if needed
+            source={userData?.photo && userData.photo.trim() !== '' 
+              ? { uri: userData.photo }
+              : require('../assets/images/profile_icon.png')}
             style={local_styles.avatar}
           />
         </View>
@@ -147,24 +204,45 @@ const Home = ({ navigation }) => {
 
       {!ShowMenu && (
         <>
-          <View style={local_styles.alertBox}>
-            <View style={local_styles.alertRow}>
-              <FAIcon name="exclamation-triangle" size={24} color="#fbb50a" />
-              <Text style={local_styles.alertTitle}>Incomplete Profile</Text>
-            </View>
-            <Text style={local_styles.alertDescription}>
-              Your profile isn’t completed. You will need to complete yours
-              profile before continuing to book for any event.{' '}
-              <Text
-                style={local_styles.alertLink}
-                onPress={() =>
-                  Linking.openURL('https://kartikdixit.vercel.app')
+          {userData && (
+            <View style={[
+              local_styles.alertBox,
+              userData.profile_completed ? local_styles.alertBoxCompleted : local_styles.alertBoxIncomplete
+            ]}>
+              <View style={local_styles.alertRow}>
+                <FAIcon 
+                  name={userData.profile_completed ? "check-circle" : "exclamation-triangle"}
+                  size={24} 
+                  color={userData.profile_completed ? "#10b981" : "#fbb50a"}
+                />
+                <Text style={[
+                  local_styles.alertTitle,
+                  userData.profile_completed && local_styles.alertTitleCompleted
+                ]}>
+                  {userData.profile_completed ? 'Profile Completed' : 'Incomplete Profile'}
+                </Text>
+              </View>
+              <Text style={[
+                local_styles.alertDescription,
+                userData.profile_completed && local_styles.alertDescriptionCompleted
+              ]}>
+                {userData.profile_completed 
+                  ? 'Your profile is all set! You can now book pujas.'
+                  : 'Your profile isn\'t completed. You will need to complete your profile before continuing to book for any event. '
                 }
-              >
-                click here.
+                {!userData.profile_completed && (
+                  <Text
+                    style={local_styles.alertLink}
+                    onPress={() =>
+                      navigation.navigate('Profile')
+                    }
+                  >
+                    click here.
+                  </Text>
+                )}
               </Text>
-            </Text>
-          </View>
+            </View>
+          )}
 
           <View style={[styles.section, styles.trending_section]}>
             <View style={styles.section_heading}>
@@ -206,14 +284,20 @@ const Home = ({ navigation }) => {
 const local_styles = StyleSheet.create({
   container: {
     padding: 10,
-    paddingTop: 40,
+    paddingTop: 20,
     backgroundColor: '#F9FAFB',
+    flexGrow: 1,
+    // borderWidth: 2,
+    // borderColor: 'red',
   },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     padding: 10,
+    zIndex: 10,
+    // borderWidth: 2,
+    // borderColor: 'green',
   },
 
   leftSection: {
@@ -250,6 +334,8 @@ const local_styles = StyleSheet.create({
   nameBlock: {
     marginTop: 8,
     marginLeft: 4,
+    // borderWidth: 2,
+    // borderColor: 'blue',
   },
   hello: {
     fontSize: 18,
@@ -257,7 +343,7 @@ const local_styles = StyleSheet.create({
     fontWeight: '500',
   },
   name: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#111827',
   },
@@ -277,13 +363,22 @@ const local_styles = StyleSheet.create({
   },
 
   alertBox: {
-    marginTop: 20,
-    padding: 15,
-    marginHorizontal: 10,
+    marginTop: 15,
+    marginBottom: 15,
+    padding: 12,
+    marginHorizontal: 5,
     backgroundColor: '#fff6e7',
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 0.5,
     borderColor: '#FCD34D',
+  },
+  alertBoxIncomplete: {
+    backgroundColor: '#fff6e7',
+    borderColor: '#FCD34D',
+  },
+  alertBoxCompleted: {
+    backgroundColor: '#d1fae5',
+    borderColor: '#6ee7b7',
   },
   alertRow: {
     flexDirection: 'row',
@@ -294,14 +389,20 @@ const local_styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 8,
     fontSize: 24,
-    // color: '#78350F',
     color: '#00000',
     textDecorationLine: 'underline',
+  },
+  alertTitleCompleted: {
+    color: '#059669',
+    textDecorationLine: 'none',
   },
   alertDescription: {
     padding: 1,
     color: '#78350F',
     fontSize: 14,
+  },
+  alertDescriptionCompleted: {
+    color: '#059669',
   },
   alertLink: {
     textDecorationLine: 'underline',

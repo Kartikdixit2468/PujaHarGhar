@@ -41,6 +41,10 @@ const SignUp = ({ navigation }) => {
 
       if (response.success) {
         await storageService.saveToken(response.token);
+        // Save email and phone for later profile fetching
+        console.log("User Data: ", user_data);
+        await storageService.saveValue('userEmail', user_data.email);
+        await storageService.saveValue('userPhone', user_data.phoneNumber || '');
         signupState.setDisplayDotLoader(false);
         navigation.navigate('Home');
       } else {
@@ -101,7 +105,7 @@ const SignUp = ({ navigation }) => {
         signupState.email
       );
 
-      if (otp_phone_response.type === 'success' && email_response.success) {
+      if (otp_phone_response.type === 'success') {
         const messageIDPhone = otp_phone_response.message;
 
         await storageService.saveValue('phoneOTPMessageID', messageIDPhone);
@@ -142,10 +146,13 @@ const SignUp = ({ navigation }) => {
           signupState.email,
           signupState.number
         );
+        console.log("User Exist Response: ", user_exist);
 
         if (user_exist.exist) {
           // User exists, perform login
-          const login_response = await authService.loginUser(signupState.email);
+          console.log("User exists:", user_exist);
+          console.log("User exists, performing login at OTP verification", user_exist);
+          const login_response = await authService.loginUser(signupState.email, signupState.number);
 
           if (login_response.success) {
             await storageService.saveToken(login_response.token);
@@ -160,6 +167,7 @@ const SignUp = ({ navigation }) => {
           }
         } else {
           // New user, proceed to stage 2
+          console.log("New user, proceeding to stage 2 at OTP verification");
           signupState.setDisplayDotLoader(false);
           signupState.setSignUpStage(2);
         }
@@ -198,6 +206,7 @@ const SignUp = ({ navigation }) => {
       phone: signupState.number,
       dob: signupState.birth,
       gender: signupState.gender,
+      e_verified: false,
     };
 
     try {
@@ -205,6 +214,9 @@ const SignUp = ({ navigation }) => {
 
       if (response.success) {
         await storageService.saveToken(response.token);
+        // Save email and phone for later profile fetching
+        await storageService.saveValue('userEmail', signupState.email);
+        await storageService.saveValue('userPhone', signupState.number);
         signupState.setDisplayDotLoader(false);
         navigation.navigate('Home');
       } else {
