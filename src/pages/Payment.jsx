@@ -57,12 +57,16 @@ const Payment = ({ navigation, route }) => {
         console.log(isPaymentLegit);
 
         if (isPaymentLegit.success) {
+          const token = await AsyncStorage.getItem('authToken');
+          const user_phone = await AsyncStorage.getItem('userPhone');
+
           const BookingDetails = {
-            ...BookingObject,
-            payment_id: data.razorpay_payment_id,
+              ...BookingObject,
+              payment_id: data.razorpay_payment_id,
+              phone: user_phone,
           };
           console.log(BookingDetails);
-          const token = await AsyncStorage.getItem('authToken');
+
           const response = await fetch(
             `${SERVER_IP}/api/client/create-order/booking/`,
             {

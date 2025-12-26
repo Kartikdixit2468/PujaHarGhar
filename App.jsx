@@ -9,9 +9,11 @@ import Search from './src/components/Search';
 import Categories from './src/pages/Categories'; 
 import Profile from './src/pages/Profile';
 import Bookings from './src/pages/Bookings';
+import BookingDetail from './src/pages/BookingDetail';
 import Support from './src/pages/support';
 import FAQDetail from './src/pages/FAQDetail';
 import ContactSupport from './src/pages/ContactSupport';
+import CancelRequest from './src/pages/CancelRequest';
 import PujaPage from './src/pages/PujaPage';
 import { SERVER_IP } from '@env';
 import { PreistSelectionScreen, PackageSelectionScreen } from './src/pages/BookingScreens';
@@ -172,10 +174,17 @@ function MenuNavigation() {
       <Stack.Screen
         name="Bookings"
         component={Bookings}
-        options={{
-          title: 'Bookings',
-          headerStyle: { backgroundColor: '#fff7ea' },
-        }}
+        options={{ headerShown: false }}
+        // options={{
+        //   title: 'Bookings',
+        //   headerStyle: { backgroundColor: '#fff7ea' },
+        // }}
+      />
+
+      <Stack.Screen
+        name="BookingDetail"
+        component={BookingDetail}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
@@ -203,6 +212,12 @@ function MenuNavigation() {
       <Stack.Screen
         name="ContactSupport"
         component={ContactSupport}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="CancelRequest"
+        component={CancelRequest}
         options={{ headerShown: false }}
       />
 
