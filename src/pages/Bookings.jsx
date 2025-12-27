@@ -74,15 +74,23 @@ const Bookings = ({ navigation }) => {
   };
 
   const getStatusColor = (isConfirmed) => {
-    return isConfirmed ? '#10b981' : '#f59e0b';
+    // return isConfirmed ? '#10b981' : '#f59e0b';
+    if (isConfirmed === 1) return '#10b981'; // Confirmed - Green
+    if (isConfirmed === 0) return '#f59e0b'; // Pending - Yellow
+    if (isConfirmed === -1) return '#ef4444'; // Cancelled - Red
   };
 
   const getStatusText = (isConfirmed) => {
-    return isConfirmed ? 'Confirmed' : 'Pending';
+    if (isConfirmed === 1) return 'Confirmed';
+    if (isConfirmed === 0) return 'Pending';
+    if (isConfirmed === -1) return 'Cancelled';
   };
 
   const getStatusIcon = (isConfirmed) => {
-    return isConfirmed ? 'check-circle' : 'clock';
+    // confirm pending and cancelled
+    if (isConfirmed === 1) return 'check-circle';
+    if (isConfirmed === 0) return 'clock';
+    if (isConfirmed === -1) return 'times-circle';
   };
 
   const renderBookingCard = ({ item }) => {
