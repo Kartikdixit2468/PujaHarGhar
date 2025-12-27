@@ -160,14 +160,7 @@ function MenuNavigation() {
       <Stack.Screen
         name="Profile"
         component={Profile}
-        options={{
-          title: 'Profile',
-          headerStyle: { backgroundColor: '#f9f7f9' },
-          headerTitleStyle: {
-            fontFamily: 'Fredoka-SemiBold',
-            fontSize: 40,
-          },
-        }}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
