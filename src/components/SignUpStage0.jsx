@@ -22,13 +22,8 @@ const SignUpStage0 = ({
   signUpStage,
 }) => {
   return (
-    <View
-      style={
-        signUpStage !== 0
-          ? [styles_stage0.container, styles_stage0.fade_screen]
-          : styles_stage0.container
-      }
-    >
+    <View style={styles_stage0.container}>
+      <View style={[{ zIndex: signUpStage !== 0 ? -1 : 1 }]}>
       {/* Progress Bar */}
       <View style={styles_stage0.progressBar}>
         <View style={[styles_stage0.bar, { backgroundColor: 'white' }]}></View>
@@ -47,7 +42,7 @@ const SignUpStage0 = ({
             {
               alignItems: 'center',
               borderRadius: 2,
-              padding: 8,
+              padding: 12,
               backgroundColor: '#ffcf00',
               borderBottomRightRadius: 30,
               borderTopRightRadius: 30,
@@ -163,7 +158,6 @@ const SignUpStage0 = ({
             disabled={isLoading}
             style={[
               styles_stage0.signupAlternates,
-              { width: '100%', justifyContent: 'space-between' },
             ]}
           >
             <View>
@@ -174,6 +168,12 @@ const SignUpStage0 = ({
           </TouchableOpacity>
         </View>
       </View>
+      </View>
+      
+      {/* Overlay when loading */}
+      {signUpStage !== 0 && (
+        <View style={styles_stage0.fade_screen}></View>
+      )}
     </View>
   );
 };
@@ -200,7 +200,7 @@ const styles_stage0 = StyleSheet.create({
   },
   priestImg: {
     padding: 5,
-    maxHeight: '40%',
+    maxHeight: '38%',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -212,23 +212,30 @@ const styles_stage0 = StyleSheet.create({
     fontFamily: 'Fredoka-Bold',
   },
   signupAlternates: {
-    padding: 10,
+    padding: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    maxWidth: '55%',
+    alignSelf: 'center',
+    margin: 'auto',    
   },
   signup_option: {
     backgroundColor: 'white',
     padding: 15,
     fontSize: 12,
     alignSelf: 'center',
+    borderWidth: 0.5,
+    borderColor: 'grey',
+    borderRadius: 3,
   },
   fade_screen: {
     position: 'absolute',
-    backgroundColor: 'grey',
-    opacity: 0.3,
-    zIndex: -99,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 100,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 });
 
