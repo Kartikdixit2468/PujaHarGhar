@@ -85,7 +85,8 @@ function TrendingCard({ data }) {
   );
 }
 
-function CategoryCard({ data, type }) {
+function CategoryCard({ data, type, navigation }) {
+  const nav = navigation || useNavigation();
   const CARD_HEIGHT = screenHeight * 0.35;
   const CARD_WIDTH = CARD_HEIGHT * 0.6;
 
@@ -108,6 +109,7 @@ function CategoryCard({ data, type }) {
   });
 
   if (type == 'scroll') {
+
     return (
       <FlatList
         data={data}
@@ -124,11 +126,12 @@ function CategoryCard({ data, type }) {
           <Pressable
             style={[styles.catCard, localStyles.catCard]}
             onPress={() => {
-              Alert.alert('Welcome to a dedicate page for ' + item.name);
+              nav.navigate('CategoryPujas', { category: item });
             }}
           >
             <View style={styles.category_card_image}>
               <Image
+                // source={{uri: `http://localhost:3000/uploads/category/1.jpg`}}
                 source={{uri: `${SERVER_IP}/uploads/category/${item.image}`}}
                 // source={{uri: `http://10.51.2.157:3000/uploads/category/${item.image}`}}
                 style={styles.catCard_image}
@@ -157,7 +160,7 @@ function CategoryCard({ data, type }) {
           <Pressable
             style={[styles.catCard, localStyles.catCard]}
             onPress={() => {
-              Alert.alert('Welcome to a dedicate page for ' + item.name);
+              nav.navigate('CategoryPujas', { category: item });
             }}
           >
             <View style={styles.category_card_image}>
