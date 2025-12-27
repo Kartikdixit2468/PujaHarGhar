@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignUp from './src/pages/signUp';
 import Search from './src/components/Search';
 import Categories from './src/pages/Categories'; 
+import CategoryPujas from './src/pages/CategoryPujas';
 import Profile from './src/pages/Profile';
 import Bookings from './src/pages/Bookings';
 import BookingDetail from './src/pages/BookingDetail';
@@ -23,6 +24,7 @@ import BookingSuccess from './src/pages/BookingSuccess';
 import BookingFailiure from './src/pages/BookingFailiure';
 import { Text, View } from 'react-native';
 import Payment from './src/pages/Payment';
+import MyTickets from './src/pages/MyTickets';
 import { tokens } from 'react-native-paper/lib/typescript/styles/themes/v3/tokens';
 
 function MenuNavigation() {
@@ -79,9 +81,6 @@ function MenuNavigation() {
   
   return (
     <Stack.Navigator
-      // initialRouteName="Home"
-      // initialRouteName={isLoggedIn ? "CheckoutScreen" : "WelcomeScreen"}
-      // initialRouteName={"Home"}
       initialRouteName={isLoggedIn ? "Home" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
@@ -198,6 +197,12 @@ function MenuNavigation() {
       />
 
       <Stack.Screen
+      name="Tickets"
+      component={MyTickets}
+      options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
         name="Support"
         component={Support}
         options={{ headerShown: false }}
@@ -224,14 +229,13 @@ function MenuNavigation() {
       <Stack.Screen
         name="Categories"
         component={Categories}
-        options={{
-          title: 'Categories',
-          headerStyle: {
-            backgroundColor: '#fff7ea',
-            fontFamily: 'Fredoka-SemiBold',
-            fontSize: 35,
-          },
-        }}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="CategoryPujas"
+        component={CategoryPujas}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
