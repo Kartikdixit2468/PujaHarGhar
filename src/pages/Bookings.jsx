@@ -94,17 +94,23 @@ const Bookings = ({ navigation }) => {
   };
 
   const renderBookingCard = ({ item }) => {
-    const bookingDate = new Date(item.date);
-    const formattedDate = bookingDate.toLocaleDateString('en-IN', {
+    let formattedDate = '';
+    console.log('Raw booking date:', item.date);
+    const bookedOnDate = new Date(item.booked_on);
+    const formattedBookedOnDate = bookedOnDate.toLocaleDateString('en-IN', {
       day: 'numeric',
       month: 'short',
       year: 'numeric',
     });
-    const formattedTime = bookingDate.toLocaleTimeString('en-IN', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-
+    if(item.date) { // check if null
+      const bookingDate = new Date(item.date);
+      formattedDate = bookingDate.toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+    }
+    
     return (
       <Pressable
         style={styles.bookingCard}
@@ -114,14 +120,18 @@ const Bookings = ({ navigation }) => {
           <View style={styles.bookingInfo}>
             <Text style={styles.packageName}>{item.name}</Text>
             <View style={styles.dateTimeContainer}>
-              <Icon name="event" size={14} color="#6b7280" />
+              <Icon name="schedule" size={14} color="#6b7280" />
+              <Text style={styles.dateTimeText}>{formattedBookedOnDate}</Text>
+              {item.date ?( <>
+              <Icon name="event" size={14} color="#6b7280" style={{ marginLeft: 8 }} />
               <Text style={styles.dateTimeText}>{formattedDate}</Text>
-              <Icon name="schedule" size={14} color="#6b7280" style={{ marginLeft: 8 }} />
-              <Text style={styles.dateTimeText}>{formattedTime}</Text>
+              </>) : null
+              }
             </View>
           </View>
           <Text style={styles.price}>₹{item.price}</Text>
         </View>
+
 
         <View style={styles.cardFooter}>
           <View style={styles.statusBadge}>
