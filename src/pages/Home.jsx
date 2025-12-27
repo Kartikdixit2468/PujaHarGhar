@@ -273,7 +273,7 @@ const Home = ({ navigation }) => {
               source={require('../assets/underline.png')}
             />
 
-            <CategoryCard type="scroll" data={pujaCategories} />
+            <CategoryCard type="scroll" data={pujaCategories} navigation={navigation} />
           </View>
         </>
       )}
@@ -285,6 +285,7 @@ const local_styles = StyleSheet.create({
   container: {
     padding: 10,
     paddingTop: 20,
+    paddingBottom: 40,
     backgroundColor: '#F9FAFB',
     flexGrow: 1,
     // borderWidth: 2,
@@ -365,7 +366,7 @@ const local_styles = StyleSheet.create({
   alertBox: {
     marginTop: 15,
     marginBottom: 15,
-    padding: 12,
+    padding: 15,
     marginHorizontal: 5,
     backgroundColor: '#fff6e7',
     borderRadius: 12,
