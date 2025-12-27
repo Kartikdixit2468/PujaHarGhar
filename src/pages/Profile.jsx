@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View, Text, Image, ActivityIndicator, Alert, TextInput, Modal } from 'react-native';
+import { Pressable, StyleSheet, View, Text, Image, ActivityIndicator, Alert, TextInput, Modal, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import FAIcon from 'react-native-vector-icons/FontAwesome5';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { styles } from '../css/style';
 import * as authService from '../services/authService';
 import * as storageService from '../services/storageService';
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -207,26 +209,22 @@ const Profile = () => {
 
   return (
     <View style={LocalStyles.ProfilePageContainer}>
-      <View style={styles.IconBar}>
-        <View style={[styles.IconContainer, LocalStyles.settingsIcon]}>
-          <Image
-            style={styles.ProfileIcon}
-            source={require('../assets/images/settings_icon.png')}
-          />
-        </View>
-        <View style={[styles.IconContainer, LocalStyles.notificationIcon]}>
-          <Image
-            style={styles.ProfileIcon}
-            source={require('../assets/images/notification_icon.png')}
-          />
-        </View>
+      {/* Custom Header */}
+      <View style={LocalStyles.customHeader}>
+        <Pressable onPress={() => navigation?.goBack()} style={LocalStyles.backButton}>
+          <Icon name="arrow-back" size={28} color="#000" />
+        </Pressable>
+        <Text style={LocalStyles.headerTitle}>My Profile</Text>
+        <FAIcon name="user-circle" size={28} color="#ffcf00" />
       </View>
-
-      <View style={styles.ProfileMainSection}>
-        <Image
-          style={[styles.ProfileImg, LocalStyles.circularProfileImg]}
-          source={profileImage}
-        />
+      <ScrollView showsVerticalScrollIndicator={false} style={LocalStyles.scrollContainer}>
+        <View style={LocalStyles.scrollContentPadding}>
+        <View style={LocalStyles.profileImageContainer}>
+          <Image
+            style={[styles.ProfileImg, LocalStyles.circularProfileImg]}
+            source={profileImage}
+          />
+        </View>
         <View style={styles.ProfileNameContainer}>
           <View style={[styles.ProfileHeading, LocalStyles.centeredHeading]}>
             <Text style={[styles.ProfileName, LocalStyles.centeredName]}>{userData?.name || 'User'}</Text>
@@ -238,39 +236,36 @@ const Profile = () => {
               )}
             </View>
           </View>
-          <Pressable style={styles.NameEditBtnContainer}>
-            <Image
-              style={styles.NameEditBtn}
-              source={require('../assets/images/edit.png')}
-            />
-          </Pressable>
         </View>
         {!isEditing && (
-          <Pressable style={styles.ProfileEditButton} onPress={handleEditPress}>
-            <Text style={styles.ProfileEditButtonText}>Edit Profile</Text>
+          <Pressable style={LocalStyles.modernEditButton} onPress={handleEditPress}>
+            <FAIcon name="edit" size={16} color="#fff" style={{ marginRight: 8 }} />
+            <Text style={LocalStyles.modernEditButtonText}>Edit Profile</Text>
           </Pressable>
         )}
         {isEditing && (
-          <View style={LocalStyles.editButtonsContainer}>
+          <View style={LocalStyles.modernActionButtons}>
             <Pressable 
-              style={[styles.ProfileEditButton, LocalStyles.saveButton]}
+              style={LocalStyles.modernSaveButton}
               onPress={handleSaveEdit}
             >
-              <Text style={styles.ProfileEditButtonText}>Save Changes</Text>
+              <FAIcon name="check" size={16} color="#fff" style={{ marginRight: 8 }} />
+              <Text style={LocalStyles.modernButtonText}>Save</Text>
             </Pressable>
             <Pressable 
-              style={[styles.ProfileEditButton, LocalStyles.cancelButton]}
+              style={LocalStyles.modernCancelButton}
               onPress={handleCancelEdit}
             >
-              <Text style={styles.ProfileEditButtonText}>Cancel</Text>
+              <FAIcon name="times" size={16} color="#fff" style={{ marginRight: 8 }} />
+              <Text style={LocalStyles.modernButtonText}>Cancel</Text>
             </Pressable>
           </View>
         )}
       </View>
 
-      <View style={styles.DetailsSection}>
-        <Text style={styles.DetailsSectionHeading}>Account Info</Text>
-        <View style={styles.DetailsContainer}>
+      <View style={LocalStyles.modernSection}>
+        <Text style={LocalStyles.modernSectionTitle}>Account Info</Text>
+        <View style={LocalStyles.modernDetailsContainer}>
           <View style={styles.DetailsTextContainer}>
             <Text style={styles.DetailsHeadingText}>Name</Text>
             {isEditing ? (
@@ -318,9 +313,9 @@ const Profile = () => {
           </View>
         </View>
       </View>
-      <View style={styles.DetailsSection}>
-        <Text style={styles.DetailsSectionHeading}>More Details</Text>
-        <View style={styles.DetailsContainer}>
+      <View style={LocalStyles.modernSection}>
+        <Text style={LocalStyles.modernSectionTitle}>More Details</Text>
+        <View style={LocalStyles.modernDetailsContainer}>
           <View style={styles.DetailsTextContainer}>
             <Text style={styles.DetailsHeadingText}>Address</Text>
             {isEditing ? (
@@ -406,15 +401,18 @@ const Profile = () => {
           </View>
         </View>
       </View>
+      </ScrollView>
     </View>
   );
 };
 
 const LocalStyles = StyleSheet.create({
   ProfilePageContainer: {
-    backgroundColor: '#f9f7f9',
-    marginTop: 10,
-    padding: 10,
+    flex: 1,
+    backgroundColor: '#fafbfc',
+  },
+  scrollContainer: {
+    backgroundColor: '#fafbfc',
   },
   circularProfileImg: {
     borderRadius: 150,
@@ -426,8 +424,11 @@ const LocalStyles = StyleSheet.create({
     alignItems: 'center',
   },
   centeredName: {
-    fontSize: 20,
+    fontSize: 22,
     textAlign: 'center',
+    fontWeight: '800',
+    marginBottom: 8,
+    color: '#000',
   },
   emailWithVerification: {
     flexDirection: 'row',
@@ -443,11 +444,12 @@ const LocalStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ffcf00',
     borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     backgroundColor: '#fff',
     color: '#000',
-    justifyContent: 'center',
+    fontSize: 14,
+    fontWeight: '500',
   },
   editButtonsContainer: {
     flexDirection: 'row',
@@ -523,6 +525,126 @@ const LocalStyles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  // Custom Header Styles
+  customHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    elevation: 2,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#000',
+    letterSpacing: 0.3,
+    flex: 1,
+    textAlign: 'center',
+  },
+  // Scroll Content Padding
+  scrollContentPadding: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+  },
+  // Profile Image Container with Border
+  profileImageContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+    position: 'relative',
+  },
+  circularProfileImg: {
+    borderRadius: 150,
+    width: 150,
+    height: 150,
+    overflow: 'hidden',
+    borderWidth: 4,
+    borderColor: '#ffcf00',
+  },
+  // Modern Edit Button
+  modernEditButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ff6b9d',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 10,
+    marginVertical: 16,
+    elevation: 3,
+  },
+  modernEditButtonText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#fff',
+    letterSpacing: 0.3,
+  },
+  // Modern Action Buttons
+  modernActionButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginVertical: 16,
+  },
+  modernSaveButton: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#10b981',
+    paddingVertical: 12,
+    borderRadius: 10,
+    elevation: 3,
+  },
+  modernCancelButton: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ef4444',
+    paddingVertical: 12,
+    borderRadius: 10,
+    elevation: 3,
+  },
+  modernButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#fff',
+    letterSpacing: 0.3,
+  },
+  // Modern Section Styling
+  modernSection: {
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    marginBottom: 16,
+    marginHorizontal: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    borderWidth: 1,
+    borderColor: '#d5d5d5ff',
+  },
+  modernSectionTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#000',
+    marginBottom: 14,
+    letterSpacing: 0.3,
+  },
+  modernDetailsContainer: {
+    gap: 14,
   },
 });
 

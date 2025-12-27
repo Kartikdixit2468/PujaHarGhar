@@ -122,7 +122,7 @@ const BookingDetail = ({ route, navigation }) => {
         id: 2,
         title: 'Pandit Allotted',
         subtitle: 'Priest assigned to your puja',
-        icon: 'person-check',
+        icon: 'user',
         completed: confirmedStage >= 2,
         date: details.date,
       },
@@ -389,16 +389,16 @@ const BookingDetail = ({ route, navigation }) => {
           <View
             style={[
               styles.paymentBadge,
-              details.payment === 1 && styles.paymentBadgeCompleted,
+              details.payment == 100 && styles.paymentBadgeCompleted,
             ]}
           >
             <Text
               style={[
                 styles.paymentBadgeText,
-                details.payment === 1 && styles.paymentBadgeTextCompleted,
+                details.payment == 100 && styles.paymentBadgeTextCompleted,
               ]}
             >
-              {details.payment === 1 ? 'Paid' : 'Pending'}
+              {details.payment == 100 ? 'Paid' : 'Pending'}
             </Text>
           </View>
         </View>
@@ -415,18 +415,18 @@ const BookingDetail = ({ route, navigation }) => {
           <View
             style={[
               styles.statusBadge,
-              details.is_confirmed === 1 && styles.statusBadgeConfirmed,
+              details.is_confirmed >= 1 && styles.statusBadgeConfirmed,
               details.is_confirmed === -1 && styles.statusBadgeCancelled,
             ]}
           >
             <Text
               style={[
                 styles.statusBadgeText,
-                details.is_confirmed === 1 && styles.statusBadgeTextConfirmed,
+                details.is_confirmed >= 1 && styles.statusBadgeTextConfirmed,
                 details.is_confirmed === -1 && styles.statusBadgeTextCancelled,
               ]}
             >
-              {details.is_confirmed === 1 
+              {details.is_confirmed >= 1 
                 ? 'Confirmed' 
                 : details.is_confirmed === -1 
                     ? 'Cancelled' 
@@ -445,7 +445,7 @@ const BookingDetail = ({ route, navigation }) => {
             </Pressable>
         )}
 
-        <Pressable style={styles.actionButton}>
+        <Pressable style={styles.actionButton} onPress={() => navigation.navigate('Support')}>
           <Icon name="phone" size={20} color="#fff" />
           <Text style={styles.actionButtonText}>Contact Support</Text>
         </Pressable>

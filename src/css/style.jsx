@@ -259,7 +259,8 @@ export const styles = StyleSheet.create({
   signup_title: {
     fontSize: 30,
     fontFamily: 'Fredoka-Regular',
-    padding: 5,
+    padding: 8,
+    boxSizing: 'border-box',
   },
 
   IconBar: {
@@ -294,13 +295,13 @@ export const styles = StyleSheet.create({
     width: 130,
   },
   ProfileNameContainer: {
-    marginLeft: "12%",
     marginTop: "5%",
     alignItems: "center",
     // borderWidth: 4,
     // borderColor: "red",
     flexDirection: "row",
-    width: "90%"
+    width: "100%",
+    justifyContent: "center"
   },
   ProfileHeading: {
     // borderWidth: 2,
@@ -324,9 +325,10 @@ export const styles = StyleSheet.create({
   },
   NameUderline: {
     height: 5,
-    width: '100%',
+    width: '80%',
     backgroundColor: "#ff8731",
     borderRadius: "20",
+    marginTop: 4,
   },
   ProfileEmail: {
     fontSize: 14,

@@ -74,22 +74,26 @@ const Bookings = ({ navigation }) => {
   };
 
   const getStatusColor = (isConfirmed) => {
-    // return isConfirmed ? '#10b981' : '#f59e0b';
-    if (isConfirmed === 1) return '#10b981'; // Confirmed - Green
     if (isConfirmed === 0) return '#f59e0b'; // Pending - Yellow
+    if (isConfirmed === 1) return '#3b82f6'; // Confirmed - Blue
+    if (isConfirmed === 2) return '#a855f7'; // Acharya Alloted - Purple
+    if (isConfirmed === 3) return '#10b981'; // Completed - Green
     if (isConfirmed === -1) return '#ef4444'; // Cancelled - Red
   };
 
   const getStatusText = (isConfirmed) => {
     if (isConfirmed === 1) return 'Confirmed';
     if (isConfirmed === 0) return 'Pending';
+    if (isConfirmed === 2) return 'Acharya Alloted';
+    if (isConfirmed === 3) return 'Completed';
     if (isConfirmed === -1) return 'Cancelled';
   };
 
   const getStatusIcon = (isConfirmed) => {
-    // confirm pending and cancelled
+    if (isConfirmed === 0) return 'hourglass';
     if (isConfirmed === 1) return 'check-circle';
-    if (isConfirmed === 0) return 'clock';
+    if (isConfirmed === 2) return 'user';
+    if (isConfirmed === 3) return 'check-double';
     if (isConfirmed === -1) return 'times-circle';
   };
 
@@ -222,7 +226,8 @@ const Bookings = ({ navigation }) => {
             data={bookings}
             renderItem={renderBookingCard}
             keyExtractor={(item) => item.booking_id.toString()}
-            scrollEnabled={false}
+            scrollEnabled={true}
+            showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.listContent}
           />
         </>
