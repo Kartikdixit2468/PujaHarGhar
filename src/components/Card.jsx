@@ -131,9 +131,7 @@ function CategoryCard({ data, type, navigation }) {
           >
             <View style={styles.category_card_image}>
               <Image
-                // source={{uri: `http://localhost:3000/uploads/category/1.jpg`}}
                 source={{uri: `${SERVER_IP}/uploads/category/${item.image}`}}
-                // source={{uri: `http://10.51.2.157:3000/uploads/category/${item.image}`}}
                 style={styles.catCard_image}
               />
               {/* <View style={[styles.overlay]} /> */}
