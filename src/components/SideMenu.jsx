@@ -6,28 +6,28 @@ import {
   TouchableOpacity,
   Animated,
   Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { faIls } from '@fortawesome/free-solid-svg-icons';
 
 const { width } = Dimensions.get('window');
 
 const menuItems = [
-  { label: 'Home', icon: 'home-outline' }, // Ionicons
-  { label: 'Profile', icon: 'person-outline' },
-  { label: 'Categories', icon: 'grid-outline' },
-  { label: 'Bookings', icon: 'calendar-outline' },
-  { label: 'History', icon: 'time-outline' },
-  { label: 'Support', icon: 'help-circle-outline' },
+  { label: 'Home', icon: 'home-outline', route: 'Home' }, // Ionicons
+  { label: 'Profile', icon: 'person-outline', route: 'Profile' },
+  { label: 'Categories', icon: 'grid-outline', route: 'Categories' },
+  { label: 'Bookings', icon: 'calendar-outline', route: 'Bookings' },
+  { label: 'My Tickets', icon: 'ticket-outline', route: 'Tickets' },
+  { label: 'Support', icon: 'help-circle-outline', route: 'Support' },
 ];
 
-const SideMenu = ({visible, onCloseComplete, onSelect }) => {
+const SideMenu = ({ visible, onCloseComplete, onSelect }) => {
   const [activeTab, setActiveTab] = useState('Home');
-  const slideAnim = useRef(new Animated.Value(-width)).current;
-  const navigation = useNavigation(); // 👈 Fix here
-
+  const { width: screenWidth } = useWindowDimensions();
+  const slideAnim = useRef(new Animated.Value(-screenWidth * 0.75)).current;
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (visible) {
@@ -38,31 +38,31 @@ const SideMenu = ({visible, onCloseComplete, onSelect }) => {
       }).start();
     } else {
       Animated.timing(slideAnim, {
-        toValue: -width,
+        toValue: -screenWidth * 0.75,
         duration: 300,
         useNativeDriver: true,
       }).start(() => {
-        onCloseComplete?.(); // Notify parent to unmount
+        onCloseComplete?.();
       });
     }
-  }, [visible]);
+  }, [visible, screenWidth]);
 
-  const handlePress = (label) => {
-
-    // if (label == 'Home'){
-    //   visible = false;
-    // }
-
-    setActiveTab(label);
-    navigation.navigate(label)
-
+  const handlePress = (item) => {
+    setActiveTab(item.label);
+    onSelect?.(); // Close menu
+    setTimeout(() => {
+      navigation.navigate(item.route);
+    }, 100);
   };
 
   const logout = async () => {
     await AsyncStorage.removeItem('authToken');
-    console.log('it worked!')
-    navigation.navigate('WelcomeScreen')
-  }
+    console.log('Logged out successfully!');
+    onSelect?.(); // Close menu
+    setTimeout(() => {
+      navigation.navigate('WelcomeScreen');
+    }, 100);
+  };
 
   return (
     <Animated.View
@@ -70,6 +70,7 @@ const SideMenu = ({visible, onCloseComplete, onSelect }) => {
         styles.container,
         {
           transform: [{ translateX: slideAnim }],
+          width: screenWidth * 0.75,
         },
       ]}
     >
@@ -80,7 +81,7 @@ const SideMenu = ({visible, onCloseComplete, onSelect }) => {
           <TouchableOpacity
             key={item.label}
             style={[styles.menuItem, isActive && styles.activeMenuItem]}
-            onPress={() => handlePress(item.label)}
+            onPress={() => handlePress(item)}
             activeOpacity={0.7}
           >
             <Ionicons
@@ -99,7 +100,7 @@ const SideMenu = ({visible, onCloseComplete, onSelect }) => {
       <TouchableOpacity
         key="logout"
         style={styles.logout}
-        onPress={async () => {await logout()}}
+        onPress={logout}
       >
         <Ionicons name="chevron-back-circle-outline" size={30} color="#ffff" />
 
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#bdc1c6',
     // elevation: 5,
-    height: '100%',
+    height: '70%',
     // alignItems: 'flex-end',
   },
   menuItem: {
