@@ -185,7 +185,7 @@ const BookingDetail = ({ route, navigation }) => {
       const userEmail = await AsyncStorage.getItem('userEmail');
       const userPhone = await AsyncStorage.getItem('userPhone');
 
-      const response = await fetch(`${SERVER_IP}/api/client/booking/cancel/`, {
+      const response = await fetch(`${SERVER_IP}/api/client/booking/direct-cancellation/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
