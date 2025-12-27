@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -11,31 +11,62 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FAIcon from 'react-native-vector-icons/FontAwesome5';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SERVER_IP } from '@env';
 
 const Support = ({ navigation }) => {
   // Mock data for recent bookings
-  const recentBookings = [
-    {
-      id: 1,
-      status: 'Completed',
-      date: 'Placed at 3rd Dec 2025, 10:42 pm',
-      amount: '₹155.25',
-      images: [
-        require('../assets/images/imagesCategory/GaneshJiPooja.webp'),
-        require('../assets/images/imagesCategory/Lakshmiji.jpg'),
-      ],
-    },
-    {
-      id: 2,
-      status: 'Completed',
-      date: 'Placed at 2nd Dec 2025, 05:47 pm',
-      amount: '₹187',
-      images: [
-        require('../assets/images/imagesCategory/ShivjiPooja.jpg'),
-        require('../assets/images/imagesCategory/matarani.png'),
-      ],
-    },
-  ];
+  const [recentBookings, setRecentBookings] = useState([]);
+  const getStatusText = (isConfirmed) => {
+    if (isConfirmed === 1) return 'Confirmed';
+    if (isConfirmed === 0) return 'Pending';
+    if (isConfirmed === -1) return 'Cancelled';
+  };
+
+  const getStatusColor = (isConfirmed) => {
+    // return isConfirmed ? '#10b981' : '#f59e0b';
+    if (isConfirmed === 1) return '#10b981'; // Confirmed - Green
+    if (isConfirmed === 0) return '#f59e0b'; // Pending - Yellow
+    if (isConfirmed === -1) return '#ef4444'; // Cancelled - Red
+  };
+
+
+  const fetchRecentBookings = async () => {
+    // Fetch recent bookings from backend API
+    const token = await AsyncStorage.getItem('authToken');
+    const user_email = await AsyncStorage.getItem('userEmail');
+    const user_phone = await AsyncStorage.getItem('userPhone');
+    try {
+      const response = await fetch(`${SERVER_IP}/api/client/bookings/recents`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          email: user_email,
+          phone: user_phone,
+          limit: 2
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        const bookings = await data.bookings;
+        setRecentBookings(bookings);
+        console.log('Recent bookings fetched:', bookings);
+      } else {
+        console.error('Failed to fetch recent bookings');
+      }
+    } catch (error) {
+      console.error('Error fetching recent bookings:', error);
+    }
+  };
+
+  useEffect(() => {
+    // navigation.setOptions({ headerShown: false });
+    fetchRecentBookings();
+  }, []);
 
   // FAQ Categories
   const faqCategories = [
@@ -75,23 +106,24 @@ const Support = ({ navigation }) => {
         </View>
 
         {recentBookings.map((booking) => (
-          <View key={booking.id} style={styles.bookingCard}>
+          <View key={booking.booking_id} style={styles.bookingCard}>
             <View style={styles.bookingHeader}>
               <View>
                 <View style={styles.statusBadge}>
-                  <FAIcon name="check-circle" size={16} color="#10b981" />
-                  <Text style={styles.statusText}>{booking.status}</Text>
+                  <FAIcon name="check-circle" size={16} color={getStatusColor(booking.is_confirmed)} />
+                  <Text style={{ color: getStatusColor(booking.is_confirmed), ...styles.statusText }}>{getStatusText(booking.is_confirmed)}</Text>
                 </View>
-                <Text style={styles.bookingDate}>{booking.date}</Text>
+                <Text style={styles.bookingDate}>{booking.booked_on}</Text>
               </View>
-              <Text style={styles.bookingAmount}>{booking.amount}</Text>
+              <Text style={styles.bookingAmount}>{booking.price}</Text>
             </View>
 
             <View style={styles.bookingImages}>
               {booking.images.map((image, index) => (
+
                 <Image
                   key={index}
-                  source={image}
+                  source={{ uri: `${SERVER_IP}/uploads/pujas/${image}` }}
                   style={styles.bookingImage}
                 />
               ))}
@@ -206,9 +238,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   statusText: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
-    color: '#10b981',
+    // color: '#10b981',
     marginLeft: 6,
   },
   bookingDate: {
