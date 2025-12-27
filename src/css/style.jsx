@@ -8,15 +8,19 @@ const height = Dimensions.get('window').height;
 
 export const styles = StyleSheet.create({
   section: {
-    marginVertical: 10,
+    marginVertical: 5,
     width: "100%",
   },
   trending_section: {
-    maxHeight: height * 0.25,
+    maxHeight: height * 0.3,
+    padding: 5,
   },
   category_section: {
     maxHeight: height * 0.65,
+    padding: 5,
     justifyContent: 'center',
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
   section_heading: {
     flexDirection: 'row',
@@ -27,8 +31,6 @@ export const styles = StyleSheet.create({
   heading_text: {
     margin: 2,
     color: '#ffbc00',
-    // color: '#555',
-    // color: '#000',
     fontSize: 20,
     fontFamily: 'bernoru-blackultraexpanded',
     fontWeight: 'bold',
