@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FAIcon from 'react-native-vector-icons/FontAwesome5';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SERVER_IP } from '@env';
 
 const ContactSupport = ({ navigation }) => {
   const [ticketSubject, setTicketSubject] = useState('');
@@ -40,26 +42,64 @@ const ContactSupport = ({ navigation }) => {
       return;
     }
 
-    setLoading(true);
-    // Simulate API call - Replace with actual backend integration
-    setTimeout(() => {
-      Alert.alert(
-        'Success',
-        'Your support ticket has been submitted. Our team will get back to you soon.',
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              setLoading(false);
-              setTicketSubject('');
-              setTicketCategory('');
-              setTicketMessage('');
-              navigation.goBack();
+    try {
+      setLoading(true);
+
+      // Get auth token and user credentials
+      const token = await AsyncStorage.getItem('authToken');
+      const userEmail = await AsyncStorage.getItem('userEmail');
+      const userPhone = await AsyncStorage.getItem('userPhone');
+
+      if (!token) {
+        Alert.alert('Error', 'Authentication token not found. Please log in again.');
+        setLoading(false);
+        return;
+      }
+
+      // Make API request to create ticket
+      const response = await fetch(`${SERVER_IP}/api/tickets/create/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subject: ticketSubject.trim(),
+          category: ticketCategory,
+          email: userEmail || null,
+          message: ticketMessage.trim(),
+          phone: userPhone || null,
+          booking_id: null,
+        }),
+      });
+
+      const data = await response.json();
+      setLoading(false);
+
+      if (data.success) {
+        Alert.alert(
+          'Success',
+          'Your support ticket has been submitted. Our team will get back to you soon.',
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                setTicketSubject('');
+                setTicketCategory('');
+                setTicketMessage('');
+                navigation.goBack();
+              },
             },
-          },
-        ]
-      );
-    }, 1500);
+          ]
+        );
+      } else {
+        Alert.alert('Error', data.message || 'Failed to submit ticket. Please try again.');
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error('Error submitting ticket:', error);
+      Alert.alert('Error', 'An error occurred while submitting your ticket. Please try again.');
+    }
   };
 
   return (
