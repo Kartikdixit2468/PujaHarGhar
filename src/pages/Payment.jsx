@@ -12,7 +12,7 @@ const Payment = ({ navigation, route }) => {
     try {
       const token = await AsyncStorage.getItem('authToken');
       const response = await fetch(`${SERVER_IP}/api/payment/verify-payment/`, {
-        method: 'POst',
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const Payment = ({ navigation, route }) => {
         return { success: true };
       }
     } catch (error) {
-      console.log('Payment was fraudalent.');
+      console.log('Payment was fraudulent.');
       return { success: false, message: error.message };
     }
   };
@@ -61,11 +61,11 @@ const Payment = ({ navigation, route }) => {
           const user_phone = await AsyncStorage.getItem('userPhone');
 
           const BookingDetails = {
-              ...BookingObject,
-              payment_id: data.razorpay_payment_id,
-              phone: user_phone,
+            ...BookingObject,
+            payment_id: data.razorpay_payment_id,
+            phone: user_phone,
           };
-          console.log(BookingDetails);
+          console.log('Booking Details:', BookingDetails);
 
           const response = await fetch(
             `${SERVER_IP}/api/client/create-order/booking/`,
@@ -80,15 +80,29 @@ const Payment = ({ navigation, route }) => {
           );
 
           const isBooked = await response.json();
+          console.log('Booking Response:', isBooked);
 
-          if (isBooked.success) {
-            navigation.navigate('BookingSuccess');
+          if (isBooked && isBooked.success) {
+            console.log('Booking successful, navigating to BookingSuccess');
+            navigation.navigate('BookingSuccess', {
+              BookingObject: BookingDetails,
+              orderInfo: orderInfo,
+              bookingData: isBooked.data,
+            });
           } else {
-            navigation.navigate('BookingFailiure');
+            console.log('Booking failed:', isBooked);
+            navigation.navigate('BookingFailiure', {
+              errorMessage: isBooked?.message || 'Failed to create booking',
+              orderInfo: orderInfo,
+            });
           }
         } else {
           console.log(`Payment Error: ${isPaymentLegit.message}`);
-          navigation.navigate('BookingFailiure');
+          navigation.navigate('BookingFailiure', {
+            errorMessage:
+              isPaymentLegit.message || 'Payment verification failed',
+            orderInfo: orderInfo,
+          });
         }
       })
       .catch((error) => {
@@ -102,11 +116,6 @@ const Payment = ({ navigation, route }) => {
     openRazorpayCheckout(orderInfo);
   }, []);
 
-  return (
-    <View>
-      <Text>see in jsx of payment file.</Text>
-    </View>
-  );
+  return
 };
-
 export default Payment;
