@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Linking,
+  Dimensions,
 } from 'react-native';
 import { SERVER_IP } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Checkbox } from 'react-native-paper';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 export default CheckoutScreen = ({ navigation, route }) => {
@@ -100,9 +102,22 @@ export default CheckoutScreen = ({ navigation, route }) => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.wrapper}>
+      {/* Custom Header */}
+      <View style={styles.header}>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()}
+          style={styles.headerButton}
+        >
+          <Ionicons name="chevron-back" size={26} color="#000" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Checkout</Text>
+        <View style={styles.headerButton} />
+      </View>
+
       <ScrollView
-        style={styles.scrollContent}
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {/* Puja Info */}
@@ -111,53 +126,58 @@ export default CheckoutScreen = ({ navigation, route }) => {
 
         {/* Package Details */}
         <View style={styles.section}>
-          <Text style={styles.subheading}>{checkoutInfo.package_name}</Text>
+          <Text style={styles.subheading}>📦 {checkoutInfo.package_name}</Text>
 
           {Array.isArray(checkoutInfo.features) &&
             checkoutInfo.features.map((feature, i) => (
-              <Text key={i} style={styles.featureText}>
-                • {feature}
-              </Text>
+              <View key={i} style={styles.featureRow}>
+                <View style={styles.featureDot} />
+                <Text style={styles.featureText}>{feature}</Text>
+              </View>
             ))}
         </View>
 
+
         {/* Cost Breakdown */}
         <View style={styles.section}>
-          <Text style={styles.subheading}>Cost Breakdown</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Puja Base Price</Text>
-            <Text style={styles.value}>₹{checkoutInfo.package_price}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Intra-State Travel Cost</Text>
-            <Text style={styles.value}>₹{checkoutInfo.travel_cost}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>GST (18%)</Text>
-            <Text style={styles.value}>₹{taxAmount}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Discount</Text>
-            <Text style={styles.value}>₹{discount}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Selected Date</Text>
-            <Text style={styles.value}>
-              {selectedDate
-                ? new Date(selectedDate).toLocaleDateString()
-                : 'We’ll help you decide'}
-            </Text>
-          </View>
-          <View style={styles.rowTotal}>
-            <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>₹{finalAmount}</Text>
-          </View>
+          <Text style={styles.subheading}>💰 Cost Breakdown</Text>
+          <View style={styles.breakdownCard}>
+            <View style={styles.row}>
+              <Text style={styles.label}>Puja Base Price</Text>
+              <Text style={styles.value}>₹{checkoutInfo.package_price}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Travel Cost</Text>
+              <Text style={styles.value}>₹{checkoutInfo.travel_cost}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>GST (18%)</Text>
+              <Text style={styles.value}>₹{taxAmount?.toFixed(2)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Discount</Text>
+              <Text style={[styles.value, styles.discount]}>-₹{discount?.toFixed(2)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>📅 Preferred Date</Text>
+              <Text style={styles.value}>
+                {selectedDate
+                  ? new Date(selectedDate).toLocaleDateString()
+                  : 'We\'ll help'}
+              </Text>
+            </View>
 
-          <View style={styles.rowTotal}>
-            <Text style={styles.totalLabel}>Current Payable (50%)</Text>
-            <Text style={styles.totalValue}>
-              ₹{(finalAmount / 2)}
-            </Text>
+            <View style={styles.divider} />
+
+            <View style={styles.rowTotal}>
+              <Text style={styles.totalLabel}>Final Amount</Text>
+              <Text style={styles.totalValue}>₹{finalAmount?.toFixed(2)}</Text>
+            </View>
+
+            <View style={styles.rowTotal}>
+              <Text style={styles.payableLabel}>Current Payable (50%)</Text>
+              <Text style={styles.payableValue}>₹{(finalAmount / 2)?.toFixed(2)}</Text>
+            </View>
           </View>
         </View>
 
@@ -165,7 +185,7 @@ export default CheckoutScreen = ({ navigation, route }) => {
           <Checkbox
             status={agree ? 'checked' : 'unchecked'}
             onPress={() => setAgree(!agree)}
-            color="#4F46E5" // Indigo
+            color="#ce8123"
           />
           <Text style={styles.checkboxText}>
             I agree to the{' '}
@@ -197,18 +217,24 @@ export default CheckoutScreen = ({ navigation, route }) => {
       {/* Footer */}
       <View style={styles.footer}>
         <TouchableOpacity
-          style={styles.button}
+          style={[
+            styles.button,
+            !agree && styles.buttonDisabled,
+          ]}
+          disabled={!agree}
+          activeOpacity={agree ? 0.8 : 0.5}
           onPress={() => {
-            // Handle Payment Navigation
-            navigation.navigate('Payment', { finalAmount:finalAmount*100, currentAmount: (finalAmount/2)*100, orderInfo: orderInfo , BookingObject:BookingObject});
+            if (agree) {
+              navigation.navigate('Payment', { finalAmount:finalAmount*100, currentAmount: (finalAmount/2)*100, orderInfo: orderInfo , BookingObject:BookingObject});
+            }
           }}
         >
           <Text style={styles.buttonText}>
-            Proceed to Pay ₹{(finalAmount/2)}
+            💳 Proceed to Pay ₹{(finalAmount/2)?.toFixed(2)}
           </Text>
         </TouchableOpacity>
         <Text style={styles.note}>
-          Note: A small advance will be collected now. Remaining amount is
+          ⏱️ Note: A small advance will be collected now. Remaining amount is
           payable after confirmation.
         </Text>
       </View>
@@ -217,13 +243,46 @@ export default CheckoutScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 2,
+    borderBottomColor: '#ce8123',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  headerButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#000',
+    flex: 1,
+    textAlign: 'center',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
   },
   scrollContent: {
     padding: 16,
-    marginBottom: 100, // to avoid overlapping the button
+    paddingBottom: 120,
   },
   heading: {
     fontSize: 22,
@@ -250,6 +309,31 @@ const styles = StyleSheet.create({
     color: '#555',
     marginLeft: 10,
     marginBottom: 4,
+  },
+  featureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  featureDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#ce8123',
+    marginRight: 8,
+  },
+  breakdownCard: {
+    borderWidth: 1.5,
+    borderColor: '#E8E3DD',
+    borderRadius: 12,
+    padding: 16,
+    backgroundColor: '#FAFAF8',
+    marginBottom: 12,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e0e0e0',
+    marginVertical: 12,
   },
   row: {
     flexDirection: 'row',
@@ -282,47 +366,80 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#000',
   },
+  payableLabel: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#ce8123',
+  },
+  payableValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#ce8123',
+  },
+  discount: {
+    color: '#ce8123',
+    fontWeight: '600',
+  },
   footer: {
     position: 'absolute',
     bottom: 0,
-    width: '100%',
+    left: 0,
+    right: 0,
     padding: 16,
-    backgroundColor: '#fff',
+    paddingBottom: 20,
+    backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
-    borderColor: '#eee',
+    borderTopColor: '#E8E3DD',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
   },
   button: {
-    backgroundColor: '#FFD700',
+    backgroundColor: '#ce8123',
     paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
+    shadowColor: '#ce8123',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  buttonDisabled: {
+    backgroundColor: '#D4C4B4',
+    opacity: 0.6,
+    shadowOpacity: 0,
+    elevation: 0,
   },
   buttonText: {
     fontWeight: '700',
     fontSize: 16,
-    color: '#000',
+    color: '#fff',
   },
   note: {
-    marginTop: 10,
+    marginTop: 12,
     fontSize: 13,
     color: '#777',
     textAlign: 'center',
+    fontWeight: '500',
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginTop: 24,
-    gap: 8, // Optional: adjust for spacing between checkbox and text
+    gap: 8,
     paddingRight: 16,
     maxWidth: '90%',
   },
   checkboxText: {
     flex: 1,
     fontSize: 14,
-    color: '#374151', // Tailwind's gray-700
+    color: '#374151',
   },
   link: {
-    color: '#4F46E5', // Indigo-600
+    color: '#4F46E5',
     textDecorationLine: 'underline',
   },
 });

@@ -8,10 +8,14 @@ import {
   Platform,
   FlatList,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { SERVER_IP } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const width = Dimensions.get('window').width;
 
 
 // console.log(SERVER_IP)
@@ -53,108 +57,240 @@ export const PackageSelectionScreen = ({ route, navigation }) => {
 
   const [selected, setSelected] = useState(null);
 
+  const handleContinue = () => {
+    console.log('Selected package ID:', selected);
+    if (selected !== null) {
+      navigation.navigate('PreistSelectionScreen', {
+        package_id: selected,
+      });
+    }
+  };
+
   return (
-    <ScrollView style={stylesPackageScreen.container}>
-      <Text style={stylesPackageScreen.heading}>Choose Your Package</Text>
-      {packages.map((pkg) => (
-        <TouchableOpacity
-          key={pkg.id}
-          onPress={() => setSelected(pkg.id)}
-          style={[
-            stylesPackageScreen.card,
-            selected === pkg.id && stylesPackageScreen.selectedCard,
-          ]}
+    <View style={stylesPackageScreen.wrapper}>
+      {/* Custom Header */}
+      <View style={stylesPackageScreen.header}>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()}
+          style={stylesPackageScreen.headerButton}
         >
-          <View style={stylesPackageScreen.cardHeader}>
-            <Text style={stylesPackageScreen.packageName}>{pkg.name}</Text>
-            <Text style={stylesPackageScreen.packagePrice}>₹{pkg.price}</Text>
-          </View>
-
-          {/* 👈 Added this line */}
-          {pkg.features.map((feature, i) => (
-            <Text key={i} style={stylesPackageScreen.feature}>
-              • {feature}
-            </Text>
-          ))}
+          <Ionicons name="chevron-back" size={26} color="#000" />
         </TouchableOpacity>
-      ))}
+        <Text style={stylesPackageScreen.headerTitle}>Select Package</Text>
+        <View style={stylesPackageScreen.headerButton} />
+      </View>
 
-      <TouchableOpacity
-        style={stylesPackageScreen.button}
-        disabled={selected === null}
-        onPress={() => {
-          if (selected !== null) {
-            // You can pass this to next screen or handle accordingly
-            navigation.navigate('PreistSelectionScreen', {
-              package_id: selected,
-            });
-          }
-        }}
+      <ScrollView 
+        style={stylesPackageScreen.container}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={stylesPackageScreen.contentContainer}
       >
-        <Text style={stylesPackageScreen.buttonText}>Continue</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <Text style={stylesPackageScreen.heading}>Choose Your Package</Text>
+        {packages.map((pkg) => (
+          <TouchableOpacity
+            key={pkg.id}
+            onPress={() => setSelected(pkg.id)}
+            style={[
+              stylesPackageScreen.card,
+              selected === pkg.id && stylesPackageScreen.selectedCard,
+            ]}
+          >
+            <View style={stylesPackageScreen.cardHeader}>
+              <View style={stylesPackageScreen.cardTitleSection}>
+                <Text style={stylesPackageScreen.packageName}>{pkg.name}</Text>
+              </View>
+              <View style={stylesPackageScreen.priceTag}>
+                <Text style={stylesPackageScreen.packagePrice}>₹{pkg.price}</Text>
+              </View>
+            </View>
+
+            {pkg.features.map((feature, i) => (
+              <View key={i} style={stylesPackageScreen.featureRow}>
+                <View style={stylesPackageScreen.featureDot} />
+                <Text style={stylesPackageScreen.feature}>{feature}</Text>
+              </View>
+            ))}
+
+            {selected === pkg.id && (
+              <View style={stylesPackageScreen.selectedBadge}>
+                <Ionicons name="checkmark-circle" size={20} color="#ce8123" />
+                <Text style={stylesPackageScreen.selectedText}>Selected</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      <View style={stylesPackageScreen.footerSection}>
+        <TouchableOpacity
+          style={[
+            stylesPackageScreen.button,
+            selected === null && stylesPackageScreen.buttonDisabled,
+          ]}
+          disabled={selected === null}
+          onPress={handleContinue}
+          activeOpacity={0.8}
+        >
+          <Text style={stylesPackageScreen.buttonText}>Continue</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
+// };
 
 const stylesPackageScreen = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  // Header Styles
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 2,
+    borderBottomColor: '#ce8123',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  headerButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#000',
+    flex: 1,
+    textAlign: 'center',
+  },
+  // Container
   container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  contentContainer: {
     padding: 16,
-    backgroundColor: '#fff',
+    paddingBottom: 100,
   },
   heading: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    color: '#333',
+    fontSize: 22,
+    fontWeight: '800',
+    marginBottom: 20,
+    color: '#1a1a1a',
   },
+  // Card Styles
   card: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#E8E3DD',
+    borderRadius: 16,
     padding: 16,
-    marginBottom: 12,
-    backgroundColor: '#fafafa',
+    marginBottom: 14,
+    backgroundColor: '#FAFAF8',
   },
   selectedCard: {
-    borderColor: '#FFD700',
-    backgroundColor: '#fffbe6',
-  },
-  packageName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#222',
-  },
-  feature: {
-    fontSize: 14,
-    color: '#555',
-    marginLeft: 8,
-  },
-  button: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 14,
-    borderRadius: 8,
-    marginTop: 24,
-    alignItems: 'center',
-    opacity: 1,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
+    borderColor: '#ce8123',
+    backgroundColor: '#fff8f2',
+    borderWidth: 2,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+    alignItems: 'flex-start',
+    marginBottom: 14,
   },
-  
+  cardTitleSection: {
+    flex: 1,
+  },
+  packageName: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  priceTag: {
+    backgroundColor: '#ce8123',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
   packagePrice: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  featureRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 10,
+  },
+  featureDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: '#ce8123',
+    marginTop: 7,
+    marginRight: 10,
+  },
+  feature: {
+    fontSize: 13,
+    color: '#555',
+    flex: 1,
+    lineHeight: 18,
+    fontWeight: '400',
+  },
+  selectedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E8E3DD',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  selectedText: {
+    color: '#ce8123',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  // Button Styles
+  footerSection: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#E8E3DD',
+  },
+  button: {
+    backgroundColor: '#ce8123',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#ce8123',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  buttonDisabled: {
+    backgroundColor: '#D4C4B4',
+    opacity: 0.6,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#FFFFFF',
   },
 });
 
@@ -216,28 +352,45 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={stylesPreistSelection.container}>
-      <ScrollView contentContainerStyle={stylesPreistSelection.scrollContent}>
+    <View style={stylesPreistSelection.wrapper}>
+      {/* Custom Header */}
+      <View style={stylesPreistSelection.header}>
+        <TouchableOpacity 
+          onPress={() => navigation.goBack()}
+          style={stylesPreistSelection.headerButton}
+        >
+          <Ionicons name="chevron-back" size={26} color="#000" />
+        </TouchableOpacity>
+        <Text style={stylesPreistSelection.headerTitle}>Select Priest & Date</Text>
+        <View style={stylesPreistSelection.headerButton} />
+      </View>
+
+      <ScrollView 
+        contentContainerStyle={stylesPreistSelection.scrollContent}
+        style={stylesPreistSelection.container}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={stylesPreistSelection.dropdownContainer}>
-          <Text style={stylesPreistSelection.label}>Choose Priest</Text>
+          <Text style={stylesPreistSelection.label}>👨‍⚖️ Choose Priest</Text>
 
           <TouchableOpacity
             onPress={() => setIsOpen(!isOpen)}
-            style={stylesPreistSelection.dropdown}
+            style={[
+              stylesPreistSelection.dropdown,
+              selectedPriest && stylesPreistSelection.dropdownSelected,
+            ]}
           >
             {selectedPriest ? (
               <View style={stylesPreistSelection.item}>
                 <Image
                   source={{
-                    // uri: `http://127.0.0.1:3000/uploads/priest/${selectedPriest.img}`,
                     uri: `${SERVER_IP}/uploads/priest/${selectedPriest.img}`,
-                    // uri: `http://10.51.2.157:3000/uploads/priest/${selectedPriest.img}`,
                   }}
                   style={stylesPreistSelection.image}
                 />
                 <View>
                   <Text style={stylesPreistSelection.name}>
-                    Shri {selectedPriest.name}
+                    {selectedPriest.gender === 'female' ? 'Shrimati' : 'Shri'} {selectedPriest.name}
                   </Text>
                   <Text style={stylesPreistSelection.experience}>
                     {selectedPriest.exp} years of experience
@@ -246,7 +399,7 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
               </View>
             ) : (
               <Text style={stylesPreistSelection.placeholder}>
-                Select a priest
+                Select a priest...
               </Text>
             )}
           </TouchableOpacity>
@@ -261,16 +414,13 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
                 >
                   <Image
                     source={{
-                      // uri: `http://10.51.2.157:3000/uploads/priest/${priest.img}`,
-                      // uri: `http://127.0.0.1:3000/uploads/priest/${priest.img}`,
                       uri: `${SERVER_IP}/uploads/priest/${priest.img}`,
                     }}
                     style={stylesPreistSelection.image}
                   />
                   <View>
                     <Text style={stylesPreistSelection.name}>
-                      {priest.gender === 'female' ? 'Shrimati' : 'Shri'}{' '}
-                      {priest.name}
+                      {priest.gender === 'female' ? 'Shrimati' : 'Shri'} {priest.name}
                     </Text>
                     <Text style={stylesPreistSelection.experience}>
                       {priest.exp} years of experience
@@ -282,7 +432,7 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
           )}
 
           <Text style={stylesPreistSelection.heading}>
-            Select Date Preference
+            📅 Select Date Preference
           </Text>
 
           <View style={stylesPreistSelection.optionRow}>
@@ -307,7 +457,7 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
               onPress={() => setDateOption('specific')}
             >
               <Text style={stylesPreistSelection.optionText}>
-                Choose a specific date
+                Choose a date
               </Text>
             </TouchableOpacity>
           </View>
@@ -318,7 +468,7 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
               style={stylesPreistSelection.datePickerButton}
             >
               <Text style={stylesPreistSelection.datePickerText}>
-                {`Selected Date: ${formatDate(selectedDate)}`}
+                {`Selected: ${formatDate(selectedDate)}`}
               </Text>
             </TouchableOpacity>
           )}
@@ -337,7 +487,8 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
 
       <View style={stylesPreistSelection.footer}>
         <TouchableOpacity
-          style={stylesPreistSelection.button}
+          style={[stylesPreistSelection.button, !selectedPriest && stylesPreistSelection.buttonDisabled]}
+          disabled={!selectedPriest}
           onPress={() => {
             console.log(selectedDate)
             console.log(formatDate(selectedDate))
@@ -349,12 +500,11 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
             });
           }}
         >
-          <Text style={stylesPreistSelection.buttonText}>Checkout</Text>
+          <Text style={stylesPreistSelection.buttonText}>Proceed to Checkout</Text>
         </TouchableOpacity>
 
         <Text style={stylesPreistSelection.note}>
-          Note: You’ll be asked to pay partially now, and the rest as we proceed
-          further.
+          💳 Note: Pay a partial amount now, and the rest as we proceed further.
         </Text>
       </View>
     </View>
@@ -362,135 +512,182 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
 };
 
 const stylesPreistSelection = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    padding: 8,
+  wrapper: {
     flex: 1,
-    maxHeight: '100%',
+    backgroundColor: '#FFFFFF',
+  },
+  // Header Styles
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 2,
+    borderBottomColor: '#ce8123',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  headerButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#000',
+    flex: 1,
+    textAlign: 'center',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   heading: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 12,
-    color: '#333',
+    fontWeight: '700',
+    marginVertical: 16,
+    color: '#1a1a1a',
   },
   dropdownContainer: {
-    margin: 15,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginBottom: 20,
-    padding: 8,
-    height: '95%',
+    margin: 16,
+    marginBottom: 80,
+    paddingBottom: 20,
   },
   optionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 10,
-    marginVertical: 10,
+    marginVertical: 12,
   },
   optionButton: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderWidth: 1.5,
+    borderColor: '#E8E3DD',
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#FAFAF8',
   },
   optionSelected: {
-    borderColor: '#FFD700',
-    backgroundColor: '#fffbe6',
+    borderColor: '#ce8123',
+    backgroundColor: '#fff8f2',
+    borderWidth: 2,
   },
   optionText: {
     color: '#333',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   datePickerButton: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginTop: 10,
+    padding: 14,
+    borderWidth: 1.5,
+    borderColor: '#E8E3DD',
+    borderRadius: 12,
+    marginTop: 12,
+    backgroundColor: '#FAFAF8',
   },
   datePickerText: {
     fontSize: 14,
-    color: '#222',
+    color: '#1a1a1a',
+    fontWeight: '500',
   },
   button: {
-    backgroundColor: '#FFD700',
+    backgroundColor: '#ce8123',
     paddingVertical: 14,
-    borderRadius: 8,
-    marginTop: 30,
+    borderRadius: 12,
     alignItems: 'center',
+    shadowColor: '#ce8123',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  buttonDisabled: {
+    backgroundColor: '#D4C4B4',
+    opacity: 0.6,
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: '800',
+    color: '#FFFFFF',
   },
   note: {
     marginTop: 12,
     color: '#777',
     fontSize: 13,
     textAlign: 'center',
+    fontWeight: '500',
   },
   label: {
     fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-    padding: 5,
+    fontWeight: '700',
+    marginBottom: 12,
+    color: '#1a1a1a',
   },
   dropdown: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: '#fff',
+    borderWidth: 1.5,
+    borderColor: '#E8E3DD',
+    borderRadius: 12,
+    padding: 12,
+    backgroundColor: '#FAFAF8',
+  },
+  dropdownSelected: {
+    borderColor: '#ce8123',
+    backgroundColor: '#fff8f2',
+    borderWidth: 2,
   },
   placeholder: {
-    color: '#aaa',
+    color: '#999',
     fontSize: 14,
-    padding: 5,
+    padding: 4,
   },
   dropdownList: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: '#E8E3DD',
+    borderRadius: 12,
     backgroundColor: '#fff',
-    marginTop: 5,
-    elevation: 2,
-    paddingVertical: 5,
+    marginTop: 8,
+    elevation: 4,
+    paddingVertical: 8,
   },
   item: {
     flexDirection: 'row',
-    padding: 10,
+    padding: 12,
     alignItems: 'center',
-    borderBottomColor: '#eee',
+    borderBottomColor: '#f0f0f0',
     borderBottomWidth: 1,
   },
   image: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     marginRight: 12,
   },
   name: {
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: '600',
+    color: '#1a1a1a',
   },
   experience: {
     fontSize: 12,
-    color: '#777',
+    color: '#888',
+    marginTop: 2,
   },
   scrollContent: {
-    paddingBottom: 100, // make space for footer
+    paddingBottom: 100,
   },
   footer: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
-    borderColor: '#eee',
+    borderTopColor: '#E8E3DD',
   },
 });
