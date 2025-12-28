@@ -105,38 +105,30 @@ function MenuNavigation() {
       <Stack.Screen
         name="PackageSelectionScreen"
         component={PackageSelectionScreen}
-        // options={{ headerShown: false }}
-        options={{
-          title: 'Select a Package',
-          headerStyle: { backgroundColor: '#f7f7f7' },
-          // headerShown: false
-        }}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
         name="PreistSelectionScreen"
         component={PreistSelectionScreen}
-        options={{
-          title: 'Select a Priest',
-          headerStyle: { backgroundColor: '#f7f7f7' },
-          // headerShown: false
-        }}      />
+        options={{ headerShown: false }}
+/>
 
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
-        // options={{ headerShown: false }}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
         name="BookingSuccess"
         component={BookingSuccess}
-        // options={{ headerShown: false }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="BookingFailiure"
         component={BookingFailiure}
-        // options={{ headerShown: false }}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
@@ -182,11 +174,7 @@ function MenuNavigation() {
       <Stack.Screen
         name="PujaPage"
         component={PujaPage}
-        options={{
-          title: 'Puja Details',
-          headerStyle: { backgroundColor: '#f7f7f7' },
-          // headerShown: false
-        }}
+        options={{ headerShown: false }}
       />
 
       <Stack.Screen
