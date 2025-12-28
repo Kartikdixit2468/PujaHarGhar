@@ -57,7 +57,8 @@ const Bookings = ({ navigation }) => {
       console.log('Bookings response:', data);
 
       if (data.success && data.bookings) {
-        setBookings(data.bookings);
+        // Reverse the array to show newest bookings at the top
+        setBookings(data.bookings.reverse());
       } else {
         setError(data.message || 'Failed to fetch bookings');
       }
@@ -126,11 +127,12 @@ const Bookings = ({ navigation }) => {
             <View style={styles.dateTimeContainer}>
               <Icon name="schedule" size={14} color="#6b7280" />
               <Text style={styles.dateTimeText}>{formattedBookedOnDate}</Text>
-              {item.date ?( <>
-              <Icon name="event" size={14} color="#6b7280" style={{ marginLeft: 8 }} />
-              <Text style={styles.dateTimeText}>{formattedDate}</Text>
-              </>) : null
-              }
+              {item.date && (
+                <View style={styles.additionalDateContainer}>
+                  <Icon name="event" size={14} color="#6b7280" style={{ marginLeft: 8 }} />
+                  <Text style={styles.dateTimeText}>{formattedDate}</Text>
+                </View>
+              )}
             </View>
           </View>
           <Text style={styles.price}>₹{item.price}</Text>
@@ -278,7 +280,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#e0e0e1ff',
     overflow: 'hidden',
   },
   cardHeader: {
@@ -300,6 +302,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   dateTimeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    flexWrap: 'wrap',
+  },
+  additionalDateContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
