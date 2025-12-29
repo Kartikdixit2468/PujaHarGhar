@@ -154,20 +154,40 @@ export const registerUserManual = async (userData) => {
  */
 export const registerUserGoogle = async (userData) => {
   try {
+    console.log('SERVER_IP being used:', SERVER_IP);
+    console.log('Registering user with Google data:', userData);
+    
     userData = {...userData,
       e_verified: 1
     }
+    
     const response = await fetch(`${SERVER_IP}/api/client/register/user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(userData),
+      timeout: 15000, // 15 second timeout
     });
+    
+    console.log('Google registration response status:', response.status);
     const data = await response.json();
+    console.log('Google registration response:', data);
     return data;
   } catch (error) {
     console.error('Error registering with Google:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    
+    // Provide more detailed error information
+    if (error.message.includes('Network request failed')) {
+      console.error('❌ NETWORK ERROR: Cannot reach backend server');
+      console.error('Check that:');
+      console.error('1. Backend server is running');
+      console.error('2. SERVER_IP in .env is correct:', SERVER_IP);
+      console.error('3. Emulator/Device can reach the IP');
+      console.error('4. Firewall is not blocking the port');
+    }
     throw error;
   }
 };

@@ -163,7 +163,7 @@ function CategoryCard({ data, type, navigation }) {
           >
             <View style={styles.category_card_image}>
               <Image
-                source={{uri: `http://192.168.10.128:3000/uploads/category/${item.image}`}}
+                source={{uri: `${SERVER_IP}/uploads/category/${item.image}`}}
                 // source={require('../assets/images/imagesCategory/1.jpg')}
                 style={styles.catCard_image}
               />

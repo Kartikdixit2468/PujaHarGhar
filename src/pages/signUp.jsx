@@ -57,7 +57,17 @@ const SignUp = ({ navigation }) => {
     } catch (error) {
       signupState.setDisplayDotLoader(false);
       console.error('Google Sign-In Error:', error);
-      Alert.alert('Login Failed', error.message);
+      
+      // Provide more helpful error messages
+      let errorMessage = error.message || 'An error occurred during sign-in';
+      
+      if (error.message && error.message.includes('Network request failed')) {
+        errorMessage = 'Network Error: Cannot reach server.\n\nPlease check:\n• Backend is running\n• SERVER_IP in .env is correct\n• Device/Emulator has internet';
+      } else if (error.message && error.message.includes('DEVELOPER_ERROR')) {
+        errorMessage = 'Google Sign-In Configuration Error.\n\nPlease check:\n• Google OAuth credentials\n• google-services.json setup';
+      }
+      
+      Alert.alert('Login Failed', errorMessage);
     }
   };
 
