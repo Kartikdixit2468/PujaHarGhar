@@ -53,7 +53,6 @@ export default CheckoutScreen = ({ navigation, route }) => {
             },
           }
         );
-    
         const data = await response.json();
         if (data.success) {
           const fetchedData = data.data;
