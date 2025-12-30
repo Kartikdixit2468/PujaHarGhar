@@ -11,6 +11,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../context/AuthContext';
 
 const { width } = Dimensions.get('window');
 
@@ -24,6 +25,7 @@ const menuItems = [
 ];
 
 const SideMenu = ({ visible, onCloseComplete, onSelect }) => {
+  const { setIsLoggedIn } = useAuth();
   const [activeTab, setActiveTab] = useState('Home');
   const { width: screenWidth } = useWindowDimensions();
   const slideAnim = useRef(new Animated.Value(-screenWidth * 0.75)).current;
@@ -56,7 +58,11 @@ const SideMenu = ({ visible, onCloseComplete, onSelect }) => {
   };
 
   const logout = async () => {
+    console.log('Logging out...');
     await AsyncStorage.removeItem('authToken');
+    await AsyncStorage.removeItem('userEmail');
+    await AsyncStorage.removeItem('userPhone');
+    setIsLoggedIn(false);
     console.log('Logged out successfully!');
     onSelect?.(); // Close menu
     setTimeout(() => {
