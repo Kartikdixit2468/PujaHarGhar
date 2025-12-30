@@ -19,6 +19,8 @@ const SignUpStage1 = ({
   onResend,
   signUpStage,
 }) => {
+
+  console.log("SignUpStage1 Rendered, signUpStage: ", signUpStage);
   return (
     <View
       style={
@@ -91,18 +93,23 @@ const SignUpStage1 = ({
 
 const styles_stage1 = StyleSheet.create({
   PopUpScreen: {
-    top: '10%',
-    position: 'relative',
-    height: '90%',
-    width: '99%',
-    alignSelf: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '100%',
+    width: '100%',
     backgroundColor: '#fff7ea',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     padding: 20,
+    zIndex: 100,
+    justifyContent: 'flex-start',
   },
   hide: {
-    display: 'none',
+    opacity: 0,
+    pointerEvents: 'none',
   },
   headerText: {
     color: '#ffbc00',

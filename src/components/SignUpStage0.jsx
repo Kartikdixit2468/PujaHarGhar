@@ -22,7 +22,10 @@ const SignUpStage0 = ({
   signUpStage,
 }) => {
   return (
-    <View style={styles_stage0.container}>
+    <View style={[
+      styles_stage0.container,
+      signUpStage === 0 ? styles_stage0.containerVisible : styles_stage0.containerHidden
+    ]}>
       <View style={[{ zIndex: signUpStage !== 0 ? -1 : 1 }]}>
       {/* Progress Bar */}
       <View style={styles_stage0.progressBar}>
@@ -180,8 +183,23 @@ const SignUpStage0 = ({
 
 const styles_stage0 = StyleSheet.create({
   container: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '100%',
+    width: '100%',
     backgroundColor: '#fff7ea',
-    position: 'relative',
+    zIndex: 50,
+  },
+  containerVisible: {
+    opacity: 1,
+    pointerEvents: 'auto',
+  },
+  containerHidden: {
+    opacity: 0,
+    pointerEvents: 'none',
   },
   progressBar: {
     flexDirection: 'row',

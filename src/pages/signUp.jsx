@@ -8,8 +8,10 @@ import SignUpStage2 from '../components/SignUpStage2';
 import { useSignUpState } from '../hooks/useSignUpState';
 import * as authService from '../services/authService';
 import * as storageService from '../services/storageService';
+import { useAuth } from '../context/AuthContext';
 
 const SignUp = ({ navigation }) => {
+  const {isLoggedIn, setIsLoggedIn} = useAuth();
   const signupState = useSignUpState();
 
   useEffect(() => {
@@ -45,8 +47,10 @@ const SignUp = ({ navigation }) => {
         console.log("User Data: ", user_data);
         await storageService.saveValue('userEmail', user_data.email);
         await storageService.saveValue('userPhone', user_data.phoneNumber || '');
+
+        setIsLoggedIn(true);
         signupState.setDisplayDotLoader(false);
-        navigation.navigate('Home');
+        // navigation.navigate('Home');
       } else {
         signupState.setDisplayDotLoader(false);
         Alert.alert(
@@ -117,8 +121,9 @@ const SignUp = ({ navigation }) => {
 
       if (otp_phone_response.type === 'success') {
         const messageIDPhone = otp_phone_response.message;
-
+        console.log("Phone OTP Message ID: here ", messageIDPhone);
         await storageService.saveValue('phoneOTPMessageID', messageIDPhone);
+        console.log("OTP sent successfully to phone and email.");
 
         signupState.setDisplayDotLoader(false);
         signupState.setSignUpStage(1);
@@ -142,6 +147,7 @@ const SignUp = ({ navigation }) => {
    */
   const handleOTPVerification = async () => {
     signupState.setDisplayDotLoader(true);
+    console.log("Verifying OTP: ", signupState.PhoneOTP);
 
     try {
       const messageIDPhone = await storageService.getValue('phoneOTPMessageID');
@@ -153,7 +159,6 @@ const SignUp = ({ navigation }) => {
 
       if (responsePhoneOTP) {
         const user_exist = await authService.checkUserExists(
-          signupState.email,
           signupState.number
         );
         console.log("User Exist Response: ", user_exist);
@@ -167,14 +172,16 @@ const SignUp = ({ navigation }) => {
           if (login_response.success) {
             await storageService.saveToken(login_response.token);
             signupState.setDisplayDotLoader(false);
-            navigation.navigate('Home');
-          } else {
-            signupState.setDisplayDotLoader(false);
-            Alert.alert(
-              'Account not found!',
-              'Try again later or recheck your Email & Phone.'
-            );
-          }
+            setIsLoggedIn(true);
+            // navigation.navigate('Home');
+          } 
+          // else {
+          //   signupState.setDisplayDotLoader(false);
+          //   Alert.alert(
+          //     'Account not found!',
+          //     'Try again later or recheck your Email & Phone.'
+          //   );
+          // }
         } else {
           // New user, proceed to stage 2
           console.log("New user, proceeding to stage 2 at OTP verification");
@@ -221,6 +228,12 @@ const SignUp = ({ navigation }) => {
 
     try {
       const response = await authService.registerUserManual(user_data);
+
+
+      // here 
+
+
+
 
       if (response.success) {
         await storageService.saveToken(response.token);
