@@ -25,7 +25,6 @@ import BookingFailiure from './src/pages/BookingFailiure';
 import { Text, View } from 'react-native';
 import Payment from './src/pages/Payment';
 import MyTickets from './src/pages/MyTickets';
-import { tokens } from 'react-native-paper/lib/typescript/styles/themes/v3/tokens';
 
 function MenuNavigation() {
   console.log("here yes")
