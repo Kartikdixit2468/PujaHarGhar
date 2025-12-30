@@ -18,9 +18,11 @@ import FAIcon from 'react-native-vector-icons/FontAwesome5';
 import { styles } from '../css/style';
 import { CategoryCard, TrendingCard } from '../components/Card';
 import SideMenu from '../components/SideMenu';
+import { useAuth } from '../context/AuthContext';
 
 const Home = ({ navigation }) => {
 
+  const { profileCompleted, setProfileCompleted } = useAuth();
   console.log("here yes")
 
   const [trendingPujas, setTrendingPujas] = useState([]);
@@ -59,11 +61,21 @@ const Home = ({ navigation }) => {
       const data = await response.json();
       console.log('User details response:', data);
 
-      if (data && data.data) {
+      if (data.success && data.data) {
         setUserData(data.data);
         console.log("User Data Set: ", data.data);
-      } else if (data && data.success) {
-        setUserData(data);
+        if(data.data.phone){
+          console.log("Phone is present in data, setting in AsyncStorage");
+          AsyncStorage.setItem('userPhone', data.data.phone);
+        }
+        if(data.data.email && data.data.e_verified){
+          console.log("Email is present in data, setting in AsyncStorage");
+          AsyncStorage.setItem('userEmail', data.data.email);
+        }
+        if(data.data.profile_completed){
+          console.log("Profile is completed");
+          setProfileCompleted(true);
+        }
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
