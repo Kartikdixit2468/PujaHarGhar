@@ -6,8 +6,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { styles } from '../css/style';
 import * as authService from '../services/authService';
 import * as storageService from '../services/storageService';
+import { useAuth } from '../context/AuthContext';
 
 const Profile = ({ navigation }) => {
+  const {profileCompleted, setProfileCompleted} = useAuth();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,10 +19,6 @@ const Profile = ({ navigation }) => {
   const [showGenderModal, setShowGenderModal] = useState(false);
 
   const defaultProfileImage = require('../assets/images/profile_icon.png');
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
 
   const fetchUserData = async () => {
     try {
@@ -74,6 +72,14 @@ const Profile = ({ navigation }) => {
     }
   };
 
+  useEffect(() => {
+    fetchUserData();
+    console.log('Profile component mounted, fetching user data...');
+    console.log('Profile Completed Status:', profileCompleted);
+    console.log('userData state on mount:', userData);
+  }, []);
+
+
   const handleEditPress = () => {
     if (!isEditing) {
       // Start editing - copy current data to editable state
@@ -125,6 +131,8 @@ const Profile = ({ navigation }) => {
         editedData?.gender && editedData.gender.trim() !== '' &&
         editedData?.dob && editedData.dob.trim() !== '';
 
+
+
       console.log('Profile fields check:', {
         name: editedData?.name,
         email: editedData?.email,
@@ -136,17 +144,38 @@ const Profile = ({ navigation }) => {
       });
       
       // Prepare update object
-      const updateData = {
-        ...editedData,
-        e_verified: emailChanged ? false : editedData.e_verified,
-        profile_completed: isProfileComplete ? 1 : 0,
-      };
+      let updateData = {};
+      if (emailChanged) {
+        updateData = {
+          ...editedData,
+          e_verified: emailChanged ? 0 : editedData.e_verified,
+          profile_completed: 0,
+        };
+
+      }
+      else{
+        if(editedData.e_verified){
+          updateData = {
+            ...editedData,
+            e_verified: 1,
+            profile_completed: 1,
+          };
+        }
+        else{
+          updateData = {
+            ...editedData,
+            e_verified: 0,
+            profile_completed: 0,
+          };
+        }
+      }
 
       const token = await storageService.getToken();
       const storedEmail = await storageService.getValue('userEmail');
       const storedPhone = await storageService.getValue('userPhone');
 
       // Call update API
+      console.log('Updating user details with data:', updateData);
       const response = await authService.updateUserDetails(token, storedEmail, storedPhone, updateData);
 
       if (response && response.success) {
@@ -166,6 +195,7 @@ const Profile = ({ navigation }) => {
 
         setIsEditing(false);
         setEditedData(null);
+
         const message = isProfileComplete 
           ? 'Profile updated successfully! Your profile is now complete.' 
           : 'Profile updated successfully! Complete all fields to mark profile as complete.';
@@ -231,7 +261,7 @@ const Profile = ({ navigation }) => {
             <View style={styles.NameUderline}></View>
             <View style={LocalStyles.emailWithVerification}>
               <Text style={styles.ProfileEmail}>{userData?.email || 'email@example.com'}</Text>
-              {userData?.e_verified === false && (
+              {userData?.e_verified == 0 && (
                 <Text style={LocalStyles.unverifiedBadge}>  (unverified)</Text>
               )}
             </View>
