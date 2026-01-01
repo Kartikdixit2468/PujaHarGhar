@@ -157,36 +157,40 @@ const SignUp = ({ navigation }) => {
         messageIDPhone
       );
 
+
       if (responsePhoneOTP) {
-        const user_exist = await authService.checkUserExists(
-          signupState.number
+        const registrationAllowed = await authService.checkIfRegtrationAllowed(
+          signupState.email, signupState.number
         );
-        console.log("User Exist Response: ", user_exist);
+        console.log("User Registration Allowed Response: ", registrationAllowed);
 
-        if (user_exist.exist) {
+        if (registrationAllowed.success) {
           // User exists, perform login
-          console.log("User exists:", user_exist);
-          console.log("User exists, performing login at OTP verification", user_exist);
-          const login_response = await authService.loginUser(signupState.email, signupState.number);
+          console.log("registrationAllowed:", registrationAllowed);
+          console.log("User Registration Allowed, performing login at OTP verification", registrationAllowed);
 
-          if (login_response.success) {
-            await storageService.saveToken(login_response.token);
+          if (registrationAllowed.loginUser) {
+            const login_response = await authService.loginUser(signupState.email, signupState.number);
+            if (login_response.success) {
+              console.log("Login successful at the handleotpverification:", login_response);
+              await storageService.saveToken(login_response.token);
+              // Save email and phone for later profile fetching
+              await storageService.saveValue('userEmail', signupState.email);
+              await storageService.saveValue('userPhone', signupState.number);
+              signupState.setDisplayDotLoader(false);
+              setIsLoggedIn(true);
+            }
+          }
+          if (registrationAllowed.registerUser) {
+          
+            console.log("Proceeding to stage 2 for completing registration at OTP verification");
             signupState.setDisplayDotLoader(false);
-            setIsLoggedIn(true);
-            // navigation.navigate('Home');
-          } 
-          // else {
-          //   signupState.setDisplayDotLoader(false);
-          //   Alert.alert(
-          //     'Account not found!',
-          //     'Try again later or recheck your Email & Phone.'
-          //   );
-          // }
-        } else {
-          // New user, proceed to stage 2
-          console.log("New user, proceeding to stage 2 at OTP verification");
+            signupState.setSignUpStage(2);
+          }
+        }
+        else {
           signupState.setDisplayDotLoader(false);
-          signupState.setSignUpStage(2);
+          Alert.alert('Registration Not Allowed', 'Either email or phone is already registered.');
         }
       } else {
         signupState.setDisplayDotLoader(false);
@@ -219,7 +223,7 @@ const SignUp = ({ navigation }) => {
     const user_data = {
       email: signupState.email,
       name: `${signupState.firstName} ${signupState.lastName}`,
-      photo: 'none',
+      photo: null,
       phone: signupState.number,
       dob: signupState.birth,
       gender: signupState.gender,
@@ -228,20 +232,13 @@ const SignUp = ({ navigation }) => {
 
     try {
       const response = await authService.registerUserManual(user_data);
-
-
-      // here 
-
-
-
-
       if (response.success) {
         await storageService.saveToken(response.token);
         // Save email and phone for later profile fetching
         await storageService.saveValue('userEmail', signupState.email);
         await storageService.saveValue('userPhone', signupState.number);
         signupState.setDisplayDotLoader(false);
-        navigation.navigate('Home');
+        setIsLoggedIn(true);
       } else {
         signupState.setDisplayDotLoader(false);
         Alert.alert(
