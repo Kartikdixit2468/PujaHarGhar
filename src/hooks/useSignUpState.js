@@ -10,8 +10,8 @@ export const useSignUpState = () => {
   const [DisplayDotLoader, setDisplayDotLoader] = useState(false);
 
   // Stage 0: Email and Phone
-  const [email, setEmail] = useState('kartikdixit2468@gmail.com');
-  const [number, setNumber] = useState('9342496564');
+  const [email, setEmail] = useState('');
+  const [number, setNumber] = useState('');
   const countryCode = '+91';
 
   // Stage 1: OTP Verification (Phone Only)
