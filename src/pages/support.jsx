@@ -34,8 +34,8 @@ const Support = ({ navigation }) => {
   const fetchRecentBookings = async () => {
     // Fetch recent bookings from backend API
     const token = await AsyncStorage.getItem('authToken');
-    const user_email = await AsyncStorage.getItem('userEmail');
-    const user_phone = await AsyncStorage.getItem('userPhone');
+    // const user_email = await AsyncStorage.getItem('userEmail');
+    // const user_phone = await AsyncStorage.getItem('userPhone');
     try {
       const response = await fetch(`${SERVER_IP}/api/client/bookings/recents`, {
         method: 'POST',
@@ -44,8 +44,8 @@ const Support = ({ navigation }) => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          email: user_email,
-          phone: user_phone,
+          // email: user_email,
+          // phone: user_phone,
           limit: 2
         }),
       });

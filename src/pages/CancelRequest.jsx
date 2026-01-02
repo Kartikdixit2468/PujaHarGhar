@@ -46,8 +46,6 @@ const CancelRequest = ({ route, navigation }) => {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem('authToken');
-      const userEmail = await AsyncStorage.getItem('userEmail');
-      const userPhone = await AsyncStorage.getItem('userPhone');
 
       const response = await fetch(`${SERVER_IP}/api/client/booking/request-cancellation`, {
         method: 'POST',
@@ -57,8 +55,6 @@ const CancelRequest = ({ route, navigation }) => {
         },
         body: JSON.stringify({
           booking_id: booking.booking_id,
-          email: userEmail,
-          phone: userPhone,
           reason: reason.trim(),
         }),
       });

@@ -34,27 +34,27 @@ const Home = ({ navigation }) => {
     try {
       setLoadingUser(true);
       const token = await AsyncStorage.getItem('authToken');
-      const storedEmail = await AsyncStorage.getItem('userEmail');
-      const storedPhone = await AsyncStorage.getItem('userPhone');
+      // const storedEmail = await AsyncStorage.getItem('userEmail');
+      // const storedPhone = await AsyncStorage.getItem('userPhone');
 
-      console.log('Fetching user details - Email:', storedEmail, 'Phone:', storedPhone);
+      // console.log('Fetching user details - Email:', storedEmail, 'Phone:', storedPhone);
 
-      if (!token || !(storedEmail || storedPhone)) {
+      if (!token) {
         console.warn('Missing token or credentials');
         setLoadingUser(false);
         return;
       }
 
       const response = await fetch(`${SERVER_IP}/api/client/user/details/fetch`, {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: storedEmail,
-          phone: storedPhone,
-        }),
+        // body: JSON.stringify({
+        //   email: storedEmail,
+        //   phone: storedPhone,
+        // }),
       });
       console.log('Fetch user details response status:', response.status);
 
@@ -73,6 +73,8 @@ const Home = ({ navigation }) => {
           AsyncStorage.setItem('userEmail', data.data.email);
         }
         if(data.data.profile_completed){
+          console.log(data.data.profile_completed);
+          console.log(data);
           console.log("Profile is completed");
           setProfileCompleted(true);
         }
@@ -92,7 +94,7 @@ const Home = ({ navigation }) => {
         const token = await AsyncStorage.getItem('authToken');
         console.log("token here - ", token)
         const response = await fetch(`${SERVER_IP}/api/client/trending/pujas`, {
-          method: 'POST',
+          method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',

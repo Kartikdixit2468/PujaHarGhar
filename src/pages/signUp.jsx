@@ -47,6 +47,7 @@ const SignUp = ({ navigation }) => {
         console.log("User Data: ", user_data);
         await storageService.saveValue('userEmail', user_data.email);
         await storageService.saveValue('userPhone', user_data.phoneNumber || '');
+        await storageService.saveValue('userPhone', user_data.id);
 
         setIsLoggedIn(true);
         signupState.setDisplayDotLoader(false);
@@ -109,8 +110,9 @@ const SignUp = ({ navigation }) => {
     }
 
     try {
-      // Send OTP to phone
-      const otp_phone_response = await authService.sendOTPPhone(
+      // Send OTP to phone using backend
+      const token = await storageService.getToken();
+      const otp_phone_response = await authService.sendOTPBackend(
         signupState.number
       );
 
@@ -119,10 +121,10 @@ const SignUp = ({ navigation }) => {
         signupState.email
       );
 
-      if (otp_phone_response.type === 'success') {
-        const messageIDPhone = otp_phone_response.message;
-        console.log("Phone OTP Message ID: here ", messageIDPhone);
-        await storageService.saveValue('phoneOTPMessageID', messageIDPhone);
+      if (otp_phone_response.success) {
+        const sessionToken = otp_phone_response.token;
+        console.log("Phone OTP Session Token: ", sessionToken);
+        await storageService.saveValue('phoneOTPSessionToken', sessionToken);
         console.log("OTP sent successfully to phone and email.");
 
         signupState.setDisplayDotLoader(false);
@@ -150,15 +152,16 @@ const SignUp = ({ navigation }) => {
     console.log("Verifying OTP: ", signupState.PhoneOTP);
 
     try {
-      const messageIDPhone = await storageService.getValue('phoneOTPMessageID');
+      const token = await storageService.getToken();
+      const sessionToken = await storageService.getValue('phoneOTPSessionToken');
 
-      const responsePhoneOTP = await authService.verifyPhoneOTP(
+      // Verify OTP with backend
+      const responsePhoneOTP = await authService.verifyOTPBackend(
         signupState.PhoneOTP,
-        messageIDPhone
+        sessionToken
       );
 
-
-      if (responsePhoneOTP) {
+      if (responsePhoneOTP.Status === 'Success') {
         const registrationAllowed = await authService.checkIfRegtrationAllowed(
           signupState.email, signupState.number
         );

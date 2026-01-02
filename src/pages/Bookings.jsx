@@ -29,10 +29,10 @@ const Bookings = ({ navigation }) => {
       setError(null);
 
       const token = await AsyncStorage.getItem('authToken');
-      const userEmail = await AsyncStorage.getItem('userEmail');
-      const userPhone = await AsyncStorage.getItem('userPhone');
+      // const userEmail = await AsyncStorage.getItem('userEmail');
+      // const userPhone = await AsyncStorage.getItem('userPhone');
 
-      console.log('Fetching bookings for:', userEmail, userPhone);
+      // console.log('Fetching bookings for:', userEmail, userPhone);
 
       if (!token) {
         setError('User credentials not found');
@@ -42,15 +42,15 @@ const Bookings = ({ navigation }) => {
       }
 
       const response = await fetch(`${SERVER_IP}/api/client/bookings/getall/`, {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: userEmail,
-          phone: userPhone,
-        }),
+        // body: JSON.stringify({
+        //   email: userEmail,
+        //   phone: userPhone,
+        // }),
       });
 
       const data = await response.json();

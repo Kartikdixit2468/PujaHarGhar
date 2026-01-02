@@ -25,14 +25,18 @@ import BookingFailiure from './src/pages/BookingFailiure';
 import { Text, View } from 'react-native';
 import Payment from './src/pages/Payment';
 import MyTickets from './src/pages/MyTickets';
+import { AuthProvider, useAuth } from './src/context/AuthContext';
 
 function MenuNavigation() {
   console.log("here yes")
   console.log(SERVER_IP)
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  // const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const { isLoggedIn, setIsLoggedIn, profileCompleted} = useAuth();
+
   useEffect(()=>{
     const checkLogIn = async () => {
       const token = await AsyncStorage.getItem('authToken')
+
       console.log(token)
       if (token){
         console.log("is Token valid");
@@ -80,7 +84,7 @@ function MenuNavigation() {
   
   return (
     <Stack.Navigator
-      initialRouteName={isLoggedIn ? "Home" : "WelcomeScreen"}
+      // initialRouteName={isLoggedIn ? "Home" : "WelcomeScreen"}
       screenOptions={{
         headerTintColor: '#ffcf00', // 🔵 Change back arrow color
         headerTitleStyle: {
@@ -89,50 +93,11 @@ function MenuNavigation() {
         },
       }}
     >
+      {!isLoggedIn ? (
+        <>
       <Stack.Screen
         name="WelcomeScreen"
         component={WelcomeScreen}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="PackageSelectionScreen"
-        component={PackageSelectionScreen}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="PreistSelectionScreen"
-        component={PreistSelectionScreen}
-        options={{ headerShown: false }}
-/>
-
-      <Stack.Screen
-        name="Checkout"
-        component={CheckoutScreen}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="BookingSuccess"
-        component={BookingSuccess}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="BookingFailiure"
-        component={BookingFailiure}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="Payment"
-        component={Payment}
         options={{ headerShown: false }}
       />
 
@@ -141,91 +106,143 @@ function MenuNavigation() {
         component={SignUp}
         options={{ headerShown: false }}
       />
+      </>
 
-      <Stack.Screen
-        name="Search"
-        component={Search}
+          )  : (
+        <>
+
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Search"
+          component={Search}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="Bookings"
+          component={Bookings}
+          options={{ headerShown: false }}
+        />
+
+              <Stack.Screen
+          name="PujaPage"
+          component={PujaPage}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+        name="Tickets"
+        component={MyTickets}
         options={{ headerShown: false }}
-      />
+        />
 
-      <Stack.Screen
-        name="Profile"
-        component={Profile}
-        options={{ headerShown: false }}
-      />
+        <Stack.Screen
+          name="Support"
+          component={Support}
+          options={{ headerShown: false }}
+        />
 
-      <Stack.Screen
-        name="Bookings"
-        component={Bookings}
-        options={{ headerShown: false }}
-        // options={{
-        //   title: 'Bookings',
-        //   headerStyle: { backgroundColor: '#fff7ea' },
-        // }}
-      />
+        <Stack.Screen
+          name="FAQDetail"
+          component={FAQDetail}
+          options={{ headerShown: false }}
+        />
 
-      <Stack.Screen
-        name="BookingDetail"
-        component={BookingDetail}
-        options={{ headerShown: false }}
-      />
+        <Stack.Screen
+          name="ContactSupport"
+          component={ContactSupport}
+          options={{ headerShown: false }}
+        />
 
-      <Stack.Screen
-        name="PujaPage"
-        component={PujaPage}
-        options={{ headerShown: false }}
-      />
+        <Stack.Screen
+          name="Categories"
+          component={Categories}
+          options={{ headerShown: false }}
+        />
 
-      <Stack.Screen
-      name="Tickets"
-      component={MyTickets}
-      options={{ headerShown: false }}
-      />
+        <Stack.Screen
+          name="CategoryPujas"
+          component={CategoryPujas}
+          options={{ headerShown: false }}
+        />
 
-      <Stack.Screen
-        name="Support"
-        component={Support}
-        options={{ headerShown: false }}
-      />
 
-      <Stack.Screen
-        name="FAQDetail"
-        component={FAQDetail}
-        options={{ headerShown: false }}
-      />
 
-      <Stack.Screen
-        name="ContactSupport"
-        component={ContactSupport}
-        options={{ headerShown: false }}
-      />
+      {profileCompleted && (
+        <>
+          <Stack.Screen
+            name="PackageSelectionScreen"
+            component={PackageSelectionScreen}
+            options={{ headerShown: false }}
+          />
 
-      <Stack.Screen
-        name="CancelRequest"
-        component={CancelRequest}
-        options={{ headerShown: false }}
-      />
+          <Stack.Screen
+            name="PreistSelectionScreen"
+            component={PreistSelectionScreen}
+            options={{ headerShown: false }}
+          />
 
-      <Stack.Screen
-        name="Categories"
-        component={Categories}
-        options={{ headerShown: false }}
-      />
+          <Stack.Screen
+            name="Checkout"
+            component={CheckoutScreen}
+            options={{ headerShown: false }}
+          />
 
-      <Stack.Screen
-        name="CategoryPujas"
-        component={CategoryPujas}
-        options={{ headerShown: false }}
-      />
+          <Stack.Screen
+            name="BookingSuccess"
+            component={BookingSuccess}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="BookingFailiure"
+            component={BookingFailiure}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="Payment"
+            component={Payment}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="BookingDetail"
+            component={BookingDetail}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="CancelRequest"
+            component={CancelRequest}
+            options={{ headerShown: false }}
+          />
+        </>
+      )}
+    </>
+    )}
+
     </Stack.Navigator>
   );
 }
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <MenuNavigation />
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <MenuNavigation />
+      </NavigationContainer>
+    </AuthProvider>
   );
 };
 

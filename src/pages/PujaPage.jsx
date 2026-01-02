@@ -17,11 +17,16 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useRoute } from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import { Dimensions } from 'react-native';
+import { useProfileGuard } from '../components/useProfileGuard';
+import { useAuth } from '../context/AuthContext';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-export default function PujaDetails({navigation}) {
+export default function PujaDetails({ navigation }) {
+  const guardProfile = useProfileGuard();
+
+  const { isLoggedIn, profileCompleted } = useAuth();
   const route = useRoute();
   const { id } = route.params;
 
@@ -31,7 +36,7 @@ export default function PujaDetails({navigation}) {
     const fetchPujaDetails = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
-        console.log(SERVER_IP)
+        console.log(SERVER_IP);
         const response = await fetch(
           `${SERVER_IP}/api/client/fetch/puja/details/${id}`,
           {
@@ -44,8 +49,8 @@ export default function PujaDetails({navigation}) {
         );
 
         const data = await response.json();
-        console.log("Check it here!")
-        console.log(data)
+        console.log('Check it here!');
+        console.log(data);
         if (data.success) {
           setPujaDetails(data.data);
         }
@@ -59,11 +64,16 @@ export default function PujaDetails({navigation}) {
 
   const imageUrls = [pujaDetails.img1, pujaDetails.img2, pujaDetails.img3];
 
+  const handleBookNow = () => {
+    if (!guardProfile()) return;
+    navigation.navigate('PackageSelectionScreen', { id: pujaDetails.puja_id });
+  };
+
   return (
     <View style={styles.container}>
       {/* Custom Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.headerButton}
         >
@@ -73,7 +83,10 @@ export default function PujaDetails({navigation}) {
         <View style={styles.headerButton} />
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContent}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.scrollContent}
+      >
         {/* Image Carousel */}
         <View style={styles.swiperContainer}>
           <Swiper
@@ -90,7 +103,7 @@ export default function PujaDetails({navigation}) {
             {imageUrls.map((url, index) => (
               <View key={index} style={styles.swiperImageWrapper}>
                 <Image
-                  source={{uri: `${SERVER_IP}/uploads/pujas/${url}`}}
+                  source={{ uri: `${SERVER_IP}/uploads/pujas/${url}` }}
                   style={styles.swiperImage}
                   resizeMode="cover"
                 />
@@ -102,16 +115,11 @@ export default function PujaDetails({navigation}) {
         {/* Title & Description Section */}
         <View style={styles.titleSection}>
           <Text style={styles.title}>{pujaDetails.name}</Text>
-          <Text style={styles.description}>
-            {pujaDetails.description}
-          </Text>
+          <Text style={styles.description}>{pujaDetails.description}</Text>
         </View>
 
         {/* Book Now Button */}
-        <TouchableOpacity 
-          onPress={()=> {navigation.navigate('PackageSelectionScreen', {id: pujaDetails.puja_id})}}
-          style={styles.bookNow}
-        >
+        <TouchableOpacity onPress={handleBookNow} style={styles.bookNow}>
           <FontAwesome5 name="calendar-alt" size={16} color="#fff" />
           <Text style={styles.bookNowText}>Book Now</Text>
         </TouchableOpacity>
@@ -225,21 +233,25 @@ export default function PujaDetails({navigation}) {
                 <View style={styles.reviewHeader}>
                   <View style={styles.reviewNameSection}>
                     <View style={styles.avatarCircle}>
-                      <Text style={styles.avatarText}>{item.name.charAt(0)}</Text>
+                      <Text style={styles.avatarText}>
+                        {item.name.charAt(0)}
+                      </Text>
                     </View>
                     <View>
                       <Text style={styles.reviewName}>{item.name}</Text>
                       <MaterialCommunityIcons
-                        name={item.sentiment === 'happy' ? 'emoticon-happy' : 'emoticon-neutral'}
+                        name={
+                          item.sentiment === 'happy'
+                            ? 'emoticon-happy'
+                            : 'emoticon-neutral'
+                        }
                         size={20}
                         color="#8B7355"
                       />
                     </View>
                   </View>
                 </View>
-                <Text style={styles.modernReviewText}>
-                  "{item.review}"
-                </Text>
+                <Text style={styles.modernReviewText}>"{item.review}"</Text>
               </View>
             ))}
           </ScrollView>
@@ -252,9 +264,9 @@ export default function PujaDetails({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#FAF9F7' 
+  container: {
+    flex: 1,
+    backgroundColor: '#FAF9F7',
   },
   scrollContent: {
     flex: 1,

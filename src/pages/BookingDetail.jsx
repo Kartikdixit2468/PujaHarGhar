@@ -41,8 +41,8 @@ const BookingDetail = ({ route, navigation }) => {
       setError(null);
 
       const token = await AsyncStorage.getItem('authToken');
-      const userEmail = await AsyncStorage.getItem('userEmail');
-      const userPhone = await AsyncStorage.getItem('userPhone');
+      // const userEmail = await AsyncStorage.getItem('userEmail');
+      // const userPhone = await AsyncStorage.getItem('userPhone');
 
       if (!token) {
         setError('User credentials not found');
@@ -57,8 +57,8 @@ const BookingDetail = ({ route, navigation }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: userEmail,
-          phone: userPhone,
+          // email: userEmail,
+          // phone: userPhone,
           booking_id: booking.booking_id,
         }),
       });

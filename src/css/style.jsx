@@ -388,7 +388,6 @@ export const styles = StyleSheet.create({
   DetailsSubText: {
     // left: "12%",
     padding: 4,
-    // borderWidth: 2,
     fontSize: 14,
     color: "#aaaaaa",
     flex: 1,

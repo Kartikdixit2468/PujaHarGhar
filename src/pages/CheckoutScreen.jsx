@@ -17,12 +17,15 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 export default CheckoutScreen = ({ navigation, route }) => {
   //   const { priest, dateOption, selectedDate } = route.params;
   const { priest_id, dateOption, selectedDate, package_id } = route.params;
+  const email = AsyncStorage.getItem('userEmail');
 
   const BookingObject = { 
     package_id: package_id,
     dateOption: dateOption, 
     date: new Date(selectedDate).toLocaleDateString(),
-    priest_id: priest_id
+    priest_id: priest_id,
+    user_email: email,
+
   }
 
   console.log("See below!")
