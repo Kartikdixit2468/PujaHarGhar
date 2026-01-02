@@ -14,16 +14,17 @@ import { SERVER_IP } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useProfileGuard } from '../components/useProfileGuard';
 
 const width = Dimensions.get('window').width;
-
-
 // console.log(SERVER_IP)
 export const PackageSelectionScreen = ({ route, navigation }) => {
+
+  const guard = useProfileGuard();
+  if (!guard()) return;
+  
   const { id } = route.params;
-
   const [packages, setPackages] = useState([]);
-
   console.log("Everything is going great till here")
   
   useEffect(() => {
@@ -295,7 +296,8 @@ const stylesPackageScreen = StyleSheet.create({
 });
 
 export const PreistSelectionScreen = ({ route, navigation }) => {
-
+  const guard = useProfileGuard();
+  if (!guard()) return;
 
   const { package_id } = route.params;
 
