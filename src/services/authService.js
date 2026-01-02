@@ -1,9 +1,15 @@
 import { OTPWidget } from '@msg91comm/sendotp-react-native';
-import { SERVER_IP } from '@env';
+import { SERVER_IP, TOKEN_AUTH_MSG91, PHONE_WIDGET_ID, EMAIL_WIDGET_ID  } from '@env';
 
+// # fetch from the env file
 const tokenAuth = '447695T9MQQ9m86807c6ffP1';
 const PhoneWidgetId = '356476684d37333431323031';
 const EmailWidgetId = '356476764375383138393037';
+
+console.log("Using SERVER_IP in authService:", SERVER_IP);
+console.log("Using TOKEN_AUTH_MSG91 in authService:", tokenAuth);
+console.log("Using PHONE_WIDGET_ID in authService:", PhoneWidgetId);
+console.log("Using EMAIL_WIDGET_ID in authService:", EmailWidgetId);
 
 /**
  * Send OTP to phone number
@@ -66,8 +72,9 @@ export const verifyPhoneOTP = async (phoneOTP, messageIDPhone) => {
       otp: phoneOTP,
     };
     const responsePhoneOTP = await OTPWidget.verifyOTP(body_phone);
-    // return responsePhoneOTP.type === 'success';
-    return true; // Temporarily bypassing OTP verification
+    console.log('Phone OTP verification response:', responsePhoneOTP);
+    return responsePhoneOTP;
+    // return true; // Temporarily bypassing OTP verification
   } catch (error) {
     console.error('Error verifying phone OTP:', error);
     return false;
@@ -95,6 +102,35 @@ export const checkUserExists = async (email, phone) => {
     );
     const user_exist = await checkIfUserExist.json();
     console.log("Check User Exists Response at core function: ", user_exist);
+    return user_exist;
+  } catch (error) {
+    console.error('Error checking if user exists:', error);
+    throw error;
+  }
+};
+
+
+/**
+ * Check if user already exists
+ * @param {string} email - User email
+ * @param {string} phone - User phone number
+ * @returns {Promise<Object>} Response with exist flag
+ */
+
+export const checkIfRegtrationAllowed = async (email, phone) => {
+  try {
+    const checkIfAllowed = await fetch(
+      `${SERVER_IP}/api/client/check/register/user/manual`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email, phone: phone }),
+      }
+    );
+    const user_exist = await checkIfAllowed.json();
+    console.log("Check if Registration Allowed Response at core function: ", user_exist);
     return user_exist;
   } catch (error) {
     console.error('Error checking if user exists:', error);
@@ -132,7 +168,7 @@ export const loginUser = async (email, phone) => {
 export const registerUserManual = async (userData) => {
   try {
     const response = await fetch(
-      `${SERVER_IP}/api/client/register/user/mannual`,
+      `${SERVER_IP}/api/client/register/user/manual`,
       {
         method: 'POST',
         headers: {
@@ -201,20 +237,19 @@ export const registerUserGoogle = async (userData) => {
  * @param {string} phone - User phone
  * @returns {Promise<Object>} User details object
  */
-export const fetchUserDetails = async (token, email, phone) => {
+export const fetchUserDetails = async (token) => {
   try {
-    console.log('Fetching user details with email:', email, 'phone:', phone);
-    console.log('Using url:', `${SERVER_IP}/api/client/user/details/fetch`);
+    // console.log('Fetching user details with email:', email, 'phone:', phone);
     const response = await fetch(`${SERVER_IP}/api/client/user/details/fetch`, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        email: email,
-        phone: phone,
-      }),
+      // body: JSON.stringify({
+      //   email: email,
+      //   phone: phone,
+      // }),
     });
 
     console.log('Response status:', response.status);
@@ -243,7 +278,21 @@ export const fetchUserDetails = async (token, email, phone) => {
 export const updateUserDetails = async (token, email, phone, userData) => {
   try {
     console.log('Updating user details:', userData);
-    
+
+    console.log("hereeeeeeeeeeeeee", JSON.stringify(userData))
+
+    userData = {
+      id: userData.id,
+      address: userData.address,
+      dob: userData.dob,
+      email: userData.email,
+      e_verified: userData.e_verified,  
+      gender: userData.gender,
+      name: userData.name,
+      photo: userData.photo,
+      profile_completed: userData.profile_completed,
+    }
+
     const response = await fetch(`${SERVER_IP}/api/client/user/details/update`, {
       method: 'POST',
       headers: {
@@ -264,6 +313,190 @@ export const updateUserDetails = async (token, email, phone, userData) => {
     return data;
   } catch (error) {
     console.error('Error updating user details:', error);
+    throw error;
+  }
+};
+/**
+ * Verify OTP with backend (for phone number change)
+ * @param {string} token - Bearer token from authentication
+ * @param {string} accessToken - Access token from OTP send response
+ * @returns {Promise<Object>} Verification response
+ */
+export const verifyOTPWithBackend = async (token, accessToken) => {
+  try {
+    console.log('Verifying OTP with backend');
+    const response = await fetch(`${SERVER_IP}/api/client/otp/verify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        access_token: accessToken,
+      }),
+    });
+
+    const data = await response.json();
+
+    console.log('OTP verification response status:', response.status);
+    console.log('OTP verification response ok:', data);
+
+    if (!data.success) {
+      throw new Error(`Server error: ${response.status} ${response.message}`);
+    }
+
+    console.log('OTP verified successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Error verifying OTP with backend:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update phone number
+ * @param {string} token - Bearer token from authentication
+ * @param {string} newPhone - New phone number
+ * @param {string} accessToken - Access token from OTP verification
+ * @returns {Promise<Object>} Update response
+ */
+export const updatePhoneNumber = async (token, newPhone, accessToken) => {
+  try {
+    console.log('Updating phone number:', newPhone);
+    const response = await fetch(`${SERVER_IP}/api/client/update/phone`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        new_phone: newPhone,
+        access_token: accessToken,
+      }),
+    });
+
+    console.log('Phone update response status:', response.status);
+    console.log('Phone update response ok:', response);
+    const data = await response.json();
+
+    if (!data.success) {
+      return data;
+    }
+
+    console.log('Phone number updated successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Error updating phone number:', error);
+    throw error;
+  }
+};
+
+/**
+ * Backend-based: Send OTP to phone number
+ * @param {string} token - Bearer token from authentication
+ * @param {string} phone - Phone number without country code
+ * @returns {Promise<Object>} OTP response with session token in Details
+ */
+export const sendOTPBackend = async (phone) => {
+  try {
+    console.log('Sending OTP to phone via backend:', phone);
+    const response = await fetch(`${SERVER_IP}/api/otp/send-otp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        phone: phone,
+      }),
+    });
+
+    console.log('OTP send response status:', response.status);
+
+    const data = await response.json();
+    console.log('OTP send response ok:', data);
+
+    if (!data.success) {
+      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    }
+    console.log('OTP sent successfully, session token:', data.token);
+    return data;
+  } catch (error) {
+    console.error('Error sending OTP via backend:', error);
+    throw error;
+  }
+};
+
+/**
+ * Backend-based: Verify OTP
+ * @param {string} token - Bearer token from authentication
+ * @param {string} otp - OTP entered by user
+ * @param {string} sessionToken - Session token from send-otp response
+ * @returns {Promise<Object>} Verification response
+ */
+export const verifyOTPBackend = async (otp, sessionToken) => {
+  try {
+    console.log('Verifying OTP via backend with session token:', sessionToken);
+    const response = await fetch(`${SERVER_IP}/api/otp/verify-otp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        otp: otp,
+        session_token: sessionToken,
+      }),
+    });
+
+    console.log('OTP verification response status:', response.status);
+
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('OTP verified successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Error verifying OTP via backend:', error);
+    throw error;
+  }
+};
+
+/**
+ * Backend-based: Update phone number with OTP verification
+ * @param {string} token - Bearer token from authentication
+ * @param {string} newPhone - New phone number
+ * @param {string} sessionToken - Session token from OTP verification
+ * @param {string} otp - OTP for phone change
+ * @returns {Promise<Object>} Update response
+ */
+export const updatePhoneNumberBackend = async (token, newPhone, sessionToken, otp) => {
+  try {
+    console.log('Updating phone number via backend:', newPhone);
+    const response = await fetch(`${SERVER_IP}/api/client/update/phone`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        phone: newPhone,
+        session_token: sessionToken,
+        otp: otp,
+      }),
+    });
+
+    console.log('Phone update response status:', response.status);
+
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Phone number updated successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Error updating phone number via backend:', error);
     throw error;
   }
 };
