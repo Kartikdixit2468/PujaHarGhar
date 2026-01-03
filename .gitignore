@@ -39,6 +39,7 @@ DerivedData
 
 # Build & Generated Folders
 android/.gradle/
+android\gradle.properties
 android/app/build/
 ios/Pods/
 ios/build/
