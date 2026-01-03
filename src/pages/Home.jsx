@@ -72,11 +72,13 @@ const Home = ({ navigation }) => {
           console.log("Email is present in data, setting in AsyncStorage");
           AsyncStorage.setItem('userEmail', data.data.email);
         }
+        // Sync profile_completed state with context
         if(data.data.profile_completed){
-          console.log(data.data.profile_completed);
-          console.log(data);
-          console.log("Profile is completed");
+          console.log('Profile is completed, updating context');
           setProfileCompleted(true);
+        } else {
+          console.log('Profile is not completed, updating context');
+          setProfileCompleted(false);
         }
       }
     } catch (error) {
@@ -221,30 +223,30 @@ const Home = ({ navigation }) => {
           {userData && (
             <View style={[
               local_styles.alertBox,
-              userData.profile_completed ? local_styles.alertBoxCompleted : local_styles.alertBoxIncomplete
+              profileCompleted ? local_styles.alertBoxCompleted : local_styles.alertBoxIncomplete
             ]}>
               <View style={local_styles.alertRow}>
                 <FAIcon 
-                  name={userData.profile_completed ? "check-circle" : "exclamation-triangle"}
+                  name={profileCompleted ? "check-circle" : "exclamation-triangle"}
                   size={24} 
-                  color={userData.profile_completed ? "#10b981" : "#fbb50a"}
+                  color={profileCompleted ? "#10b981" : "#fbb50a"}
                 />
                 <Text style={[
                   local_styles.alertTitle,
-                  userData.profile_completed && local_styles.alertTitleCompleted
+                  profileCompleted && local_styles.alertTitleCompleted
                 ]}>
-                  {userData.profile_completed ? 'Profile Completed' : 'Incomplete Profile'}
+                  {profileCompleted ? 'Profile Completed' : 'Incomplete Profile'}
                 </Text>
               </View>
               <Text style={[
                 local_styles.alertDescription,
-                userData.profile_completed && local_styles.alertDescriptionCompleted
+                profileCompleted && local_styles.alertDescriptionCompleted
               ]}>
-                {userData.profile_completed 
+                {profileCompleted 
                   ? 'Your profile is all set! You can now book pujas.'
                   : 'Your profile isn\'t completed. You will need to complete your profile before continuing to book for any event. '
                 }
-                {!userData.profile_completed && (
+                {!profileCompleted && (
                   <Text
                     style={local_styles.alertLink}
                     onPress={() =>
