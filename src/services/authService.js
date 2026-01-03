@@ -42,16 +42,36 @@ export const sendOTPPhone = async (number) => {
  * @param {string} email - Email address
  * @returns {Promise<Object>} API response
  */
-export const sendVerificationMail = async (email) => {
+export const sendVerificationMail = async (email, token = null) => {
   try {
-    // TODO: Implement email verification link sending
-    // This will be handled later on the backend
     console.log('Sending verification email to:', email);
-    // Placeholder response
-    return {
-      success: true,
-      message: 'Verification email sent',
+    
+    const headers = {
+      'Content-Type': 'application/json',
     };
+    
+    // Add token to headers if provided
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${SERVER_IP}/api/verify-email/send-verification-email`, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        email: email,
+      }),
+    });
+
+    console.log('Verification email response status:', response.status);
+
+    if (!response.success) {
+      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Verification email sent successfully:', data);
+    return data;
   } catch (error) {
     console.error('Error sending verification email:', error);
     throw error;
@@ -415,10 +435,10 @@ export const sendOTPBackend = async (phone) => {
     const data = await response.json();
     console.log('OTP send response ok:', data);
 
-    if (!data.success) {
-      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    if (!data.success && data.Status !== 'Success') {
+      throw new Error(`Server error: ${response.status} ${data.message || response.statusText}`);
     }
-    console.log('OTP sent successfully, session token:', data.token);
+    console.log('OTP sent successfully, session token:', data.Details || data.token);
     return data;
   } catch (error) {
     console.error('Error sending OTP via backend:', error);
@@ -433,13 +453,14 @@ export const sendOTPBackend = async (phone) => {
  * @param {string} sessionToken - Session token from send-otp response
  * @returns {Promise<Object>} Verification response
  */
-export const verifyOTPBackend = async (otp, sessionToken) => {
+export const verifyOTPBackend = async (token, otp, sessionToken) => {
   try {
     console.log('Verifying OTP via backend with session token:', sessionToken);
     const response = await fetch(`${SERVER_IP}/api/otp/verify-otp`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify({
         otp: otp,
