@@ -61,7 +61,7 @@ export const PackageSelectionScreen = ({ route, navigation }) => {
   const handleContinue = () => {
     console.log('Selected package ID:', selected);
     if (selected !== null) {
-      navigation.navigate('PreistSelectionScreen', {
+      navigation.navigate('DateSelectionScreen', {
         package_id: selected,
       });
     }
@@ -295,48 +295,15 @@ const stylesPackageScreen = StyleSheet.create({
   },
 });
 
-export const PreistSelectionScreen = ({ route, navigation }) => {
+export const DateSelectionScreen = ({ route, navigation }) => {
   const guard = useProfileGuard();
   if (!guard()) return;
 
   const { package_id } = route.params;
 
-  const [priestList, setPriestList] = useState([]);
-
-  useEffect(() => {
-    const fetchPriestList = async () => {
-      try {
-        const token = await AsyncStorage.getItem('authToken');
-        const response = await fetch(`${SERVER_IP}/api/client/fetch/priest/`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        const data = await response.json();
-        if (data.success) {
-          setPriestList(data.data);
-        }
-      } catch (error) {
-        console.error('Error fetching puja Packages:', error);
-      }
-    };
-
-    fetchPriestList();
-  }, []);
-
-  const [selectedPriest, setSelectedPriest] = useState(null);
   const [dateOption, setDateOption] = useState('specific'); // "help" or "specific"
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isOpen, setIsOpen] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const handleSelect = (priest) => {
-    setSelectedPriest(priest);
-    setIsOpen(false);
-  };
 
   const handleDateChange = (event, date) => {
     if (date) {
@@ -354,111 +321,51 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={stylesPreistSelection.wrapper}>
+    <View style={stylesDateSelection.wrapper}>
       {/* Custom Header */}
-      <View style={stylesPreistSelection.header}>
+      <View style={stylesDateSelection.header}>
         <TouchableOpacity 
           onPress={() => navigation.goBack()}
-          style={stylesPreistSelection.headerButton}
+          style={stylesDateSelection.headerButton}
         >
           <Ionicons name="chevron-back" size={26} color="#000" />
         </TouchableOpacity>
-        <Text style={stylesPreistSelection.headerTitle}>Select Priest & Date</Text>
-        <View style={stylesPreistSelection.headerButton} />
+        <Text style={stylesDateSelection.headerTitle}>Select Date</Text>
+        <View style={stylesDateSelection.headerButton} />
       </View>
 
       <ScrollView 
-        contentContainerStyle={stylesPreistSelection.scrollContent}
-        style={stylesPreistSelection.container}
+        contentContainerStyle={stylesDateSelection.scrollContent}
+        style={stylesDateSelection.container}
         showsVerticalScrollIndicator={false}
       >
-        <View style={stylesPreistSelection.dropdownContainer}>
-          <Text style={stylesPreistSelection.label}>👨‍⚖️ Choose Priest</Text>
-
-          <TouchableOpacity
-            onPress={() => setIsOpen(!isOpen)}
-            style={[
-              stylesPreistSelection.dropdown,
-              selectedPriest && stylesPreistSelection.dropdownSelected,
-            ]}
-          >
-            {selectedPriest ? (
-              <View style={stylesPreistSelection.item}>
-                <Image
-                  source={{
-                    uri: `${SERVER_IP}/uploads/priest/${selectedPriest.img}`,
-                  }}
-                  style={stylesPreistSelection.image}
-                />
-                <View>
-                  <Text style={stylesPreistSelection.name}>
-                    {selectedPriest.gender === 'female' ? 'Shrimati' : 'Shri'} {selectedPriest.name}
-                  </Text>
-                  <Text style={stylesPreistSelection.experience}>
-                    {selectedPriest.exp} years of experience
-                  </Text>
-                </View>
-              </View>
-            ) : (
-              <Text style={stylesPreistSelection.placeholder}>
-                Select a priest...
-              </Text>
-            )}
-          </TouchableOpacity>
-
-          {isOpen && (
-            <View style={stylesPreistSelection.dropdownList}>
-              {priestList.map((priest) => (
-                <TouchableOpacity
-                  key={priest.id}
-                  style={stylesPreistSelection.item}
-                  onPress={() => handleSelect(priest)}
-                >
-                  <Image
-                    source={{
-                      uri: `${SERVER_IP}/uploads/priest/${priest.img}`,
-                    }}
-                    style={stylesPreistSelection.image}
-                  />
-                  <View>
-                    <Text style={stylesPreistSelection.name}>
-                      {priest.gender === 'female' ? 'Shrimati' : 'Shri'} {priest.name}
-                    </Text>
-                    <Text style={stylesPreistSelection.experience}>
-                      {priest.exp} years of experience
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-
-          <Text style={stylesPreistSelection.heading}>
+        <View style={stylesDateSelection.dropdownContainer}>
+          <Text style={stylesDateSelection.heading}>
             📅 Select Date Preference
           </Text>
 
-          <View style={stylesPreistSelection.optionRow}>
+          <View style={stylesDateSelection.optionRow}>
             <TouchableOpacity
               style={[
-                stylesPreistSelection.optionButton,
-                dateOption === 'help' && stylesPreistSelection.optionSelected,
+                stylesDateSelection.optionButton,
+                dateOption === 'help' && stylesDateSelection.optionSelected,
               ]}
               onPress={() => setDateOption('help')}
             >
-              <Text style={stylesPreistSelection.optionText}>
+              <Text style={stylesDateSelection.optionText}>
                 Let us help you
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[
-                stylesPreistSelection.optionButton,
+                stylesDateSelection.optionButton,
                 dateOption === 'specific' &&
-                  stylesPreistSelection.optionSelected,
+                  stylesDateSelection.optionSelected,
               ]}
               onPress={() => setDateOption('specific')}
             >
-              <Text style={stylesPreistSelection.optionText}>
+              <Text style={stylesDateSelection.optionText}>
                 Choose a date
               </Text>
             </TouchableOpacity>
@@ -467,9 +374,9 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
           {dateOption === 'specific' && (
             <TouchableOpacity
               onPress={() => setShowDatePicker(true)}
-              style={stylesPreistSelection.datePickerButton}
+              style={stylesDateSelection.datePickerButton}
             >
-              <Text style={stylesPreistSelection.datePickerText}>
+              <Text style={stylesDateSelection.datePickerText}>
                 {`Selected: ${formatDate(selectedDate)}`}
               </Text>
             </TouchableOpacity>
@@ -487,25 +394,23 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
         </View>
       </ScrollView>
 
-      <View style={stylesPreistSelection.footer}>
+      <View style={stylesDateSelection.footer}>
         <TouchableOpacity
-          style={[stylesPreistSelection.button, !selectedPriest && stylesPreistSelection.buttonDisabled]}
-          disabled={!selectedPriest}
+          style={stylesDateSelection.button}
           onPress={() => {
             console.log(selectedDate)
             console.log(formatDate(selectedDate))
             navigation.navigate('Checkout', {
-              priest_id: selectedPriest.id,
               dateOption,
               selectedDate: dateOption === 'specific' ? selectedDate : null,
               package_id: package_id,
             });
           }}
         >
-          <Text style={stylesPreistSelection.buttonText}>Proceed to Checkout</Text>
+          <Text style={stylesDateSelection.buttonText}>Proceed to Checkout</Text>
         </TouchableOpacity>
 
-        <Text style={stylesPreistSelection.note}>
+        <Text style={stylesDateSelection.note}>
           💳 Note: Pay a partial amount now, and the rest as we proceed further.
         </Text>
       </View>
@@ -513,7 +418,7 @@ export const PreistSelectionScreen = ({ route, navigation }) => {
   );
 };
 
-const stylesPreistSelection = StyleSheet.create({
+const stylesDateSelection = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -612,10 +517,6 @@ const stylesPreistSelection = StyleSheet.create({
     shadowRadius: 12,
     elevation: 5,
   },
-  buttonDisabled: {
-    backgroundColor: '#D4C4B4',
-    opacity: 0.6,
-  },
   buttonText: {
     fontSize: 16,
     fontWeight: '800',
@@ -627,61 +528,6 @@ const stylesPreistSelection = StyleSheet.create({
     fontSize: 13,
     textAlign: 'center',
     fontWeight: '500',
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginBottom: 12,
-    color: '#1a1a1a',
-  },
-  dropdown: {
-    borderWidth: 1.5,
-    borderColor: '#E8E3DD',
-    borderRadius: 12,
-    padding: 12,
-    backgroundColor: '#FAFAF8',
-  },
-  dropdownSelected: {
-    borderColor: '#ce8123',
-    backgroundColor: '#fff8f2',
-    borderWidth: 2,
-  },
-  placeholder: {
-    color: '#999',
-    fontSize: 14,
-    padding: 4,
-  },
-  dropdownList: {
-    borderWidth: 1.5,
-    borderColor: '#E8E3DD',
-    borderRadius: 12,
-    backgroundColor: '#fff',
-    marginTop: 8,
-    elevation: 4,
-    paddingVertical: 8,
-  },
-  item: {
-    flexDirection: 'row',
-    padding: 12,
-    alignItems: 'center',
-    borderBottomColor: '#f0f0f0',
-    borderBottomWidth: 1,
-  },
-  image: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    marginRight: 12,
-  },
-  name: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#1a1a1a',
-  },
-  experience: {
-    fontSize: 12,
-    color: '#888',
-    marginTop: 2,
   },
   scrollContent: {
     paddingBottom: 100,
