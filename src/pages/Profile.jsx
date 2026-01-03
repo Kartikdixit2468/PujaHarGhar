@@ -28,6 +28,7 @@ const Profile = ({ navigation }) => {
   const [editedData, setEditedData] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showGenderModal, setShowGenderModal] = useState(false);
+  const [emailVerificationLoading, setEmailVerificationLoading] = useState(false);
 
   // Phone change flow states
   const [showPhoneChangeModal, setShowPhoneChangeModal] = useState(false);
@@ -44,6 +45,35 @@ const Profile = ({ navigation }) => {
   const [phoneChangeResendTimer, setPhoneChangeResendTimer] = useState(10);
 
   const defaultProfileImage = require('../assets/images/profile_icon.png');
+
+  /**
+   * Send verification email to user
+   */
+  const handleSendVerificationEmail = async (emailToVerify = null) => {
+    try {
+      setEmailVerificationLoading(true);
+      const token = await storageService.getToken();
+      const email = emailToVerify || userData?.email;
+
+      if (!email) {
+        Alert.alert('Error', 'No email address found');
+        return;
+      }
+
+      const response = await authService.sendVerificationMail(email, token);
+
+      if (response.success || response.Status === 'Success') {
+        Alert.alert('Success', 'Verification email has been sent to you');
+      } else {
+        Alert.alert('Error', response.message || 'Failed to send verification email');
+      }
+    } catch (error) {
+      console.error('Error sending verification email:', error);
+      Alert.alert('Error', `Failed to send verification email: ${error.message}`);
+    } finally {
+      setEmailVerificationLoading(false);
+    }
+  };
 
   /**
    * Start resend OTP timer for phone change
@@ -270,10 +300,26 @@ const Profile = ({ navigation }) => {
 
       if (response && response.data) {
         setUserData(response.data);
+        // Sync profile_completed state with context
+        if (response.data.profile_completed) {
+          console.log('Profile is completed, updating context');
+          setProfileCompleted(true);
+        } else {
+          console.log('Profile is not completed, updating context');
+          setProfileCompleted(false);
+        }
         setError(null);
       } else if (response && response.success) {
         // Handle different response format
         setUserData(response);
+        // Sync profile_completed state with context
+        if (response.profile_completed) {
+          console.log('Profile is completed, updating context');
+          setProfileCompleted(true);
+        } else {
+          console.log('Profile is not completed, updating context');
+          setProfileCompleted(false);
+        }
         setError(null);
       } else {
         setError('Invalid response format from server');
@@ -419,9 +465,20 @@ const Profile = ({ navigation }) => {
         // Update local userData with new data
         setUserData(updateData);
 
-        // Update stored email and phone if they changed
+        // Sync profile_completed state with context
+        if (updateData.profile_completed) {
+          console.log('Profile is completed after save, updating context');
+          setProfileCompleted(true);
+        } else {
+          console.log('Profile is not completed after save, updating context');
+          setProfileCompleted(false);
+        }
+
+        // Update stored emai/senl and phone if they changed
         if (emailChanged) {
           await storageService.saveValue('userEmail', editedData.email);
+          // Send verification email to the new email address
+          await handleSendVerificationEmail(editedData.email);
         }
 
         // Check if phone changed and update storage
@@ -433,10 +490,14 @@ const Profile = ({ navigation }) => {
         setIsEditing(false);
         setEditedData(null);
 
-        const message = isProfileComplete
-          ? 'Profile updated successfully! Your profile is now complete.'
-          : 'Profile updated successfully! Complete all fields to mark profile as complete.';
-        Alert.alert('Success', message);
+        if (emailChanged) {
+          Alert.alert('Success', 'A verification email has been sent to you');
+        } else {
+          const message = isProfileComplete
+            ? 'Profile updated successfully! Your profile is now complete.'
+            : 'Profile updated successfully! Complete all fields to mark profile as complete.';
+          Alert.alert('Success', message);
+        }
       } else {
         Alert.alert('Error', 'Failed to update profile. Please try again.');
       }
@@ -608,9 +669,22 @@ const Profile = ({ navigation }) => {
                   />
                 )
               ) : (
-                <Text style={styles.DetailsSubText}>
-                  {userData?.email || 'N/A'}
-                </Text>
+                <View style={LocalStyles.phoneFieldWrapper}>
+                  <View style={LocalStyles.phoneDisplayBox}>
+                    <Text style={LocalStyles.phoneDisplayText}>
+                      {userData?.email || 'N/A'}
+                    </Text>
+                  </View>
+                  {!userData?.e_verified && (
+                    <Pressable 
+                      style={LocalStyles.changePhoneButton}
+                      onPress={() => handleSendVerificationEmail(userData?.email)}
+                      disabled={emailVerificationLoading}
+                    >
+                      <Text style={LocalStyles.changePhoneButtonText}>Verify</Text>
+                    </Pressable>
+                  )}
+                </View>
               )}
             </View>
             <View style={styles.DetailsTextContainer}>
