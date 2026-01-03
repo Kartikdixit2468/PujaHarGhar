@@ -17,7 +17,7 @@ import ContactSupport from './src/pages/ContactSupport';
 import CancelRequest from './src/pages/CancelRequest';
 import PujaPage from './src/pages/PujaPage';
 import { SERVER_IP } from '@env';
-import { PreistSelectionScreen, PackageSelectionScreen } from './src/pages/BookingScreens';
+import { DateSelectionScreen, PackageSelectionScreen } from './src/pages/BookingScreens';
 import CheckoutScreen from './src/pages/CheckoutScreen';
 import WelcomeScreen from './src/pages/WelcomScreen';
 import BookingSuccess from './src/pages/BookingSuccess';
@@ -188,8 +188,8 @@ function MenuNavigation() {
           />
 
           <Stack.Screen
-            name="PreistSelectionScreen"
-            component={PreistSelectionScreen}
+            name="DateSelectionScreen"
+            component={DateSelectionScreen}
             options={{ headerShown: false }}
           />
 
