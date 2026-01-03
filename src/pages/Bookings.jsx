@@ -125,11 +125,13 @@ const Bookings = ({ navigation }) => {
           <View style={styles.bookingInfo}>
             <Text style={styles.packageName}>{item.name}</Text>
             <View style={styles.dateTimeContainer}>
-              <Icon name="schedule" size={14} color="#6b7280" />
-              <Text style={styles.dateTimeText}>{formattedBookedOnDate}</Text>
+              <View style={styles.dateTimeItem}>
+                <Icon name="schedule" size={14} color="#6b7280" />
+                <Text style={styles.dateTimeText}>{formattedBookedOnDate}</Text>
+              </View>
               {item.date && (
-                <View style={styles.additionalDateContainer}>
-                  <Icon name="event" size={14} color="#6b7280" style={{ marginLeft: 8 }} />
+                <View style={styles.dateTimeItem}>
+                  <Icon name="event" size={14} color="#6b7280" />
                   <Text style={styles.dateTimeText}>{formattedDate}</Text>
                 </View>
               )}
@@ -158,7 +160,9 @@ const Bookings = ({ navigation }) => {
             </View>
           )}
 
-          <Icon name="chevron-right" size={24} color="#ff6b9d" />
+          <View style={styles.chevronContainer}>
+            <Icon name="chevron-right" size={24} color="#ff6b9d" />
+          </View>
         </View>
       </Pressable>
     );
@@ -186,8 +190,10 @@ const Bookings = ({ navigation }) => {
       <Text style={styles.errorTitle}>Unable to Load Bookings</Text>
       <Text style={styles.errorSubtext}>{error}</Text>
       <Pressable style={styles.retryButton} onPress={fetchAllBookings}>
-        <Icon name="refresh" size={20} color="#fff" />
-        <Text style={styles.retryButtonText}>Try Again</Text>
+        <View style={styles.retryButtonContent}>
+          <Icon name="refresh" size={20} color="#fff" />
+          <Text style={styles.retryButtonText}>Try Again</Text>
+        </View>
       </Pressable>
     </View>
   );
@@ -304,10 +310,10 @@ const styles = StyleSheet.create({
   dateTimeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 8,
     flexWrap: 'wrap',
   },
-  additionalDateContainer: {
+  dateTimeItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
@@ -362,6 +368,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#ca8a04',
+  },
+  chevronContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   // Empty State
@@ -424,6 +434,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 10,
+    gap: 8,
+  },
+  retryButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   retryButtonText: {
