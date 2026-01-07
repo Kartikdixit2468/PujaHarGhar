@@ -1,0 +1,182 @@
+[33m36ff551[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m HEAD@{0}: pull --rebase origin main (finish): returning to refs/heads/main
+[33m36ff551[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m HEAD@{1}: pull --rebase origin main (pick): Updated with react-native-config for fetching the environment variables
+[33m45bee91[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{2}: pull --rebase origin main (start): checkout 45bee91e9a516623dabe6a8a0b6fd233f8eb76b1
+[33m369fc9a[m HEAD@{3}: commit: Updated with react-native-config for fetching the environment variables
+[33m9565b4b[m HEAD@{4}: commit: Removed Msg91/otp sending package
+[33mcb1c764[m HEAD@{5}: commit: Enables Hermes
+[33madcc1de[m HEAD@{6}: commit: Added gradle.properties file
+[33m989c9b9[m HEAD@{7}: commit: Removed priestSelection component and added dateSelection Component
+[33m2e4c012[m HEAD@{8}: commit: Changed fetching profile_completed from state instead of cache
+[33mfc468df[m HEAD@{9}: commit: removed priestSelection import and route + added date selection
+[33m6a97e29[m HEAD@{10}: commit: Added email verification system + integrated profile_completed state update and management
+[33mf4cd562[m HEAD@{11}: commit: Minor Bug Fixes: Text area warnings
+[33m46bc419[m HEAD@{12}: commit: Minor Updates
+[33m2a86dde[m HEAD@{13}: commit: Code cleaning + Added OTP authentication + Added change phone feature + code formatting
+[33m8ecd2fb[m HEAD@{14}: commit: added and updated OTP Sending and verification services
+[33m2406e1a[m HEAD@{15}: commit: Added profileGaurd Helper
+[33m18f9674[m HEAD@{16}: commit: Major Change: Multiple manual sign in bug fix + changes manual sign in logic
+[33mf8adb97[m HEAD@{17}: commit: Changed default email and phone to null
+[33me533764[m HEAD@{18}: commit: Bug Fix: Unverified Batch not showing
+[33mf953c43[m HEAD@{19}: commit: Imp Update: Adding user's phone in asyncStorage at login
+[33m850c18c[m HEAD@{20}: commit: Temporarily bypassing otp verification
+[33m3090d85[m HEAD@{21}: commit: Bug Fix: Logout button fixed
+[33m2e9630f[m HEAD@{22}: commit: Added Helper to check if user profile completed and rendered screens
+[33mf19d1ee[m HEAD@{23}: commit: Added context to keep check on user-profile
+[33m6911453[m HEAD@{24}: reset: moving to HEAD
+[33m6911453[m HEAD@{25}: commit: AsyncStorage Bug Fix + Sign up stage changing logic changed
+[33m9b852d0[m HEAD@{26}: commit: Minor Change
+[33m10deece[m HEAD@{27}: commit: Removed unnecessary packages
+[33mf1e3884[m HEAD@{28}: commit: Added Network Request Failed exception hangling
+[33mb0c77d9[m HEAD@{29}: commit: Minor Bug Fix: Resolved text not wrapped in <Text/> warning
+[33m13d1bfc[m HEAD@{30}: commit: Page improved + changes colour scheme
+[33mb402aa9[m HEAD@{31}: commit: Removed unnecessary code + bug fix
+[33mf620521[m HEAD@{32}: commit: Page design revamp
+[33m9cd8dfb[m HEAD@{33}: commit: Removed old default headers
+[33m32cba9c[m HEAD@{34}: commit: Update: Page revamped
+[33mb421fbf[m HEAD@{35}: commit: Minor Changes
+[33md5ebe47[m HEAD@{36}: commit: Minor Bug Fix: Input buttons appearig over the overlay
+[33mcd71afa[m HEAD@{37}: commit: Removed profile page header and added custom header
+[33m863f931[m HEAD@{38}: commit: Added multiple routes for categoryPujas page, tickets page etc
+[33m2871a3c[m HEAD@{39}: commit: Added tab page to view current user raised tickets
+[33m5f7f3f4[m HEAD@{40}: commit: Added new page + Integrated with database
+[33ma34a2ad[m HEAD@{41}: commit: page revamp + integrated with categoryPuja page
+[33m519f5ba[m HEAD@{42}: commit: Minor Bug Fix: Image Links fixed
+[33m3ba4271[m HEAD@{43}: commit: Added routes to categories
+[33mc95da56[m HEAD@{44}: commit: Minor Changes
+[33m599acef[m HEAD@{45}: commit: Minor Changes
+[33mb79e6cb[m HEAD@{46}: commit: Integrated with the database to store tickets
+[33me994940[m HEAD@{47}: commit: Responsiveness fixes
+[33m42930ab[m HEAD@{48}: commit: Page revamp + integrated and made function
+[33m8876fdb[m HEAD@{49}: commit: updated server route url
+[33me820e3b[m HEAD@{50}: commit: updated server route url
+[33m511e2e1[m HEAD@{51}: commit: Integrated recent post with support page
+[33meb05ca2[m HEAD@{52}: pull origin: Fast-forward
+[33m60a68d4[m[33m ([m[1;31morigin/linux[m[33m, [m[1;32mlinux[m[33m)[m HEAD@{53}: checkout: moving from master to main
+[33mac41214[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{54}: commit: Removed booking time and added booking date + refactored Booking details page
+[33m60a68d4[m[33m ([m[1;31morigin/linux[m[33m, [m[1;32mlinux[m[33m)[m HEAD@{55}: reset: moving to main
+[33md3d5629[m HEAD@{56}: checkout: moving from linux to master
+[33m60a68d4[m[33m ([m[1;31morigin/linux[m[33m, [m[1;32mlinux[m[33m)[m HEAD@{57}: reset: moving to main
+[33m0d13345[m HEAD@{58}: checkout: moving from main to linux
+[33m60a68d4[m[33m ([m[1;31morigin/linux[m[33m, [m[1;32mlinux[m[33m)[m HEAD@{59}: commit: Bug Fix: Added handling for the cancelled bookings
+[33me25f1a2[m HEAD@{60}: commit: Major changes: Integraed Boooking management + added payment_id in booking table schema + added multiple routes
+[33m7989abd[m HEAD@{61}: commit: Adde routes for support and FAQs
+[33m7cbd27c[m HEAD@{62}: commit: Major Changes: Authentication Refactored + Profile Page integrated + Support Pages Added + Home page imroved
+[33m0d13345[m HEAD@{63}: reset: moving to linux
+[33m37bcd06[m HEAD@{64}: checkout: moving from linux to main
+[33m0d13345[m HEAD@{65}: checkout: moving from main to linux
+[33m37bcd06[m HEAD@{66}: commit: Modified gitignore
+[33mc816361[m HEAD@{67}: checkout: moving from linux to main
+[33m0d13345[m HEAD@{68}: pull origin main: Fast-forward
+[33m3e34908[m HEAD@{69}: commit: Simplified Sign up page logic and refactored the logic
+[33m348a704[m HEAD@{70}: reset: moving to origin/linux
+[33m348a704[m HEAD@{71}: reset: moving to origin/linux
+[33m348a704[m HEAD@{72}: reset: moving to HEAD
+[33m348a704[m HEAD@{73}: reset: moving to HEAD
+[33m348a704[m HEAD@{74}: commit: Adding entry to Booking table + Added Booking failiure and Confirmation pages
+[33mf4a7e91[m HEAD@{75}: commit: Payment Gateway Major Bug Fix + Verification for payment
+[33m2163077[m HEAD@{76}: commit: Minor bug fix
+[33m1125e66[m HEAD@{77}: commit: Bug Fixes + CheckoutScreen Integration with Daatabase.
+[33m42d9611[m HEAD@{78}: commit: Major Update: Booking and Checkout Screen Integration I
+[33mbd88da6[m HEAD@{79}: commit: Integrated with backend + fetching puja data from database in realtime.
+[33m9643f58[m HEAD@{80}: commit: Removed unwanted component and cleaned code.
+[33m9b7d362[m HEAD@{81}: commit: Removed unwanted component and cleaned code.
+[33m8ce0b72[m[33m ([m[1;31morigin/backup[m[33m)[m HEAD@{82}: checkout: moving from backup to linux
+[33me88eb57[m[33m ([m[1;32mbackup[m[33m)[m HEAD@{83}: checkout: moving from linux to backup
+[33m8ce0b72[m[33m ([m[1;31morigin/backup[m[33m)[m HEAD@{84}: checkout: moving from linux to linux
+[33m8ce0b72[m[33m ([m[1;31morigin/backup[m[33m)[m HEAD@{85}: checkout: moving from backup to linux
+[33me88eb57[m[33m ([m[1;32mbackup[m[33m)[m HEAD@{86}: checkout: moving from linux to backup
+[33m8ce0b72[m[33m ([m[1;31morigin/backup[m[33m)[m HEAD@{87}: checkout: moving from backup to linux
+[33me88eb57[m[33m ([m[1;32mbackup[m[33m)[m HEAD@{88}: merge linux: Merge made by the 'ort' strategy.
+[33m1458f03[m HEAD@{89}: checkout: moving from linux to backup
+[33m8ce0b72[m[33m ([m[1;31morigin/backup[m[33m)[m HEAD@{90}: commit: Restore & Minor Bug fixes II
+[33m619d7f9[m HEAD@{91}: commit: Restore & Minor Bug fixes
+[33m769c5d5[m HEAD@{92}: reset: moving to origin/linux
+[33m20b6bf5[m HEAD@{93}: commit: Minor Changes
+[33m3fd254e[m HEAD@{94}: reset: moving to origin/linux
+[33m3e6e55f[m HEAD@{95}: commit: Minor Changes
+[33m60edeb4[m HEAD@{96}: commit: Minor Changes
+[33mabffccb[m HEAD@{97}: reset: moving to HEAD
+[33mabffccb[m HEAD@{98}: commit: Integrated search & other routes
+[33me18191d[m HEAD@{99}: commit: New UI for sideMenu with sliding animations
+[33m2ce7d10[m HEAD@{100}: commit: Removed old component styling | Code Cleaning
+[33ma725e9d[m HEAD@{101}: commit: Improved card UI
+[33m434e47e[m HEAD@{102}: commit: Home Page Re-imagined
+[33m85d3ed6[m HEAD@{103}: commit: Searvh Component Integrated
+[33mf33ff3a[m HEAD@{104}: commit: Added new puja images
+[33me7de818[m HEAD@{105}: reset: moving to e7de818
+[33me7de818[m HEAD@{106}: reset: moving to HEAD
+[33me7de818[m HEAD@{107}: commit: Minor Bug Fix: Icons not Visible resolved.
+[33m5a9c0a9[m HEAD@{108}: commit: Minor Bug Fix: Icons not Visible resolved.
+[33m9ed65a2[m HEAD@{109}: commit: Added checkout Screen with pretty well structure & UI.
+[33m86f161f[m HEAD@{110}: commit: code cleaning
+[33m6c010aa[m HEAD@{111}: commit: Under development: Booking pagees & Checkout page
+[33mf983214[m HEAD@{112}: commit: Finished the booking info pages
+[33m79590c0[m HEAD@{113}: commit: Added booking screen, puja-package selection and info
+[33mca7be8c[m HEAD@{114}: commit: Code cleaned and formatted
+[33mcb3107b[m HEAD@{115}: commit: Minor bug fixes for loader and OTP verification
+[33m604f87a[m HEAD@{116}: commit: Updated some packages and added some alternatives.
+[33m876afd2[m HEAD@{117}: commit: Added keystor and updated info to assemble realse apk.
+[33mffbf8ae[m HEAD@{118}: commit: Implemented the loader component within OTP service and other parts
+[33m012b742[m HEAD@{119}: commit: Resend functionalitty added + loading component added
+[33m9b64fed[m HEAD@{120}: checkout: moving from backup to linux
+[33m1458f03[m HEAD@{121}: commit: getting backup
+[33mf3a04ec[m HEAD@{122}: pull origin linux: Fast-forward
+[33mc816361[m HEAD@{123}: checkout: moving from linux to backup
+[33m9b64fed[m HEAD@{124}: commit: getting backup
+[33mf3a04ec[m HEAD@{125}: pull origin main: Fast-forward
+[33maec7d90[m HEAD@{126}: commit: Completed gender selection and posting data to server
+[33mad3796e[m HEAD@{127}: reset: moving to HEAD
+[33mad3796e[m HEAD@{128}: commit: Mannual signup object returning null error resolved
+[33m32293b6[m HEAD@{129}: commit: OTP sending + verifcation system completed
+[33m3f68604[m HEAD@{130}: commit: OTP send successful, partial
+[33m2e5a8c1[m HEAD@{131}: commit: OnChangeText bug fixed + Otp verification screen added
+[33m4094633[m HEAD@{132}: reset: moving to HEAD
+[33m4094633[m HEAD@{133}: commit: OnChangeText bug
+[33m5350e91[m HEAD@{134}: commit: Sign in stage 2 + OnChangeText bug discovered
+[33mee04dca[m HEAD@{135}: commit: SignUp alternatives bug fix
+[33mf11f233[m HEAD@{136}: commit: LogIn/Out + Login Verification completed
+[33mcc007fe[m HEAD@{137}: commit: Session Handling with JsonWebToken & AsyncStorage
+[33m2dafe39[m HEAD@{138}: commit: Added Welcome Screen + Google Authentication
+[33ma2c5009[m HEAD@{139}: checkout: moving from master to linux
+[33md3d5629[m HEAD@{140}: checkout: moving from linux to master
+[33ma2c5009[m HEAD@{141}: commit: Final changes
+[33m0f25bf3[m HEAD@{142}: commit: Final changes
+[33md3d5629[m HEAD@{143}: checkout: moving from master to linux
+[33md3d5629[m HEAD@{144}: commit: Final changes
+[33mcf11582[m HEAD@{145}: commit: Puja Details page added
+[33mc816361[m HEAD@{146}: checkout: moving from main to master
+[33mc816361[m HEAD@{147}: checkout: moving from backup to main
+[33mc816361[m HEAD@{148}: merge main: Fast-forward
+[33me742d22[m HEAD@{149}: checkout: moving from master to backup
+[33mc816361[m HEAD@{150}: merge main: Fast-forward
+[33me742d22[m HEAD@{151}: checkout: moving from main to master
+[33mc816361[m HEAD@{152}: commit: Profile Page Completed
+[33mfb08156[m HEAD@{153}: commit: Categories page added
+[33m45641b7[m HEAD@{154}: commit: Added Multiple Routes
+[33m4c05583[m HEAD@{155}: commit (merge): final push
+[33m99782a9[m HEAD@{156}: reset: moving to main
+[33m99782a9[m HEAD@{157}: reset: moving to HEAD
+[33m99782a9[m HEAD@{158}: checkout: moving from backup to main
+[33me742d22[m HEAD@{159}: checkout: moving from backup to backup
+[33me742d22[m HEAD@{160}: checkout: moving from backup to backup
+[33me742d22[m HEAD@{161}: Branch: renamed refs/heads/backup to refs/heads/backup
+[33me742d22[m HEAD@{163}: checkout: moving from main to backup
+[33m99782a9[m HEAD@{164}: checkout: moving from backup to main
+[33me742d22[m HEAD@{165}: checkout: moving from master to backup
+[33me742d22[m HEAD@{166}: checkout: moving from main to master
+[33m99782a9[m HEAD@{167}: checkout: moving from backup to main
+[33me742d22[m HEAD@{168}: checkout: moving from backup to backup
+[33me742d22[m HEAD@{169}: checkout: moving from master to backup
+[33me742d22[m HEAD@{170}: commit: Routing + Category section bug fixes.
+[33m78e6da9[m HEAD@{171}: commit (merge): Sign up and home page integration (Incomplete)
+[33m50808ad[m HEAD@{172}: Branch: renamed refs/heads/backup to refs/heads/master
+[33m50808ad[m HEAD@{174}: Branch: renamed refs/heads/master to refs/heads/backup
+[33m50808ad[m HEAD@{176}: commit: google sign-in changes part 2
+[33mebd02b3[m HEAD@{177}: commit: Sign Up page stying done!
+[33m6e904ed[m HEAD@{178}: commit: Signup Stylesheet Added + styling part 1
+[33m658d7be[m HEAD@{179}: commit: SignUp page Added
+[33mc296e29[m HEAD@{180}: commit: Menu bar functioning + Stlying
+[33m872b825[m HEAD@{181}: commit: Category section + Code Cleaning
+[33mcb62853[m HEAD@{182}: Branch: renamed refs/heads/main to refs/heads/master
+[33mcb62853[m HEAD@{184}: commit: Main Page UI section Home
+[33m4bfa3f7[m HEAD@{185}: commit (initial): Initial commit
