@@ -1,5 +1,5 @@
-# 🙏 Pujaharghar – Online Puja Booking App (React Native)
-
+# 🙏 Pujaharghar – Online Puja Booking App (React Native) 
+# [V1.2.0 COMPLETED]
 Hey there! 👋  
 This is my **current project**, called **Pujaharghar**, and while I don’t work on it daily, I am steadily building it. Initially, I started this to bring the **concept of online puja bookings and spiritual services to every home**, but later I decided to make it **open source**, so more people can contribute, learn, and make it better. 🚀  
 
@@ -19,7 +19,7 @@ That’s where **Pujaharghar** comes in:
 
 ---
 
-## ✨ Features (Work in Progress)
+## ✨ Features 
 
 Here are the main features I’m building (and open for contributions to improve 👇):
 
@@ -72,11 +72,5 @@ npm run android
 # OR
 yarn android
 
-
-
+## You're good to go!⭐
 ---
-
-Would you like me to also add **screenshots/diagrams placeholders** in the README (like *“App Screenshots Coming Soon”* with an image section) so future contributors/users get a visual idea?
-
-
-
