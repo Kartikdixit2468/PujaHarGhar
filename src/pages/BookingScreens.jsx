@@ -10,8 +10,9 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { SERVER_IP } from '@env';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Config from 'react-native-config';
+
+const SERVER_IP = Config.SERVER_IP;import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useProfileGuard } from '../components/useProfileGuard';

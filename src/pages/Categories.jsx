@@ -13,8 +13,9 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FAIcon from 'react-native-vector-icons/FontAwesome5';
-import { SERVER_IP } from '@env';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Config from 'react-native-config';
+
+const SERVER_IP = Config.SERVER_IP;import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const width = Dimensions.get('window').width;
 

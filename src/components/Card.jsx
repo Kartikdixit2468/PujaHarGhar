@@ -11,8 +11,9 @@ import {
   StyleSheet,
 } from 'react-native';
 import { styles } from '../css/style';
-import { SERVER_IP } from '@env';
-import { useNavigation } from '@react-navigation/native';
+import Config from 'react-native-config';
+
+const SERVER_IP = Config.SERVER_IP;import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // at top
 
 const screenWidth = Dimensions.get('window').width;

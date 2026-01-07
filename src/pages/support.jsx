@@ -12,8 +12,9 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FAIcon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SERVER_IP } from '@env';
+import Config from 'react-native-config';
 
+const SERVER_IP = Config.SERVER_IP;
 const Support = ({ navigation }) => {
   // Mock data for recent bookings
   const [recentBookings, setRecentBookings] = useState([]);

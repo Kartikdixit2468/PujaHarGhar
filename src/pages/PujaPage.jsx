@@ -9,8 +9,9 @@ import {
   Pressable,
   Alert,
 } from 'react-native';
-import { SERVER_IP } from '@env';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Config from 'react-native-config';
+
+const SERVER_IP = Config.SERVER_IP;import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';

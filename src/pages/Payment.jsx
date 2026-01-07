@@ -1,7 +1,8 @@
 import { View, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SERVER_IP } from '@env';
-import React, { useState, useEffect } from 'react';
+import Config from 'react-native-config';
+
+const SERVER_IP = Config.SERVER_IP;import React, { useState, useEffect } from 'react';
 import RazorpayCheckout from 'react-native-razorpay';
 // console.log(SERVER_IP)
 
