@@ -1,4 +1,4 @@
-# Network Troubleshooting Guide for PujaHarGhar
+# Network Troubleshooting Guide for PoojaOne
 
 ## Issue: "Network request failed" Error
 

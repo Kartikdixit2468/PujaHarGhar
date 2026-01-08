@@ -37,7 +37,7 @@ export default function WelcomeScreen({ navigation }) {
         <View style={styles.textContainer}>
           {/* Welcome Content */}
           <Text style={styles.title}>Welcome to</Text>
-          <Text style={styles.title}>PujaHarGhar, let's</Text>
+          <Text style={styles.title}>PoojaOne, let's</Text>
           <Text style={styles.subtitle}>
             Bringing temple peace, timeless traditions, and modern convenience
             into your home.

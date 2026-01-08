@@ -40,7 +40,7 @@ const Payment = ({ navigation, route }) => {
       currency: 'INR',
       key: 'rzp_test_SfmVAOU9cCkvjH',
       // amount: orderInfo.amount*100,
-      name: 'PujaHarGhar',
+      name: 'PoojaOne',
       order_id: orderInfo.id,
       prefill: {
         email: 'user@example.com',

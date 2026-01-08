@@ -20,8 +20,8 @@ const faqData = {
   'General Inquiry': [
     {
       id: 1,
-      question: 'What is PujaHarGhar?',
-      answer: 'PujaHarGhar is a platform that helps you book puja services from qualified priests. We connect you with experienced spiritual guides for various religious ceremonies and rituals.',
+      question: 'What is PoojaOne?',
+      answer: 'PoojaOne is a platform that helps you book puja services from qualified priests. We connect you with experienced spiritual guides for various religious ceremonies and rituals.',
     },
     {
       id: 2,

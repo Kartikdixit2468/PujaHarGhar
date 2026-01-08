@@ -1,7 +1,7 @@
-# 🙏 Pujaharghar – Online Puja Booking App (React Native) 
+# 🙏 PoojaOne – Online Puja Booking App (React Native) 
 # [V1.2.0 COMPLETED]
 Hey there! 👋  
-This is my **current project**, called **Pujaharghar**, and while I don’t work on it daily, I am steadily building it. Initially, I started this to bring the **concept of online puja bookings and spiritual services to every home**, but later I decided to make it **open source**, so more people can contribute, learn, and make it better. 🚀  
+This is my **current project**, called **PoojaOne**, and while I don’t work on it daily, I am steadily building it. Initially, I started this to bring the **concept of online puja bookings and spiritual services to every home**, but later I decided to make it **open source**, so more people can contribute, learn, and make it better. 🚀  
 
 ---
 
@@ -10,7 +10,7 @@ This is my **current project**, called **Pujaharghar**, and while I don’t work
 In India, spiritual practices and rituals like **pujas** are deeply rooted in culture.  
 However, not everyone can easily connect with a **pandit (priest)**, arrange rituals, or handle payments smoothly.  
 
-That’s where **Pujaharghar** comes in:  
+That’s where **PoojaOne** comes in:  
 
 - 🌐 **Bridge the gap** between devotees and priests through technology.  
 - 📅 Allow users to **book pujas online** from their phones.  
@@ -39,7 +39,7 @@ Here are the main features I’m building (and open for contributions to improve
 This repository contains the **React Native frontend**.  
 The **backend** (Node.js + Express + MongoDB) is in a separate repository:  
 
-👉 [Pujaharghar Backend](https://github.com/kartikdixit2468/pujaharghar-backend)
+👉 [PoojaOne Backend](https://github.com/kartikdixit2468/poojaone-backend)
 
 ---
 
@@ -50,8 +50,8 @@ Make sure your environment is set up for React Native first:
 
 ### 1️⃣ Clone the repo
 ```sh
-git clone https://github.com/kartikdixit2468/pujaharghar.git
-cd pujaharghar
+git https://github.com/Kartikdixit2468/PoojaOne-Mobile-App.git
+cd PoojaOne
 
 
 
