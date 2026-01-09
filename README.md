@@ -1,7 +1,9 @@
 # 🙏 PoojaOne – Online Puja Booking App (React Native) 
 # [V1.2.0 COMPLETED]
 Hey there! 👋  
-This is my **current project**, called **PoojaOne**, and while I don’t work on it daily, I am steadily building it. Initially, I started this to bring the **concept of online puja bookings and spiritual services to every home**, but later I decided to make it **open source**, so more people can contribute, learn, and make it better. 🚀  
+This is my **current project**, called **PoojaOne**, and while I don’t work on it daily, I am steadily building it. Initially, I started this to bring the **concept of online puja bookings and spiritual services to every home**, but later I decided to make it **open source**, so more people can contribute, learn, and make it better. 
+
+## Note: This project rely on [https://github.com/kartikdixit2468/poojaone-backend/] for the server, Both are linked with each other, Check it out 🚀
 
 ---
 
@@ -74,3 +76,4 @@ yarn android
 
 ## You're good to go!⭐
 ---
+
